@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="de.bitb.buttonbuddy.ui.splash.SplashFragment"
+        android:label="splash">
+
+        <action
+            android:id="@+id/splash_to_buddies"
+            app:destination="@id/buddiesFragment" />
+
+        <action
+            android:id="@+id/splash_to_login"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="de.bitb.buttonbuddy.ui.splash.LoginFragment"
+        android:label="login">
+
+        <action
+            android:id="@+id/login_to_buddies"
+            app:destination="@id/buddiesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/buddiesFragment"
+        android:name="de.bitb.buttonbuddy.ui.buddies.BuddiesFragment"
+        android:label="buddies">
+
+        <action
+            android:id="@+id/buddies_to_buddy"
+            app:destination="@id/buddyFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/buddyFragment"
+        android:name="de.bitb.buttonbuddy.ui.buddy.BuddyFragment"
+        android:label="buddy">
+    </fragment>
+
+</navigation>
