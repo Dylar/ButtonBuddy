@@ -349,3 +349,6 @@ $RECYCLE.BIN/
 /caches
 /daemon
 /.tmp
+caches
+daemon
+.tmp
