@@ -439,3 +439,6 @@ $RECYCLE.BIN/
 caches
 daemon
 .tmp
+wrapper
+native
+gradle
