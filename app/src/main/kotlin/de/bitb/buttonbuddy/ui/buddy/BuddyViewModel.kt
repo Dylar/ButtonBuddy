@@ -16,12 +16,13 @@ class BuddyViewModel @Inject constructor(
     infoRepo: InfoRepository,
 ) : BaseViewModel() {
 
+    lateinit var uuid:String
     val info: LiveData<Info> = infoRepo.getLiveInfo()
     lateinit var buddy: LiveData<Buddy>
 
     fun initBuddyState(uuid: String) {
-        Log.e(toString(),"uuid: $uuid" )
-        buddy = buddyRepo.getBuddy(uuid)
+        this.uuid = uuid
+        buddy = buddyRepo.getLiveBuddy(uuid)
     }
 
 }

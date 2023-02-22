@@ -19,6 +19,11 @@ class FCMService : FirebaseMessagingService() {
     @Inject
     lateinit var infoUseCases: InfoUseCases
 
+    override fun onDestroy() {
+        job?.cancel()
+        super.onDestroy()
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     override fun onNewToken(token: String) {
         Log.d(toString(), "Refreshed token: $token")
@@ -41,10 +46,5 @@ class FCMService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(toString(), "Message data payload: " + remoteMessage.data)
         }
-    }
-
-    override fun onDestroy() {
-        job?.cancel()
-        super.onDestroy()
     }
 }

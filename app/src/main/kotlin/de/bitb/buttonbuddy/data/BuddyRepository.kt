@@ -8,8 +8,8 @@ import de.bitb.buttonbuddy.misc.Resource
 
 interface BuddyRepository {
     suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>>
-    fun getBuddies(): LiveData<List<Buddy>>
-    fun getBuddy(uuid: String): LiveData<Buddy>
+    fun getLiveBuddies(): LiveData<List<Buddy>>
+    fun getLiveBuddy(uuid: String): LiveData<Buddy>
 }
 
 class BuddyRepositoryImpl constructor(
@@ -25,7 +25,7 @@ class BuddyRepositoryImpl constructor(
         return response
     }
 
-    override fun getBuddies(): LiveData<List<Buddy>> = localDB.getAll()
-    override fun getBuddy(uuid: String): LiveData<Buddy> = localDB.getByUuid(uuid)
+    override fun getLiveBuddies(): LiveData<List<Buddy>> = localDB.getAll()
+    override fun getLiveBuddy(uuid: String): LiveData<Buddy> = localDB.getByUuid(uuid)
 
 }

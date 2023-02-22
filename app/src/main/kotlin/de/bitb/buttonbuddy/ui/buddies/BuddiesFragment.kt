@@ -54,13 +54,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                     title = { Text("Buddies") },
                     actions = {
                         IconButton(onClick = {
-                            lifecycleScope.launch {
-                                val bla = viewModel.getInfo()
-                                Log.e(toString(), "BLA uuid: ${bla?.uuid}")
-                            }
                             val uuid = info?.uuid
-                            Log.e(toString(), "info: ${info}")
-                            Log.e(toString(), "uuid: ${uuid}")
                             if (uuid?.isNotBlank() == true) {
                                 naviToBuddy(uuid)
                             } else {
@@ -71,7 +65,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
             },
             floatingActionButton = {
                 FloatingActionButton(onClick = { naviToScan() })
-                { Icon(Icons.Filled.QrCodeScanner, contentDescription = "Add Buddy") }
+                { Icon(Icons.Filled.QrCodeScanner, contentDescription = "Scan Buddy") }
             }
         ) { innerPadding ->
             val buddies by viewModel.buddies.observeAsState(null)

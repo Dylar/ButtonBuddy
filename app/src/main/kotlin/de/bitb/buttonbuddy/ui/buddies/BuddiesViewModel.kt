@@ -1,7 +1,6 @@
 package de.bitb.buttonbuddy.ui.buddies
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
@@ -19,16 +18,10 @@ class BuddiesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val info: LiveData<Info> = infoRepo.getLiveInfo()
-
-    val buddies: LiveData<List<Buddy>> = buddyRepo.getBuddies()
+    val buddies: LiveData<List<Buddy>> = buddyRepo.getLiveBuddies()
 
     fun sendMessage(buddy: Buddy) {
         useCases.sendMessage(buddy)
     }
-
-    suspend fun getInfo(): Info? {
-        return infoRepo.getInfo().data
-    }
-
 }
 

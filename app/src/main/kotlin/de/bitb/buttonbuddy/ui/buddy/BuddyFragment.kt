@@ -1,6 +1,7 @@
 package de.bitb.buttonbuddy.ui.buddy
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
@@ -42,28 +44,52 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     @Composable
     fun BuddyScreen(buddy: Buddy?) {
         val info by viewModel.info.observeAsState(null)
+        val isMyself = viewModel.uuid == info?.uuid
         Scaffold(
+            scaffoldState = scaffoldState,
             topBar = { TopAppBar(title = { Text("Buddy") }) },
             content = {
-                when (buddy) {
-                    null -> LoadingIndicator()
-                    else -> BuddyDetails(it, buddy, info)
+                when {
+                    isMyself && info != null -> InfoDetails(it, info!!)
+                    buddy != null -> BuddyDetails(it, buddy)
+                    else -> LoadingIndicator()
                 }
             },
         )
     }
 
     @Composable
-    fun BuddyDetails(padding: PaddingValues, buddy: Buddy, info: Info?) {
-        Column(
+    fun BuddyDetails(padding: PaddingValues, buddy: Buddy) {
+        return DetailScreen(padding, buddy.firstName, buddy.lastName)
+    }
+
+    @Composable
+    fun InfoDetails(padding: PaddingValues, info: Info) {
+        DetailScreen(padding, info.firstName, info.lastName, info.uuid)
+    }
+
+    @Composable
+    private fun DetailScreen(
+        padding: PaddingValues,
+        firstName: String,
+        lastName: String,
+        uuid: String? = null,
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(padding)
         ) {
-            Text("Vorname: ${buddy.firstName}")
-            Text("Nachname: ${buddy.lastName}")
-            if (buddy.uuid == info?.uuid) Text("Uuid: ${buddy.uuid}")
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text("Vorname: $firstName")
+                Text("Nachname: $lastName")
+                if (uuid != null) Text("Uuid: $uuid")
+            }
         }
     }
 }
