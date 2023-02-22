@@ -1,16 +1,17 @@
 package de.bitb.buttonbuddy.core
 
 import android.util.Log
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.usecase.info.InfoUseCases
-import java.util.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class FCMService : FirebaseMessagingService() {
+
+    private var job: Job? = null
 
     @Inject
     lateinit var notifyManager: NotifyManager
@@ -18,9 +19,13 @@ class FCMService : FirebaseMessagingService() {
     @Inject
     lateinit var infoUseCases: InfoUseCases
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onNewToken(token: String) {
         Log.d(toString(), "Refreshed token: $token")
-        infoUseCases.updateToken(token)
+        job?.cancel()
+        job = GlobalScope.launch{
+            infoUseCases.updateTokenUC(token)
+        }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -38,4 +43,8 @@ class FCMService : FirebaseMessagingService() {
         }
     }
 
+    override fun onDestroy() {
+        job?.cancel()
+        super.onDestroy()
+    }
 }

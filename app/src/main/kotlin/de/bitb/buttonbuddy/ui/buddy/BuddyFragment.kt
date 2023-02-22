@@ -7,50 +7,54 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavArgs
-import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.data.model.Buddy
+import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
 import de.bitb.buttonbuddy.ui.styles.createComposeView
 
 @AndroidEntryPoint
-class BuddyFragment : Fragment() {
+class BuddyFragment : BaseFragment<BuddyViewModel>() {
 
-    private val viewModel: BuddyViewModel by viewModels()
+    override val viewModel: BuddyViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val token = arguments?.getString("token") ?: throw Exception()
-        viewModel.loadData(token)
+        val uuid = arguments?.getString("uuid") ?: throw Exception()
+        viewModel.initBuddyState(uuid)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View =  createComposeView { BuddyScreen() }
+    ): View = createComposeView {
+        val buddy by viewModel.buddy.observeAsState(null)
+        BuddyScreen(buddy)
+    }
 
     @Composable
-    fun BuddyScreen() {
+    fun BuddyScreen(buddy: Buddy?) {
+        val info by viewModel.info.observeAsState(null)
         Scaffold(
             topBar = { TopAppBar(title = { Text("Buddy") }) },
             content = {
-                when (val buddy = viewModel.buddy.value) {
+                when (buddy) {
                     null -> LoadingIndicator()
-                    else -> BuddyDetails(it,buddy)
+                    else -> BuddyDetails(it, buddy, info)
                 }
             },
         )
     }
 
     @Composable
-    fun BuddyDetails(padding: PaddingValues, buddy: Buddy) {
+    fun BuddyDetails(padding: PaddingValues, buddy: Buddy, info: Info?) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -59,7 +63,7 @@ class BuddyFragment : Fragment() {
         ) {
             Text("Vorname: ${buddy.firstName}")
             Text("Nachname: ${buddy.lastName}")
-            if (viewModel.isMyself) Text("Token: ${buddy.token}")
+            if (buddy.uuid == info?.uuid) Text("Uuid: ${buddy.uuid}")
         }
     }
 }

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.bitb.buttonbuddy">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false"/>
+
     <application
         android:name=".core.BuddyApp"
         android:allowBackup="true"

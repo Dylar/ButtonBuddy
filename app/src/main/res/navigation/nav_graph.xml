@@ -36,11 +36,21 @@
         <action
             android:id="@+id/buddies_to_buddy"
             app:destination="@id/buddyFragment" />
+
+        <action
+            android:id="@+id/buddies_to_scan"
+            app:destination="@id/scanFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/buddyFragment"
         android:name="de.bitb.buttonbuddy.ui.buddy.BuddyFragment"
+        android:label="buddy">
+    </fragment>
+
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="de.bitb.buttonbuddy.ui.scan.ScanFragment"
         android:label="buddy">
     </fragment>
 

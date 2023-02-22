@@ -11,10 +11,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
-class SendMessageUC {
-    private val firestore: FirebaseMessaging by lazy { FirebaseMessaging.getInstance() }
-
+class SendMessageUC @Inject constructor(
+    private val firestore: FirebaseMessaging
+) {
     operator fun invoke(buddy: Buddy) {
         val messageTitle = "Hey"
         val messageBody = "Denk an dich"

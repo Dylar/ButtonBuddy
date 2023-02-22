@@ -5,31 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import de.bitb.buttonbuddy.ui.naviToBuddy
+import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.styles.createComposeView
-import kotlinx.coroutines.launch
-import java.lang.Exception
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
-    private val viewModel: IntroViewModel by viewModels()
+class LoginFragment : BaseFragment<IntroViewModel>() {
+    override val viewModel: IntroViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,13 +57,6 @@ class LoginFragment : Fragment() {
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 viewModel.error?.let { Text(it.asString()) }
             }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.navigate = { id ->
-            findNavController(this).navigate(id)
         }
     }
 }

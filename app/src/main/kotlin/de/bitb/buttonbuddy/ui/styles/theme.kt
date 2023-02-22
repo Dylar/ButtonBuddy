@@ -3,13 +3,21 @@ package de.bitb.buttonbuddy.ui.styles
 import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
-import androidx.fragment.app.Fragment
+import de.bitb.buttonbuddy.ui.base.BaseFragment
+import de.bitb.buttonbuddy.ui.base.BaseViewModel
 
-fun Fragment.createComposeView(darkTheme: Boolean? = null, content: @Composable () -> Unit): View =
+fun <T : BaseViewModel> BaseFragment<T>.createComposeView(
+    darkTheme: Boolean? = null,
+    content: @Composable () -> Unit
+): View =
     ComposeView(requireContext()).apply {
-        setContent { ButtonBuddyAppTheme(darkTheme = darkTheme) { content() } }
+        setContent {
+            scaffoldState = rememberScaffoldState()
+            ButtonBuddyAppTheme(darkTheme = darkTheme) { content() }
+        }
     }
 
 @Composable

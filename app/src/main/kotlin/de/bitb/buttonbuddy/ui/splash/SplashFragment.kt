@@ -16,25 +16,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
+import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
 import de.bitb.buttonbuddy.ui.styles.createComposeView
 
 @AndroidEntryPoint
-class SplashFragment : Fragment() {
-
-    private val viewModel: IntroViewModel by viewModels()
+class SplashFragment : BaseFragment<IntroViewModel>() {
+    override val viewModel: IntroViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View =  createComposeView { LoadingIndicator() }
+    ): View = createComposeView { LoadingIndicator() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.navigate = { id ->
-            NavHostFragment.findNavController(this).navigate(id)
-        }
         viewModel.loadData()
     }
 }

@@ -2,31 +2,30 @@ package de.bitb.buttonbuddy.data
 
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.source.BuddyDao
+import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteDatabase
-import java.util.*
+import de.bitb.buttonbuddy.misc.Resource
 
 interface BuddyRepository {
-    suspend fun loadBuddies(buddyIds: List<String>)
+    suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>>
     fun getBuddies(): LiveData<List<Buddy>>
     fun getBuddy(uuid: String): LiveData<Buddy>
 }
 
 class BuddyRepositoryImpl constructor(
     private val remoteDB: RemoteDatabase,
-    private val buddyDao: BuddyDao
+    private val localDB: LocalDatabase
 ) : BuddyRepository {
 
-    override suspend fun loadBuddies(buddyIds: List<String>) {
-//        val buddies = remoteDB.loadBuddies(buddyIds)
-        val buddies = listOf( //TODO make real
-            Buddy(UUID.randomUUID().toString(),"XXX", "Hilde", "Bruns" ),
-            Buddy(UUID.randomUUID().toString(),"YYY", "Brunella", "Hilds" ),
-        )
-        buddyDao.insertAll(buddies)
+    override suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>> {
+        val response = remoteDB.loadBuddies(buddyIds)
+        if(response is Resource.Success){
+            localDB.insertAll(response.data!!)
+        }
+        return response
     }
 
-    override fun getBuddies(): LiveData<List<Buddy>> = buddyDao.getAll()
-    override fun getBuddy(uuid: String): LiveData<Buddy> = buddyDao.getByUuid(uuid)
+    override fun getBuddies(): LiveData<List<Buddy>> = localDB.getAll()
+    override fun getBuddy(uuid: String): LiveData<Buddy> = localDB.getByUuid(uuid)
 
 }
