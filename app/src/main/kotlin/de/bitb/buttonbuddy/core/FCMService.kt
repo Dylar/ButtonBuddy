@@ -28,23 +28,21 @@ class FCMService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         Log.d(toString(), "Refreshed token: $token")
         job?.cancel()
-        job = GlobalScope.launch{
+        job = GlobalScope.launch {
             infoUseCases.updateTokenUC(token)
         }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Log.d(toString(), "From: ${remoteMessage.from}")
-        val title = remoteMessage.notification?.title ?: ""
-        val message = remoteMessage.notification?.body ?: ""
-        if (title.isNotBlank() && message.isNotBlank()) {
-            notifyManager.showNotification(title, message)
+        Log.d(toString(), "Show payload")
+        val data = remoteMessage.data
+        if (data.isNotEmpty() && data.containsKey("title") && data.containsKey("body")) {
+            Log.d(toString(), "Message data payload: $data")
+            notifyManager.showNotification(data["title"]!!, data["body"]!!)
         }
 
         //TODO save message to db
 
-        if (remoteMessage.data.isNotEmpty()) {
-            Log.d(toString(), "Message data payload: " + remoteMessage.data)
-        }
     }
 }

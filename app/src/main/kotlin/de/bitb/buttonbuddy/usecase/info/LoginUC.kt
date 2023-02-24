@@ -28,6 +28,7 @@ class LoginUC(
         if (lastName.isBlank()) {
             return LoginResponse.LastNameEmpty().asError
         }
+
         val loadInfoResp = infoRepo.loadInfo(firstName, lastName)
         if (loadInfoResp is Resource.Error) {
             return LoginResponse.ErrorThrown(loadInfoResp).asError
@@ -39,14 +40,17 @@ class LoginUC(
                 lastName = lastName,
                 uuid = UUID.randomUUID().toString(),
             )
+        val buddies = info.buddies
+        if(buddies.isNotEmpty()) {
+            val loadBuddiesResp = buddyRepo.loadBuddies(buddies)
+            if (loadBuddiesResp is Resource.Error) {
+                return LoginResponse.ErrorThrown(loadBuddiesResp).asError
+            }
+        }
+
         val saveInfoResp = infoRepo.saveInfo(info)
         if (saveInfoResp is Resource.Error) {
             return LoginResponse.ErrorThrown(saveInfoResp).asError
-        }
-
-        val loadBuddiesResp = buddyRepo.loadBuddies(info.buddies)
-        if (loadBuddiesResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(loadBuddiesResp).asError
         }
 
         return Resource.Success(LoginResponse.LoggedIn())

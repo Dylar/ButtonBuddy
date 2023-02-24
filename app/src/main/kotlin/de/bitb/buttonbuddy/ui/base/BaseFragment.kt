@@ -22,13 +22,14 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
                 if (id == BACK_ID) {
                     popBackStack()
                 } else {
-                    if (popId != null) {
+                    if (popId != null) { // TODO thats not working
                         popBackStack(popId, false)
                     }
                     navigate(id)
                 }
             }
         }
+        viewModel.showSnackbar = ::showSnackBar
     }
 
     fun showSnackBar(error: String) {

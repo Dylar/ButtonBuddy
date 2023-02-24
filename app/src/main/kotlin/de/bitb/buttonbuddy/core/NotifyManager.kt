@@ -10,10 +10,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import de.bitb.buttonbuddy.MainActivity
 import de.bitb.buttonbuddy.R
+import javax.inject.Inject
 
-class NotifyManager(private val context: Context) {
+class NotifyManager @Inject constructor(private val context: Context) {
     companion object {
-        private const val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ID = 2366642
     }
 
     private val notificationManager =
@@ -32,11 +33,12 @@ class NotifyManager(private val context: Context) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val builder =
             NotificationCompat.Builder(context, context.getString(R.string.notification_channel_id))
-                .setSmallIcon(com.google.android.material.R.drawable.ic_keyboard_black_24dp) //TODO make other icon
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

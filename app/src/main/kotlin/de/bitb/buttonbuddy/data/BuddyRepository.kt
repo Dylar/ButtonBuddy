@@ -1,9 +1,10 @@
 package de.bitb.buttonbuddy.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.source.LocalDatabase
-import de.bitb.buttonbuddy.data.source.RemoteDatabase
+import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.misc.Resource
 
 interface BuddyRepository {
@@ -12,14 +13,15 @@ interface BuddyRepository {
     fun getLiveBuddy(uuid: String): LiveData<Buddy>
 }
 
-class BuddyRepositoryImpl constructor(
-    private val remoteDB: RemoteDatabase,
+class BuddyRepositoryImpl(
+    private val remoteDB: RemoteService,
     private val localDB: LocalDatabase
 ) : BuddyRepository {
 
     override suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>> {
         val response = remoteDB.loadBuddies(buddyIds)
-        if(response is Resource.Success){
+        Log.e("TAG", "response: ${response.data?.size}")
+        if (response is Resource.Success) {
             localDB.insertAll(response.data!!)
         }
         return response

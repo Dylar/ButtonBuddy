@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.ui.base.BaseFragment
+import de.bitb.buttonbuddy.ui.styles.FireRed
+import de.bitb.buttonbuddy.ui.styles.ZergPurple
 import de.bitb.buttonbuddy.ui.styles.createComposeView
 
 @AndroidEntryPoint
@@ -55,7 +57,13 @@ class LoginFragment : BaseFragment<IntroViewModel>() {
                     label = { Text("Last name") }
                 )
                 Spacer(modifier = Modifier.padding(top = 8.dp))
-                viewModel.error?.let { Text(it.asString()) }
+                Box(
+                    contentAlignment = Alignment.TopCenter,
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    viewModel.error?.let { Text(it.asString(), color = FireRed) }
+                }
             }
         }
     }

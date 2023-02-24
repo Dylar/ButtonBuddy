@@ -111,16 +111,28 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
                             Log.e(this@ScanFragment.tag, it.toString())
                         }
 
-                        decodeCallback = DecodeCallback { viewModel.onScan(it.text) }
+                        decodeCallback = DecodeCallback {
+                            viewModel.onScan(it.text)
+                        }
                         setOnClickListener { startPreview() }
+                        startPreview()
                     }
                 }
             },
         )
+        LifecycleComp { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> codeScanner?.startPreview()
+                Lifecycle.Event.ON_PAUSE -> codeScanner?.releaseResources()
+                else -> {}
+            }
+        }
+
+
         val error = viewModel.error
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         LaunchedEffect(key1 = error) {
-            codeScanner?.startPreview()
+//            codeScanner?.startPreview()
             if (error != null) {
 //                val snackbarResult =
                 scaffoldState.snackbarHostState.showSnackbar(

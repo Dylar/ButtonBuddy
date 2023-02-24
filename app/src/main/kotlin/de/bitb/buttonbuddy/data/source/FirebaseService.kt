@@ -5,11 +5,10 @@ import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.misc.Resource
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
-class FirestoreDatabase @Inject constructor(
+class FirestoreService(
     private val firestore: FirebaseFirestore
-) : RemoteDatabase {
+) : BuddyRemoteDao, InfoRemoteDao {
 
     private val buddyCollection
         get() = firestore.collection("Buddies")
@@ -22,7 +21,7 @@ class FirestoreDatabase @Inject constructor(
                 .get().await()
             Resource.Success(snap.toObjects(Info::class.java).firstOrNull())
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 
@@ -36,18 +35,19 @@ class FirestoreDatabase @Inject constructor(
             doc?.update(info.toMap()) ?: buddyCollection.add(info)
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 
     override suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>> {
         return try {
-            val snap = buddyCollection
-                .whereArrayContains("buddies", buddyIds)
+            val buddies = buddyCollection
+                .whereIn("uuid", buddyIds)
                 .get().await()
-            Resource.Success(snap.toObjects(Buddy::class.java))
+                .toObjects(Buddy::class.java)
+            Resource.Success(buddies)
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 

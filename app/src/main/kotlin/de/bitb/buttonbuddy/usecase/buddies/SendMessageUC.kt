@@ -1,29 +1,24 @@
 package de.bitb.buttonbuddy.usecase.buddies
 
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.RemoteMessage
-import de.bitb.buttonbuddy.core.FCMService
-import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.exceptions.NoInfoException
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.source.RemoteService
+import de.bitb.buttonbuddy.misc.Resource
 import java.util.*
 import javax.inject.Inject
 
 class SendMessageUC @Inject constructor(
-    private val firestore: FirebaseMessaging
+    private val remoteService: RemoteService
 ) {
-    operator fun invoke(buddy: Buddy) {
-        val messageTitle = "Hey"
-        val messageBody = "Denk an dich"
-        val message = RemoteMessage.Builder(buddy.token)
-            .setMessageId(UUID.randomUUID().toString())
-            .setData(mapOf("title" to messageTitle, "body" to messageBody))
-            .build()
-
-        firestore.send(message)
+    suspend operator fun invoke(buddy: Buddy): Resource<Unit> {
+        return try {
+            val messageTitle = "Hey"
+            val messageBody = "Denk an dich"
+            val uuid = UUID.randomUUID().toString()
+            val message = Message(uuid, messageTitle, messageBody, buddy.uuid, buddy.token)
+            remoteService.sendMessage(message)
+        } catch (e: Exception) {
+            Resource.Error(e)
+        }
     }
 }

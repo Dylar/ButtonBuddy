@@ -1,10 +1,14 @@
 package de.bitb.buttonbuddy.ui.buddy
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidmads.library.qrgenearator.QRGContents
+import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -13,13 +17,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
+import com.google.zxing.WriterException
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.styles.FireRed
+import de.bitb.buttonbuddy.ui.styles.ZergPurple
 import de.bitb.buttonbuddy.ui.styles.createComposeView
+
 
 @AndroidEntryPoint
 class BuddyFragment : BaseFragment<BuddyViewModel>() {
@@ -82,14 +91,34 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                 .padding(padding)
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text("Vorname: $firstName")
                 Text("Nachname: $lastName")
-                if (uuid != null) Text("Uuid: $uuid")
+                if (uuid != null) QrCodeImage(uuid)
             }
         }
+    }
+
+    @Composable
+    fun QrCodeImage(uuid: String) {
+        return AndroidView(
+            modifier = Modifier,
+            factory = { context ->
+                ImageView(context).apply {
+                    val qrgEncoder =
+                        QRGEncoder(uuid, null, QRGContents.Type.TEXT, 500)
+                    qrgEncoder.colorBlack = Color.BLACK//FireRed.value.toInt()
+                    qrgEncoder.colorWhite =Color.WHITE// ZergPurple.value.toInt()
+                    try {
+                        val bitmap = qrgEncoder.bitmap
+                        setImageBitmap(bitmap)
+                    } catch (e: WriterException) {
+                        Log.v(toString(), e.toString());
+                    }
+                }
+            }
+        )
     }
 }

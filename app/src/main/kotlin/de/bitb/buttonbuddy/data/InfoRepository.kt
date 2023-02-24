@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.misc.Resource
-import javax.inject.Inject
 
 interface InfoRepository {
     suspend fun getInfo(): Resource<Info?>
@@ -14,8 +13,8 @@ interface InfoRepository {
     suspend fun saveInfo(info: Info): Resource<Info>
 }
 
-class InfoRepositoryImpl @Inject constructor(
-    private val remoteDB: RemoteDatabase,
+class InfoRepositoryImpl constructor(
+    private val remoteDB: RemoteService,
     private val localDB: LocalDatabase,
 ) : InfoRepository {
 
@@ -23,7 +22,7 @@ class InfoRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(localDB.getInfo())
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 
@@ -38,7 +37,7 @@ class InfoRepositoryImpl @Inject constructor(
             }
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 
@@ -57,7 +56,7 @@ class InfoRepositoryImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 
@@ -71,7 +70,7 @@ class InfoRepositoryImpl @Inject constructor(
             }
             Resource.Success(saveInfo)
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            Resource.Error(e)
         }
     }
 }

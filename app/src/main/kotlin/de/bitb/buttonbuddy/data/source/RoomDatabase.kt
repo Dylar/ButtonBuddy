@@ -1,21 +1,10 @@
 package de.bitb.buttonbuddy.data.source
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.converter.StringListConverter
-
-class BuddyDatabase(db: RoomDatabaseImpl, private val pref: SharedPreferences) :
-    LocalDatabase,
-    InfoDao by db.infoDao,
-    BuddyDao by db.buddyDao {
-
-    override fun saveToken(token: String) = pref.edit().putString("token", token).apply()
-
-    override fun getToken(): String = pref.getString("token", "")!!
-}
 
 @Database(
     entities = [Info::class, Buddy::class],

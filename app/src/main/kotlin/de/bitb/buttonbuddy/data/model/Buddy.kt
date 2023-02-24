@@ -4,9 +4,9 @@ import androidx.room.*
 
 @Entity(tableName = "buddy")
 data class Buddy(
-    @PrimaryKey val uuid: String,
-    val token: String,
-    val firstName: String,
-    val lastName: String,
+    @PrimaryKey val uuid: String = "",
+    val token: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
 )
 

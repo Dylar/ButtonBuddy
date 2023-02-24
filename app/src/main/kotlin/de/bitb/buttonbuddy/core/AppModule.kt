@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.room.Room
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,11 +15,12 @@ import de.bitb.buttonbuddy.data.BuddyRepositoryImpl
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.InfoRepositoryImpl
 import de.bitb.buttonbuddy.data.source.*
-import de.bitb.buttonbuddy.data.source.FirestoreDatabase
 import de.bitb.buttonbuddy.usecase.buddies.*
 import de.bitb.buttonbuddy.usecase.info.InfoUseCases
 import de.bitb.buttonbuddy.usecase.info.LoginUC
 import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 const val DATABASE_NAME = "buddy_db"
@@ -33,7 +33,6 @@ class BuddyApp : Application()
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // CORE
     @Provides
     @Singleton
     fun provideNotifyManager(app: Application): NotifyManager =
@@ -45,47 +44,39 @@ object AppModule {
     fun provideLocalDatabase(app: Application): LocalDatabase {
         val db = Room.databaseBuilder(app, RoomDatabaseImpl::class.java, DATABASE_NAME).build()
         val pref = app.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return BuddyDatabase(db,pref)
+        return BuddyLocalDatabase(db, PreferenceDatabaseImpl(pref))
     }
 
     @Provides
     @Singleton
-    fun provideRemoteDatabase(firestore: FirebaseFirestore): RemoteDatabase =
-        FirestoreDatabase(firestore)
+    fun provideRemoteDatabase(app: Application): RemoteService {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://fcm.googleapis.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val retrofitService = RetrofitService(retrofit.create(RetrofitApi::class.java))
 
-    @Provides
-    @Singleton
-    fun provideFirebase(app: Application): FirebaseFirestore {
-//        val options = FirebaseOptions.Builder()
-//            .setApplicationId("de.bitb.buttonbuddy")
-//            .setProjectId("buttonbuddy-51c67")
-//            .setApiKey("your_api_key")
-//            .setDatabaseUrl("your_database_url")
-//            .setStorageBucket("your_storage_bucket")
-//            .build()
-//        FirebaseApp.initializeApp(app, options)
         FirebaseApp.initializeApp(app)
-        return FirebaseFirestore.getInstance()
-    }
+        val firestore = FirebaseFirestore.getInstance()
+        val fireService = FirestoreService(firestore)
 
-    @Provides
-    @Singleton
-    fun provideFireMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
+        return BuddyRemoteService(fireService, retrofitService)
+    }
 
     // REPO
     @Provides
     @Singleton
     fun provideBuddyRepository(
-        remoteDB: RemoteDatabase,
+        remoteService: RemoteService,
         localDB: LocalDatabase
-    ): BuddyRepository = BuddyRepositoryImpl(remoteDB, localDB)
+    ): BuddyRepository = BuddyRepositoryImpl(remoteService, localDB)
 
     @Provides
     @Singleton
     fun provideInfoRepository(
-        remoteDB: RemoteDatabase,
+        remoteService: RemoteService,
         localDB: LocalDatabase,
-    ): InfoRepository = InfoRepositoryImpl(remoteDB, localDB)
+    ): InfoRepository = InfoRepositoryImpl(remoteService, localDB)
 
     //USE CASES
     @Provides
@@ -93,11 +84,11 @@ object AppModule {
     fun provideBuddyUseCases(
         infoRepo: InfoRepository,
         buddyRepo: BuddyRepository,
-        fireMessaging: FirebaseMessaging,
+        remoteService: RemoteService,
     ): BuddyUseCases = BuddyUseCases(
         scanBuddy = ScanBuddyUC(infoRepo, buddyRepo),
         loadBuddies = LoadBuddiesUC(infoRepo, buddyRepo),
-        sendMessage = SendMessageUC(fireMessaging),
+        sendMessage = SendMessageUC(remoteService),
     )
 
     @Provides
