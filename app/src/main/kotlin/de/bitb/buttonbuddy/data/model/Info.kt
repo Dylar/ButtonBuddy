@@ -9,7 +9,10 @@ data class Info(
     val firstName: String = "",
     val lastName: String = "",
     val buddies: MutableList<String> = mutableListOf(),
-){
+) {
+    val fullName: String
+        get() = "$firstName $lastName"
+
     fun toMap(): Map<String, Any> {
         return mapOf(
             "uuid" to uuid,

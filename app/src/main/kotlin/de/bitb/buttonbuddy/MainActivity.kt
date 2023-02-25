@@ -12,13 +12,14 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main) //TODO make into compose ?
-        setupNavigation()
-    }
-
     private fun setupNavigation() {
         navHostFragment.navController.setGraph(R.navigation.nav_graph)
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        setupNavigation()
+    }
+
 }

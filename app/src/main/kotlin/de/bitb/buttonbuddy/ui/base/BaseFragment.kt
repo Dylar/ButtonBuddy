@@ -14,11 +14,12 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     abstract val viewModel: T
 
     lateinit var scaffoldState: ScaffoldState
+    val navController by lazy { NavHostFragment.findNavController(this) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.navigate = { id, popId ->
-            NavHostFragment.findNavController(this).apply {
+            navController.apply {
                 if (id == BACK_ID) {
                     popBackStack()
                 } else {

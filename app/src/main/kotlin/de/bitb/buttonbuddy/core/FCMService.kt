@@ -8,41 +8,35 @@ import de.bitb.buttonbuddy.usecase.info.InfoUseCases
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
+@OptIn(DelicateCoroutinesApi::class)
 @AndroidEntryPoint
 class FCMService : FirebaseMessagingService() {
 
-    private var job: Job? = null
-
-    @Inject
-    lateinit var notifyManager: NotifyManager
+    private var newTokenJob: Job? = null
+    private var receivingMessageJob: Job? = null
 
     @Inject
     lateinit var infoUseCases: InfoUseCases
 
     override fun onDestroy() {
-        job?.cancel()
+        newTokenJob?.cancel()
+        receivingMessageJob?.cancel()
         super.onDestroy()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onNewToken(token: String) {
         Log.d(toString(), "Refreshed token: $token")
-        job?.cancel()
-        job = GlobalScope.launch {
+        newTokenJob?.cancel()
+        newTokenJob = GlobalScope.launch {
             infoUseCases.updateTokenUC(token)
         }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Log.d(toString(), "From: ${remoteMessage.from}")
-        Log.d(toString(), "Show payload")
-        val data = remoteMessage.data
-        if (data.isNotEmpty() && data.containsKey("title") && data.containsKey("body")) {
-            Log.d(toString(), "Message data payload: $data")
-            notifyManager.showNotification(data["title"]!!, data["body"]!!)
+        receivingMessageJob?.cancel()
+        receivingMessageJob = GlobalScope.launch {
+            infoUseCases.receivingMessageUC(remoteMessage.data)
         }
-
-        //TODO save message to db
-
     }
 }

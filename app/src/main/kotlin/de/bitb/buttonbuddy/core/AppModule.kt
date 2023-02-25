@@ -18,7 +18,9 @@ import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.usecase.buddies.*
 import de.bitb.buttonbuddy.usecase.info.InfoUseCases
 import de.bitb.buttonbuddy.usecase.info.LoginUC
+import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
+import de.bitb.buttonbuddy.usecase.message.SendMessageUC
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -32,11 +34,6 @@ class BuddyApp : Application()
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideNotifyManager(app: Application): NotifyManager =
-        NotifyManager(app)
 
     // DATABASE
     @Provides
@@ -85,20 +82,24 @@ object AppModule {
         infoRepo: InfoRepository,
         buddyRepo: BuddyRepository,
         remoteService: RemoteService,
-    ): BuddyUseCases = BuddyUseCases(
-        scanBuddy = ScanBuddyUC(infoRepo, buddyRepo),
-        loadBuddies = LoadBuddiesUC(infoRepo, buddyRepo),
-        sendMessage = SendMessageUC(remoteService),
-    )
+    ): BuddyUseCases {
+        return BuddyUseCases(
+            scanBuddy = ScanBuddyUC(infoRepo, buddyRepo),
+            loadBuddies = LoadBuddiesUC(infoRepo, buddyRepo),
+            sendMessage = SendMessageUC(remoteService, infoRepo),
+        )
+    }
 
     @Provides
     @Singleton
     fun provideInfoUseCases(
+        app: Application,
         infoRepo: InfoRepository,
         buddyRepo: BuddyRepository,
     ): InfoUseCases = InfoUseCases(
         login = LoginUC(infoRepo, buddyRepo),
         updateTokenUC = UpdateTokenUC(infoRepo),
+        receivingMessageUC = ReceivingMessageUC(NotifyManager(app)),
     )
 }
 

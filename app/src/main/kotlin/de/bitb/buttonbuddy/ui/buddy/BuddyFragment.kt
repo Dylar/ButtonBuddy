@@ -21,6 +21,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
 import com.google.zxing.WriterException
 import dagger.hilt.android.AndroidEntryPoint
+import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.ui.base.BaseFragment
@@ -37,7 +38,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val uuid = arguments?.getString("uuid") ?: throw Exception()
+        val uuid = arguments?.getString(KEY_BUDDY_UUID) ?: throw Exception()
         viewModel.initBuddyState(uuid)
     }
 
