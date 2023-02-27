@@ -10,16 +10,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.components.SingletonComponent
-import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.BuddyRepositoryImpl
-import de.bitb.buttonbuddy.data.InfoRepository
-import de.bitb.buttonbuddy.data.InfoRepositoryImpl
+import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.usecase.buddies.*
 import de.bitb.buttonbuddy.usecase.info.InfoUseCases
 import de.bitb.buttonbuddy.usecase.info.LoginUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
+import de.bitb.buttonbuddy.usecase.message.MessageUseCases
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -63,6 +61,13 @@ object AppModule {
     // REPO
     @Provides
     @Singleton
+    fun provideInfoRepository(
+        remoteService: RemoteService,
+        localDB: LocalDatabase,
+    ): InfoRepository = InfoRepositoryImpl(remoteService, localDB)
+
+    @Provides
+    @Singleton
     fun provideBuddyRepository(
         remoteService: RemoteService,
         localDB: LocalDatabase
@@ -70,35 +75,42 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideInfoRepository(
+    fun provideMessageRepository(
         remoteService: RemoteService,
         localDB: LocalDatabase,
-    ): InfoRepository = InfoRepositoryImpl(remoteService, localDB)
+    ): MessageRepository = MessageRepositoryImpl(remoteService, localDB)
 
     //USE CASES
+    @Provides
+    @Singleton
+    fun provideInfoUseCases(
+        infoRepo: InfoRepository,
+        buddyRepo: BuddyRepository,
+    ): InfoUseCases = InfoUseCases(
+        loginUC = LoginUC(infoRepo, buddyRepo),
+        updateTokenUC = UpdateTokenUC(infoRepo),
+    )
+
     @Provides
     @Singleton
     fun provideBuddyUseCases(
         infoRepo: InfoRepository,
         buddyRepo: BuddyRepository,
-        remoteService: RemoteService,
     ): BuddyUseCases {
         return BuddyUseCases(
-            scanBuddy = ScanBuddyUC(infoRepo, buddyRepo),
-            loadBuddies = LoadBuddiesUC(infoRepo, buddyRepo),
-            sendMessage = SendMessageUC(remoteService, infoRepo),
+            scanBuddyUC = ScanBuddyUC(infoRepo, buddyRepo),
+            loadBuddiesUC = LoadBuddiesUC(infoRepo, buddyRepo),
         )
     }
 
     @Provides
     @Singleton
-    fun provideInfoUseCases(
+    fun provideMessageUseCases(
         app: Application,
         infoRepo: InfoRepository,
-        buddyRepo: BuddyRepository,
-    ): InfoUseCases = InfoUseCases(
-        login = LoginUC(infoRepo, buddyRepo),
-        updateTokenUC = UpdateTokenUC(infoRepo),
+        remoteService: RemoteService,
+    ): MessageUseCases = MessageUseCases(
+        sendMessageUC = SendMessageUC(remoteService, infoRepo),
         receivingMessageUC = ReceivingMessageUC(NotifyManager(app)),
     )
 }

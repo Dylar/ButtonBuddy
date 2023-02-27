@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.usecase.info.InfoUseCases
+import de.bitb.buttonbuddy.usecase.message.MessageUseCases
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -17,6 +18,9 @@ class FCMService : FirebaseMessagingService() {
 
     @Inject
     lateinit var infoUseCases: InfoUseCases
+
+    @Inject
+    lateinit var messageUseCases: MessageUseCases
 
     override fun onDestroy() {
         newTokenJob?.cancel()
@@ -36,7 +40,7 @@ class FCMService : FirebaseMessagingService() {
         Log.d(toString(), "From: ${remoteMessage.from}")
         receivingMessageJob?.cancel()
         receivingMessageJob = GlobalScope.launch {
-            infoUseCases.receivingMessageUC(remoteMessage.data)
+            messageUseCases.receivingMessageUC(remoteMessage.data)
         }
     }
 }

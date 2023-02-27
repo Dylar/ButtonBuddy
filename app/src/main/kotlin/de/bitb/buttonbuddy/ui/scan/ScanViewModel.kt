@@ -24,7 +24,7 @@ class ScanViewModel @Inject constructor(
     fun onScan(scanText: String) {
         error = null
         viewModelScope.launch {
-            val res = useCases.scanBuddy(scanText)
+            val res = useCases.scanBuddyUC(scanText)
             if (res is Resource.Error) {
                 error = res.message
             } else {

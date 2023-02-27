@@ -1,8 +1,10 @@
 package de.bitb.buttonbuddy.data.model
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
+@Entity(tableName = "message")
 data class Message(
     @PrimaryKey val uuid: String = "",
     val title: String = "",

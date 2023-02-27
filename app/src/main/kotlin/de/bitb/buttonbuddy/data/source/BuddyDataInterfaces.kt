@@ -6,12 +6,13 @@ import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.misc.Resource
 
 // LOCAL
-interface LocalDatabase : BuddyDao, InfoDao, PreferenceDatabase
+interface LocalDatabase : InfoDao, BuddyDao, MessageDao, PreferenceDatabase
 
 class BuddyLocalDatabase(db: RoomDatabaseImpl, pref: PreferenceDatabaseImpl) :
     LocalDatabase,
     InfoDao by db.infoDao,
     BuddyDao by db.buddyDao,
+    MessageDao by db.messageDao,
     PreferenceDatabase by pref
 
 // REMOTE
@@ -21,7 +22,8 @@ class BuddyRemoteService(fireService: FirestoreService, retrofitService: Retrofi
     RemoteService,
     BuddyRemoteDao by fireService,
     InfoRemoteDao by fireService,
-        MessageRemoteDao by retrofitService
+    MessageRemoteDao by fireService,
+    MessageService by retrofitService
 
 interface BuddyRemoteDao {
     suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>>
@@ -33,5 +35,9 @@ interface InfoRemoteDao {
 }
 
 interface MessageRemoteDao {
-    suspend fun sendMessage(msg: Message) : Resource<Unit>
+    suspend fun saveMessage(msg: Message): Resource<Unit>
+}
+
+interface MessageService {
+    suspend fun sendMessage(msg: Message): Resource<Unit>
 }

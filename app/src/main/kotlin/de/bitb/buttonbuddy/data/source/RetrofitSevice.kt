@@ -21,7 +21,7 @@ interface RetrofitApi {
 
 }
 
-class RetrofitService(private val api: RetrofitApi) : MessageRemoteDao {
+class RetrofitService(private val api: RetrofitApi) : MessageService {
     override suspend fun sendMessage(msg: Message): Resource<Unit> {
         return try {
             @Suppress("BlockingMethodInNonBlockingContext")

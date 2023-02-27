@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,10 +26,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.styles.FireRed
-import de.bitb.buttonbuddy.ui.styles.ZergPurple
+import de.bitb.buttonbuddy.ui.naviToBuddy
 import de.bitb.buttonbuddy.ui.styles.createComposeView
 
 
@@ -39,7 +41,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val uuid = arguments?.getString(KEY_BUDDY_UUID) ?: throw Exception()
-        viewModel.initBuddyState(uuid)
+        viewModel.initLiveState(uuid)
     }
 
     override fun onCreateView(
@@ -55,9 +57,10 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     fun BuddyScreen(buddy: Buddy?) {
         val info by viewModel.info.observeAsState(null)
         val isMyself = viewModel.uuid == info?.uuid
+        val title = if (isMyself) "Profil" else "Buddy"
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { TopAppBar(title = { Text("Buddy") }) },
+            topBar = { TopAppBar(title = { Text(title) }) },
             content = {
                 when {
                     isMyself && info != null -> InfoDetails(it, info!!)
@@ -69,35 +72,59 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     }
 
     @Composable
-    fun BuddyDetails(padding: PaddingValues, buddy: Buddy) {
-        return DetailScreen(padding, buddy.firstName, buddy.lastName)
-    }
-
-    @Composable
     fun InfoDetails(padding: PaddingValues, info: Info) {
-        DetailScreen(padding, info.firstName, info.lastName, info.uuid)
-    }
-
-    @Composable
-    private fun DetailScreen(
-        padding: PaddingValues,
-        firstName: String,
-        lastName: String,
-        uuid: String? = null,
-    ) {
         Box(
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
             Column(
-                modifier = Modifier,
+                modifier = Modifier.align(Alignment.TopCenter),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Vorname: $firstName")
-                Text("Nachname: $lastName")
-                if (uuid != null) QrCodeImage(uuid)
+                Card(
+                    elevation = 4.dp, modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Text("${info.firstName} ${info.lastName}")
+                    }
+                }
+                QrCodeImage(info.uuid)
+            }
+        }
+    }
+
+    @Composable
+    fun BuddyDetails(padding: PaddingValues, buddy: Buddy) {
+        val messages by viewModel.messages.observeAsState(null)
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Column(
+                modifier = Modifier.align(Alignment.TopCenter),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Card(
+                    elevation = 4.dp, modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Text("${buddy.firstName} ${buddy.lastName}")
+                        Button(onClick = { viewModel.sendMessage(buddy) }) { Text("Send") }
+                    }
+                }
+                MessagesList(innerPadding = padding, messages = messages)
             }
         }
     }
@@ -111,7 +138,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                     val qrgEncoder =
                         QRGEncoder(uuid, null, QRGContents.Type.TEXT, 500)
                     qrgEncoder.colorBlack = Color.BLACK//FireRed.value.toInt()
-                    qrgEncoder.colorWhite =Color.WHITE// ZergPurple.value.toInt()
+                    qrgEncoder.colorWhite = Color.WHITE// ZergPurple.value.toInt()
                     try {
                         val bitmap = qrgEncoder.bitmap
                         setImageBitmap(bitmap)
@@ -121,5 +148,47 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                 }
             }
         )
+    }
+
+    @Composable
+    fun MessagesList(innerPadding: PaddingValues, messages: List<Message>?) {
+        when {
+            messages == null -> LoadingIndicator()
+            messages.isEmpty() ->
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    Text(text = "Ihr habt noch nicht an euch gedacht")
+                }
+            else -> {
+                LazyColumn(contentPadding = innerPadding) {
+                    items(messages.size) { MessageListItem(messages[it]) }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MessageListItem(msg: Message) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable { naviToBuddy(msg.uuid) })
+        {
+            Card(
+                elevation = 4.dp, modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Text("${msg.title} ${msg.message}")
+                    Text("${msg.date}")
+                }
+            }
+        }
     }
 }

@@ -10,12 +10,13 @@ import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.misc.Resource
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.usecase.buddies.BuddyUseCases
+import de.bitb.buttonbuddy.usecase.message.MessageUseCases
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BuddiesViewModel @Inject constructor(
-    private val useCases: BuddyUseCases,
+    private val messageUC: MessageUseCases,
     buddyRepo: BuddyRepository,
     infoRepo: InfoRepository,
 ) : BaseViewModel() {
@@ -25,7 +26,7 @@ class BuddiesViewModel @Inject constructor(
 
     fun sendMessage(buddy: Buddy) {
         viewModelScope.launch {
-            when (val result = useCases.sendMessage(buddy)) {
+            when (val result = messageUC.sendMessageUC(buddy)) {
                 is Resource.Error -> showSnackbar(result.message!!.rawString())
                 is Resource.Success -> showSnackbar("Nachricht gesendet")
             }

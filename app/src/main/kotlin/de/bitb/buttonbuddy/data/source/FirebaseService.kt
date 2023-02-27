@@ -3,12 +3,13 @@ package de.bitb.buttonbuddy.data.source
 import com.google.firebase.firestore.FirebaseFirestore
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.misc.Resource
 import kotlinx.coroutines.tasks.await
 
 class FirestoreService(
     private val firestore: FirebaseFirestore
-) : BuddyRemoteDao, InfoRemoteDao {
+) : InfoRemoteDao, BuddyRemoteDao, MessageRemoteDao {
 
     private val buddyCollection
         get() = firestore.collection("Buddies")
@@ -33,6 +34,22 @@ class FirestoreService(
                 .documents.firstOrNull()?.reference
 
             doc?.update(info.toMap()) ?: buddyCollection.add(info)
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun saveMessage(msg: Message): Resource<Unit> {
+        return try {
+            val msgCol = buddyCollection
+                .whereEqualTo("uuid", msg.fromUuid)
+                .get().await()
+                .documents.firstOrNull()
+                ?.reference?.collection("messages")
+                ?: return Resource.Error("No message collection found")
+
+            msgCol.add(msg)
             Resource.Success(Unit)
         } catch (e: Exception) {
             Resource.Error(e)

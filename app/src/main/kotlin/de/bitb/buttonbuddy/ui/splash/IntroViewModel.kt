@@ -13,7 +13,6 @@ import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.composable.ResString
 import de.bitb.buttonbuddy.usecase.buddies.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.info.InfoUseCases
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +37,7 @@ class IntroViewModel @Inject constructor(
                 } else if (getInfoResp.data == null) {
                     navigate(R.id.splash_to_login, R.id.splashFragment)
                 } else {
-                    buddyUseCases.loadBuddies()
+                    buddyUseCases.loadBuddiesUC()
                     navigate(R.id.splash_to_buddies, R.id.splashFragment)
                 }
             }
@@ -48,7 +47,7 @@ class IntroViewModel @Inject constructor(
     fun login() {
         error = null
         viewModelScope.launch {
-            val result = infoUseCases.login(firstName, lastName)
+            val result = infoUseCases.loginUC(firstName, lastName)
             if (result is Resource.Success) {
                 navigate(R.id.login_to_buddies, R.id.loginFragment)
             } else {

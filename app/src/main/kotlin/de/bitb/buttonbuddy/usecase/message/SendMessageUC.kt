@@ -3,6 +3,7 @@ package de.bitb.buttonbuddy.usecase.message
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.misc.Resource
 import java.util.*
@@ -10,6 +11,7 @@ import javax.inject.Inject
 
 class SendMessageUC @Inject constructor(
     private val remoteService: RemoteService,
+    private val localDB: LocalDatabase,
     private val infoRepo: InfoRepository,
 ) {
     suspend operator fun invoke(buddy: Buddy): Resource<Unit> {
@@ -27,9 +29,8 @@ class SendMessageUC @Inject constructor(
                 toUuid = buddy.uuid,
                 token = buddy.token
             )
+            localDB.insert(msg)
             remoteService.sendMessage(msg)
-
-            // TODO save msg
         } catch (e: Exception) {
             Resource.Error(e)
         }
