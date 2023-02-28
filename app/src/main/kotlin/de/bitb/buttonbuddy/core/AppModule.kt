@@ -8,16 +8,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.components.SingletonComponent
 import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
+import de.bitb.buttonbuddy.usecase.BuddyUseCases
+import de.bitb.buttonbuddy.usecase.InfoUseCases
+import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.buddies.*
-import de.bitb.buttonbuddy.usecase.info.InfoUseCases
 import de.bitb.buttonbuddy.usecase.info.LoginUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
-import de.bitb.buttonbuddy.usecase.message.MessageUseCases
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,9 +25,6 @@ import javax.inject.Singleton
 
 const val DATABASE_NAME = "buddy_db"
 const val PREF_NAME = "buddy_pref"
-
-@HiltAndroidApp
-class BuddyApp : Application()
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -88,7 +85,6 @@ object AppModule {
         buddyRepo: BuddyRepository,
     ): InfoUseCases = InfoUseCases(
         loginUC = LoginUC(infoRepo, buddyRepo),
-        updateTokenUC = UpdateTokenUC(infoRepo),
     )
 
     @Provides
@@ -107,11 +103,14 @@ object AppModule {
     @Singleton
     fun provideMessageUseCases(
         app: Application,
-        infoRepo: InfoRepository,
         remoteService: RemoteService,
+        localDB: LocalDatabase,
+        infoRepo: InfoRepository,
+        msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
-        sendMessageUC = SendMessageUC(remoteService, infoRepo),
-        receivingMessageUC = ReceivingMessageUC(NotifyManager(app)),
+        updateTokenUC = UpdateTokenUC(infoRepo),
+        sendMessageUC = SendMessageUC(remoteService, localDB, infoRepo),
+        receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }
 

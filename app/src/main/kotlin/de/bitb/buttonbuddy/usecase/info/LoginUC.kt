@@ -3,7 +3,7 @@ package de.bitb.buttonbuddy.usecase.info
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Info
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 import java.util.*
 
 sealed class LoginResponse(val message: String) {

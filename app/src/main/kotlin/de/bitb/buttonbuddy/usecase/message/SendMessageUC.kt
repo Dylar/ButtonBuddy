@@ -5,7 +5,7 @@ import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 import java.util.*
 import javax.inject.Inject
 

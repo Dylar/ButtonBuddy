@@ -6,7 +6,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import de.bitb.buttonbuddy.ui.BACK_ID
 import kotlinx.coroutines.launch
 
 abstract class BaseFragment<T : BaseViewModel> : Fragment() {

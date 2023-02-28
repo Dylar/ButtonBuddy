@@ -3,7 +3,7 @@ package de.bitb.buttonbuddy.data.source
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 
 // LOCAL
 interface LocalDatabase : InfoDao, BuddyDao, MessageDao, PreferenceDatabase
@@ -16,7 +16,7 @@ class BuddyLocalDatabase(db: RoomDatabaseImpl, pref: PreferenceDatabaseImpl) :
     PreferenceDatabase by pref
 
 // REMOTE
-interface RemoteService : BuddyRemoteDao, InfoRemoteDao, MessageRemoteDao
+interface RemoteService : BuddyRemoteDao, InfoRemoteDao, MessageRemoteDao, MessageService
 
 class BuddyRemoteService(fireService: FirestoreService, retrofitService: RetrofitService) :
     RemoteService,

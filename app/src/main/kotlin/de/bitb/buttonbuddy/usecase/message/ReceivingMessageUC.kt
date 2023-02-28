@@ -4,7 +4,7 @@ import android.util.Log
 import de.bitb.buttonbuddy.core.Notifier
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 
 class ReceivingMessageUC(
     private val msgRepo: MessageRepository,

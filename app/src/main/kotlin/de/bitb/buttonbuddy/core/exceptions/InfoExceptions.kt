@@ -1,3 +1,3 @@
-package de.bitb.buttonbuddy.exceptions
+package de.bitb.buttonbuddy.core.exceptions
 
 class NoInfoException: Exception("No Info in database")

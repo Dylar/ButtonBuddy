@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.permission
+package de.bitb.buttonbuddy.ui.base.permission
 
 import androidx.compose.runtime.mutableStateListOf
 

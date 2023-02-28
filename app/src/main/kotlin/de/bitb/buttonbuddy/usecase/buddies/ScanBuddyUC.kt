@@ -3,7 +3,7 @@ package de.bitb.buttonbuddy.usecase.buddies
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 
 class ScanBuddyUC(
     private val infoRepo: InfoRepository,

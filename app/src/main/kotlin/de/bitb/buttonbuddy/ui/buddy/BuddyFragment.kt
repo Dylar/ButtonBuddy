@@ -28,9 +28,9 @@ import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
-import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.naviToBuddy
-import de.bitb.buttonbuddy.ui.styles.createComposeView
+import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.naviToBuddy
+import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 
 @AndroidEntryPoint

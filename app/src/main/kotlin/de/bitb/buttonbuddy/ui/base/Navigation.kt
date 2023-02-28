@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui
+package de.bitb.buttonbuddy.ui.base
 
 import android.app.Activity
 import android.content.Intent

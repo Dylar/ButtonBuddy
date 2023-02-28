@@ -6,13 +6,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.atLeast
 import de.bitb.buttonbuddy.data.InfoRepository
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.atLeast
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
-import de.bitb.buttonbuddy.ui.composable.ResString
-import de.bitb.buttonbuddy.usecase.buddies.BuddyUseCases
-import de.bitb.buttonbuddy.usecase.info.InfoUseCases
+import de.bitb.buttonbuddy.ui.base.composable.ResString
+import de.bitb.buttonbuddy.usecase.BuddyUseCases
+import de.bitb.buttonbuddy.usecase.InfoUseCases
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

@@ -6,26 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.getValue
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.ui.base.BaseFragment
-import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.naviToBuddy
-import de.bitb.buttonbuddy.ui.naviToScan
-import de.bitb.buttonbuddy.ui.styles.createComposeView
+import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.naviToBuddy
+import de.bitb.buttonbuddy.ui.base.naviToScan
+import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
@@ -69,24 +72,34 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun BuddiesList(innerPadding: PaddingValues, buddies: List<Buddy>?) {
-        when {
-            buddies == null -> LoadingIndicator()
-            buddies.isEmpty() ->
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
+        val refreshing by remember { viewModel.isRefreshing }
+        val state = rememberPullRefreshState(refreshing, viewModel::refreshData)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .pullRefresh(state)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when {
+                buddies == null -> LoadingIndicator()
+                buddies.isEmpty() ->
                     Text(text = "Du hast keine Freunde")
-                }
-            else -> {
-                LazyColumn(contentPadding = innerPadding) {
-                    items(buddies.size) { BuddyListItem(buddies[it]) }
+                else -> {
+                    LazyColumn(contentPadding = innerPadding) {
+                        items(buddies.size) { BuddyListItem(buddies[it]) }
+                    }
                 }
             }
+            PullRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                refreshing = refreshing,
+                state = state
+            )
         }
     }
 

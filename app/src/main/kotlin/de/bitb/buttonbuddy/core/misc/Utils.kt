@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy
+package de.bitb.buttonbuddy.core.misc
 
 import kotlinx.coroutines.delay
 import kotlin.system.measureTimeMillis

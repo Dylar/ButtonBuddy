@@ -46,7 +46,7 @@ interface InfoDao {
 
 @Dao
 interface MessageDao {
-    @Query("SELECT * FROM info WHERE fromUuid = :uuid OR toUuid = :uuid ORDER BY date ASC")
+    @Query("SELECT * FROM message WHERE fromUuid = :uuid OR toUuid = :uuid ORDER BY date ASC")
     fun getLiveMessages(uuid: String): LiveData<List<Message>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

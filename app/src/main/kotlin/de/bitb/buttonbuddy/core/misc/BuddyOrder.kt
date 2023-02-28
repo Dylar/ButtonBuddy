@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.misc
+package de.bitb.buttonbuddy.core.misc
 
 sealed class BuddyOrder(val orderType: OrderType) {
     class Date(orderType: OrderType) : BuddyOrder(orderType)

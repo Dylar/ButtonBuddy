@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 
 interface BuddyRepository {
     suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>>

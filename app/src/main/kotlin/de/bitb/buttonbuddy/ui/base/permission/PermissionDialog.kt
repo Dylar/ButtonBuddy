@@ -1,4 +1,5 @@
-package de.bitb.buttonbuddy.ui.permission
+package de.bitb.buttonbuddy.ui.base.permission
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,29 +30,17 @@ fun PermissionDialog(
             ) {
                 Divider()
                 Text(
-                    text = if(isPermanentlyDeclined) {
-                        "Grant permission"
-                    } else {
-                        "OK"
-                    },
+                    text = if (isPermanentlyDeclined) "Grant permission" else "OK",
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            if (isPermanentlyDeclined) {
-                                onGoToAppSettingsClick()
-                            } else {
-                                onOkClick()
-                            }
-                        }
+                        .clickable { if (isPermanentlyDeclined) onGoToAppSettingsClick() else onOkClick() }
                         .padding(16.dp)
                 )
             }
         },
-        title = {
-            Text(text = "Berechtigung benötigt")
-        },
+        title = { Text(text = "Berechtigung benötigt") },
         text = {
             Text(
                 text = permissionTextProvider.getDescription(
@@ -67,9 +56,9 @@ interface PermissionTextProvider {
     fun getDescription(isPermanentlyDeclined: Boolean): String
 }
 
-class CameraPermissionTextProvider: PermissionTextProvider {
+class CameraPermissionTextProvider : PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
-        return if(isPermanentlyDeclined) {
+        return if (isPermanentlyDeclined) {
             "Sie haben die Berechtigung für die Kamera permanent abgelehnt. " +
                     "Sie können in die Appeinstellungen gehen um Berechtigung zu geben."
         } else {

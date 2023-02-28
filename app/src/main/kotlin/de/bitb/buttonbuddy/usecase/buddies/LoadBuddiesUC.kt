@@ -2,12 +2,7 @@ package de.bitb.buttonbuddy.usecase.buddies
 
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
-import de.bitb.buttonbuddy.exceptions.NoInfoException
-import de.bitb.buttonbuddy.misc.Resource
-import de.bitb.buttonbuddy.misc.observeOnce
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import de.bitb.buttonbuddy.core.misc.Resource
 
 class LoadBuddiesUC(
     private val infoRepo: InfoRepository,

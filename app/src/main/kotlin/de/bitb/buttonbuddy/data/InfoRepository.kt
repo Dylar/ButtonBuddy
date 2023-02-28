@@ -3,7 +3,7 @@ package de.bitb.buttonbuddy.data
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.*
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 
 interface MessageRepository {
     fun getLiveMessages(uuid: String): LiveData<List<Message>>

@@ -9,9 +9,9 @@ import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
-import de.bitb.buttonbuddy.usecase.message.MessageUseCases
+import de.bitb.buttonbuddy.usecase.MessageUseCases
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

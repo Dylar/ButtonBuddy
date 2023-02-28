@@ -1,9 +1,15 @@
-package de.bitb.buttonbuddy
+package de.bitb.buttonbuddy.core
 
+import android.app.Application
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
+import de.bitb.buttonbuddy.R
+
+@HiltAndroidApp
+class BuddyApp : Application()
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

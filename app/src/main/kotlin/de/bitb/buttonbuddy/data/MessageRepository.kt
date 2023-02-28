@@ -3,7 +3,7 @@ package de.bitb.buttonbuddy.data
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.source.*
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 
 interface InfoRepository {
     suspend fun getInfo(): Resource<Info?>

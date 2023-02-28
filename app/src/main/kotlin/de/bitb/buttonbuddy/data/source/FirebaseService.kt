@@ -4,7 +4,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 import kotlinx.coroutines.tasks.await
 
 class FirestoreService(

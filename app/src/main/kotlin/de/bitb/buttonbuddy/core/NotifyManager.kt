@@ -6,10 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import de.bitb.buttonbuddy.MainActivity
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.Message
 import javax.inject.Inject

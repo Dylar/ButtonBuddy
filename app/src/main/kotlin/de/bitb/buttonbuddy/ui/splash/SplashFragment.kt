@@ -11,8 +11,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.ui.base.BaseFragment
-import de.bitb.buttonbuddy.ui.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.styles.createComposeView
+import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class SplashFragment : BaseFragment<IntroViewModel>() {

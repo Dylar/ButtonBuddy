@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.data.source
 
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.misc.Resource
+import de.bitb.buttonbuddy.core.misc.Resource
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import retrofit2.Call

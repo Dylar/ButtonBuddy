@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.styles
+package de.bitb.buttonbuddy.ui.base.styles
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.styles
+package de.bitb.buttonbuddy.ui.base.styles
 
 import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme

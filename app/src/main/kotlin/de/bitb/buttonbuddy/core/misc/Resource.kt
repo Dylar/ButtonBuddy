@@ -1,6 +1,6 @@
-package de.bitb.buttonbuddy.misc
+package de.bitb.buttonbuddy.core.misc
 
-import de.bitb.buttonbuddy.ui.composable.ResString
+import de.bitb.buttonbuddy.ui.base.composable.ResString
 
 sealed class Resource<T>(val data: T? = null, val message: ResString? = null) {
     class Success<T>(data: T?) : Resource<T>(data)

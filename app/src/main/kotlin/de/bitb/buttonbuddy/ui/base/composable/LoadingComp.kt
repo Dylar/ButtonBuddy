@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.composable
+package de.bitb.buttonbuddy.ui.base.composable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

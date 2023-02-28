@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.composable
+package de.bitb.buttonbuddy.ui.base.composable
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable

@@ -14,9 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.ui.base.BaseFragment
-import de.bitb.buttonbuddy.ui.styles.FireRed
-import de.bitb.buttonbuddy.ui.styles.ZergPurple
-import de.bitb.buttonbuddy.ui.styles.createComposeView
+import de.bitb.buttonbuddy.ui.base.styles.FireRed
+import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<IntroViewModel>() {

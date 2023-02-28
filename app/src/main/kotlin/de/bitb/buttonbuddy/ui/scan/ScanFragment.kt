@@ -24,12 +24,12 @@ import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.ui.base.BaseFragment
-import de.bitb.buttonbuddy.ui.composable.LifecycleComp
-import de.bitb.buttonbuddy.ui.openAppSettings
-import de.bitb.buttonbuddy.ui.permission.CameraPermissionTextProvider
-import de.bitb.buttonbuddy.ui.permission.PermissionDialog
+import de.bitb.buttonbuddy.ui.base.composable.LifecycleComp
+import de.bitb.buttonbuddy.ui.base.openAppSettings
+import de.bitb.buttonbuddy.ui.base.permission.CameraPermissionTextProvider
+import de.bitb.buttonbuddy.ui.base.permission.PermissionDialog
 
-import de.bitb.buttonbuddy.ui.styles.createComposeView
+import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class ScanFragment : BaseFragment<ScanViewModel>() {
