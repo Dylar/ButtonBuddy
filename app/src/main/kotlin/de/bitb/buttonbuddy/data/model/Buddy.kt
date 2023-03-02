@@ -8,5 +8,8 @@ data class Buddy(
     val token: String = "",
     val firstName: String = "",
     val lastName: String = "",
-)
+){
+    val fullName: String
+        get() = "$firstName $lastName"
+}
 

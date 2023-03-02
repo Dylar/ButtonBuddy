@@ -19,7 +19,7 @@ import javax.inject.Inject
 class BuddyViewModel @Inject constructor(
     private val messageUC: MessageUseCases,
     private val buddyRepo: BuddyRepository,
-    private val messageRepo: MessageRepository,
+    private val msgRepo: MessageRepository,
     infoRepo: InfoRepository,
 ) : BaseViewModel() {
 
@@ -31,7 +31,7 @@ class BuddyViewModel @Inject constructor(
     fun initLiveState(uuid: String) {
         this.uuid = uuid
         buddy = buddyRepo.getLiveBuddy(uuid)
-        messages = messageRepo.getLiveMessages(uuid)
+        messages = msgRepo.getLiveMessages(uuid)
     }
 
     fun sendMessage(buddy: Buddy) {
