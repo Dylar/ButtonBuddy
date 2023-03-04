@@ -28,8 +28,9 @@ android {
         }
     }
 
-    sourceSets.androidTest.java.srcDirs += ["src/sharedTest/kotlin/", "src/androidTest/kotlin/"]
-    sourceSets.test.java.srcDirs += ["src/sharedTest/kotlin/", "src/test/kotlin/"]
+    // TODO maybe it will be possible again: https://stackoverflow.com/questions/72358843/sharedtest-got-warning-duplicate-content-root-detected-on-android-studio-chipm
+//    sourceSets.androidTest.java.srcDirs += ["src/sharedTest/kotlin/"]
+//    sourceSets.test.java.srcDirs += ["src/sharedTest/kotlin/"]
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -37,18 +38,16 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-//        useIR = true
     }
     buildFeatures {
         compose true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.2'
-//        kotlinCompilerVersion '1.8.10'
     }
     packagingOptions {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += '/META-INF/*'
         }
     }
 
@@ -86,7 +85,6 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
     // Material
-//    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.compose.material3:material3:1.0.1'
     implementation "androidx.compose.material:material-icons-extended:1.3.1"
     implementation 'androidx.compose.material:material-icons-core:1.3.1'
@@ -138,8 +136,8 @@ dependencies {
     androidTestImplementation 'androidx.fragment:fragment-ktx:1.6.0-alpha06'
     debugImplementation "androidx.fragment:fragment-testing:1.5.5"
 
-    androidTestImplementation "io.mockk:mockk:1.12.0"
-    testImplementation "io.mockk:mockk:1.12.0"
+    androidTestImplementation 'io.mockk:mockk:1.13.4'
+    testImplementation 'io.mockk:mockk:1.13.4'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"

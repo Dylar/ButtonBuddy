@@ -2,7 +2,6 @@ package de.bitb.buttonbuddy.ui.buddy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import de.bitb.buttonbuddy.buildBuddy
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
@@ -10,6 +9,7 @@ import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,6 @@ class BuddyViewModelTest {
     private lateinit var viewModel: BuddyViewModel
     private lateinit var buddyRepo: BuddyRepository
     private lateinit var msgRepo: MessageRepository
-
 
     private lateinit var messageUC: MessageUseCases
 

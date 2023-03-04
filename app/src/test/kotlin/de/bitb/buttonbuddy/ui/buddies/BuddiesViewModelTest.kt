@@ -2,12 +2,12 @@ package de.bitb.buttonbuddy.ui.buddies
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import de.bitb.buttonbuddy.buildBuddy
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import io.mockk.*
