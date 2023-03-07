@@ -19,9 +19,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.ui.base.BaseFragment
@@ -32,6 +34,9 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
+    companion object {
+        const val APPBAR_TAG = "BuddiesFragmentAppbar"
+    }
 
     override val viewModel: BuddiesViewModel by viewModels()
 
@@ -50,7 +55,8 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
             scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
-                    title = { Text("Buddys") },
+                    modifier = Modifier.testTag(APPBAR_TAG),
+                    title = { Text(getString(R.string.buddies_title)) },
                     actions = {
                         IconButton(onClick = {
                             val uuid = info?.uuid
@@ -60,7 +66,8 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                                 showSnackBar("NO UUID")
                             }
                         }) { Icon(Icons.Default.Person, contentDescription = "Profil") }
-                    })
+                    },
+                )
             },
             floatingActionButton = {
                 FloatingActionButton(onClick = { naviToScan() })
