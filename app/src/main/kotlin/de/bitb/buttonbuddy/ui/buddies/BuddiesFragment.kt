@@ -1,6 +1,7 @@
 package de.bitb.buttonbuddy.ui.buddies
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,8 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 @AndroidEntryPoint
 class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
     companion object {
-        const val APPBAR_TAG = "BuddiesFragmentAppbar"
+        const val APPBAR_TAG = "BuddiesAppbar"
+        const val PROFILE_BUTTON_TAG = "BuddiesProfileButton"
     }
 
     override val viewModel: BuddiesViewModel by viewModels()
@@ -58,14 +60,17 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                     modifier = Modifier.testTag(APPBAR_TAG),
                     title = { Text(getString(R.string.buddies_title)) },
                     actions = {
-                        IconButton(onClick = {
-                            val uuid = info?.uuid
-                            if (uuid?.isNotBlank() == true) {
-                                naviToBuddy(uuid)
-                            } else {
-                                showSnackBar("NO UUID")
+                        IconButton(
+                            modifier = Modifier.testTag(PROFILE_BUTTON_TAG),
+                            onClick = {
+                                val uuid = info?.uuid
+                                if (uuid?.isNotBlank() == true) {
+                                    naviToBuddy(uuid)
+                                } else {
+                                    showSnackBar(getString(R.string.no_uuid))
+                                }
                             }
-                        }) { Icon(Icons.Default.Person, contentDescription = "Profil") }
+                        ) { Icon(Icons.Default.Person, contentDescription = "Profil") }
                     },
                 )
             },

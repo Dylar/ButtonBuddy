@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
@@ -35,6 +36,9 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class BuddyFragment : BaseFragment<BuddyViewModel>() {
+    companion object {
+        const val APPBAR_TAG = "BuddyAppbar"
+    }
 
     override val viewModel: BuddyViewModel by viewModels()
 
@@ -60,7 +64,12 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
         val title = if (isMyself) "Profil" else "Buddy"
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { TopAppBar(title = { Text(title) }) },
+            topBar = {
+                TopAppBar(
+                    modifier = Modifier.testTag(APPBAR_TAG),
+                    title = { Text(title) }
+                )
+            },
             content = {
                 when {
                     isMyself && info != null -> InfoDetails(it, info!!)

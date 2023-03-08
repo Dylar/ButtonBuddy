@@ -12,6 +12,7 @@
     <string name="message_sent_toast">Message sent to %s</string>
 
     <string name="buddies_title">Buddys</string>
+    <string name="no_uuid">NO UUID</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
