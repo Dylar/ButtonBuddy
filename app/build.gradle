@@ -161,6 +161,8 @@ dependencies {
     androidTestImplementation "androidx.navigation:navigation-testing:2.6.0-alpha06"
     debugImplementation "androidx.compose.ui:ui-tooling:1.3.3"
 
+    // fixing android security policy .... o.O
+    implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

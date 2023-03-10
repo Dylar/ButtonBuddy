@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import de.bitb.buttonbuddy.R
 import android.provider.Settings
+import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 
 const val BACK_ID = -42
 
@@ -19,7 +20,7 @@ fun Activity.openAppSettings() {
 }
 
 fun Fragment.naviToBuddy(uuid: String? = null) {
-    findNavController(this).navigate(R.id.buddies_to_buddy, bundleOf("uuid" to uuid))
+    findNavController(this).navigate(R.id.buddies_to_buddy, bundleOf(KEY_BUDDY_UUID to uuid))
 }
 
 fun Fragment.naviToScan(){

@@ -20,6 +20,7 @@ import de.bitb.buttonbuddy.usecase.info.LoginUC
 import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
+import io.mockk.mockk
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -39,20 +40,7 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideRemoteDatabase(app: Application): RemoteService {
-        //TODO mock das
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://fcm.googleapis.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val retrofitService = RetrofitService(retrofit.create(RetrofitApi::class.java))
-
-        FirebaseApp.initializeApp(app)
-        val firestore = FirebaseFirestore.getInstance()
-        val fireService = FirestoreService(firestore)
-
-        return BuddyRemoteService(fireService, retrofitService)
-    }
+    fun provideRemoteDatabase(): RemoteService = mockk(relaxed = true)
 
     // REPO
     @Provides
