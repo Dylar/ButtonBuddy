@@ -1,20 +1,23 @@
 package de.bitb.buttonbuddy.usecase.info
 
+import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.ui.base.composable.ResString
+import de.bitb.buttonbuddy.ui.base.composable.ResString.*
 import java.util.*
 
-sealed class LoginResponse(val message: String) {
-    class LoggedIn : LoginResponse("OK")
-    class FirstNameEmpty : LoginResponse("Vorname darf nicht leer sein")
-    class LastNameEmpty : LoginResponse("Nachname darf nicht leer sein")
+sealed class LoginResponse(val string: ResString) {
+    class LoggedIn : LoginResponse(ResourceString(R.string.ok))
+    class FirstNameEmpty : LoginResponse(ResourceString(R.string.firstname_is_empty))
+    class LastNameEmpty : LoginResponse(ResourceString(R.string.lastname_is_empty))
     class ErrorThrown<T>(error: Resource.Error<T>) :
-        LoginResponse(error.message?.rawString() ?: "Error thrown")
+        LoginResponse(error.message ?: DynamicString("Error thrown"))
 
     val asError: Resource<LoginResponse>
-        get() = Resource.Error(message, this)
+        get() = Resource.Error(string, this)
 }
 
 class LoginUC(
@@ -41,7 +44,7 @@ class LoginUC(
                 uuid = UUID.randomUUID().toString(),
             )
         val buddies = info.buddies
-        if(buddies.isNotEmpty()) {
+        if (buddies.isNotEmpty()) {
             val loadBuddiesResp = buddyRepo.loadBuddies(buddies)
             if (loadBuddiesResp is Resource.Error) {
                 return LoginResponse.ErrorThrown(loadBuddiesResp).asError

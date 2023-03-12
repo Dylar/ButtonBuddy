@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,6 +27,7 @@ import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.naviToBuddy
 import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
@@ -40,10 +39,13 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
         const val PROFILE_BUTTON_TAG = "BuddiesProfileButton"
         const val SCAN_BUTTON_TAG = "BuddiesScanButton"
-        const val SEND_BUTTON_TAG = "BuddiesSendButton"
 
         const val LIST_TAG = "BuddiesList"
         const val REFRESH_INDICATOR_TAG = "BuddiesRefreshingIndicator"
+
+        fun buddySendButtonTag(buddy: Buddy): String {
+            return "BuddiesSendButton" + buddy.fullName
+        }
     }
 
     override val viewModel: BuddiesViewModel by viewModels()
@@ -74,7 +76,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                                 if (uuid?.isNotBlank() == true) {
                                     naviToBuddy(uuid)
                                 } else {
-                                    showSnackBar(getString(R.string.no_uuid))
+                                    showSnackBar(ResString.ResourceString(R.string.no_uuid))
                                 }
                             }
                         ) { Icon(Icons.Default.Person, contentDescription = "Profil") }
@@ -145,7 +147,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                 ) {
                     Text(buddy.fullName)
                     Button(
-                        modifier = Modifier.testTag(SEND_BUTTON_TAG + buddy.fullName),
+                        modifier = Modifier.testTag(buddySendButtonTag(buddy)),
                         onClick = { viewModel.sendMessage(buddy) }) { Text("Send") }
                 }
             }

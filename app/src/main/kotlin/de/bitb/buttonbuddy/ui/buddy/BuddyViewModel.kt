@@ -9,21 +9,25 @@ import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.usecase.MessageUseCases
-import kotlinx.coroutines.launch
+import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
 @HiltViewModel
 class BuddyViewModel @Inject constructor(
-    private val messageUC: MessageUseCases,
+    override val messageUC: MessageUseCases,
     private val buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
     infoRepo: InfoRepository,
-) : BaseViewModel() {
+) : BaseViewModel(),
+    SendMessageDelegate {
 
-    lateinit var uuid:String
+    override val scope: CoroutineScope
+        get() = viewModelScope
+
+    lateinit var uuid: String
     val info: LiveData<Info> = infoRepo.getLiveInfo()
     lateinit var buddy: LiveData<Buddy>
     lateinit var messages: LiveData<List<Message>>
@@ -32,15 +36,6 @@ class BuddyViewModel @Inject constructor(
         this.uuid = uuid
         buddy = buddyRepo.getLiveBuddy(uuid)
         messages = msgRepo.getLiveMessages(uuid)
-    }
-
-    fun sendMessage(buddy: Buddy) {
-        viewModelScope.launch {
-            when (val result = messageUC.sendMessageUC(buddy)) {
-                is Resource.Error -> showSnackbar(result.message!!.rawString())
-                is Resource.Success -> showSnackbar("Nachricht gesendet")
-            }
-        }
     }
 
 }

@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.ui.buddies
 
-import android.util.Log
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,16 +11,11 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.buildBuddy
 import de.bitb.buttonbuddy.buildInfo
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
 import de.bitb.buttonbuddy.ui.scan.ScanFragment
-import de.bitb.buttonbuddy.usecase.InfoUseCases
-import io.mockk.coEvery
-import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import launchFragment
 import org.junit.Before
@@ -56,91 +50,157 @@ class BuddiesFragmentTest {
 
     @Test
     fun render_buddiesFragment() {
-        launchFragment<BuddiesFragment>()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithTag(BuddiesFragment.APPBAR_TAG)
-            .assertIsDisplayed()
-            .assertTextOnChildren(getString(R.string.buddies_title))
-        composeRule.onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-            .assertIsDisplayed()
-        composeRule.onNodeWithText(getString(R.string.no_buddies))
-            .assertIsDisplayed()
-        composeRule.onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
-            .assertIsDisplayed()
-//        composeRule.onNodeWithTag(BuddiesFragment.REFRESH_INDICATOR_TAG)
+        composeRule.apply {
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
+            onNodeWithTag(BuddiesFragment.APPBAR_TAG)
+                .assertIsDisplayed()
+                .onChildren()
+                .assertAny(hasText(getString(R.string.buddies_title)))
+            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
+                .assertIsDisplayed()
+            onNodeWithText(getString(R.string.no_buddies))
+                .assertIsDisplayed()
+            onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
+                .assertIsDisplayed()
+//        onNodeWithTag(BuddiesFragment.REFRESH_INDICATOR_TAG)
 //            .assertExists()
 //            .assertIsNotDisplayed()
+        }
     }
 
     @Test
     fun render_buddiesList() = runTest {
-        val info = buildInfo()
-        val buddy = buildBuddy()
-        infoRepository.saveInfo(info)
-        remoteService.mockRemoteService(info, listOf(buddy))
+        composeRule.apply {
+            val info = buildInfo()
+            val buddy = buildBuddy()
+            val buddies =
+                listOf(
+                    buddy.copy(uuid = "uuid1", firstName = "first1"),
+                    buddy.copy(uuid = "uuid2", firstName = "first2"),
+                    buddy.copy(uuid = "uuid3", firstName = "first3")
+                )
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info, buddies)
 
-        launchFragment<BuddiesFragment>()
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText(getString(R.string.no_buddies))
-            .assertDoesNotExist()
-        composeRule.onNodeWithText(BuddiesFragment.LIST_TAG)
-            .onChildren()
-            .assertCountEquals(3)
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
+            onNodeWithText(getString(R.string.no_buddies))
+                .assertDoesNotExist()
+            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
+                .onFirst() // but why multiple?
+                .apply {
+                    onChildren().assertCountEquals(buddies.size)
+                    onChildAt(0).assert(hasText(buddies[0].fullName))
+                    onChildAt(1).assert(hasText(buddies[1].fullName))
+                    onChildAt(2).assert(hasText(buddies[2].fullName))
+                }
+        }
+    }
+
+    @Test
+    fun clickSendButton_success() = runTest {
+        composeRule.apply {
+            val info = buildInfo()
+            val buddy = buildBuddy()
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info, listOf(buddy))
+
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
+
+            val snackMsg = String.format(getString(R.string.message_sent_toast), buddy.fullName)
+            onNodeWithText(snackMsg)
+                .assertDoesNotExist()
+            onAllNodesWithTag(BuddiesFragment.buddySendButtonTag(buddy))
+                .onFirst() // but why multiple?
+                .performClick()
+            onNodeWithText(snackMsg)
+                .assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun clickSendButton_error() = runTest {
+        composeRule.apply {
+            val info = buildInfo()
+            val buddy = buildBuddy()
+            val error = "ERROR"
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info, listOf(buddy), sendMessageError = error)
+
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
+
+            onNodeWithText(error)
+                .assertDoesNotExist()
+            onAllNodesWithTag(BuddiesFragment.buddySendButtonTag(buddy))
+                .onFirst() // but why multiple?
+                .performClick()
+            onNodeWithText(error)
+                .assertIsDisplayed()
+        }
     }
 
     @Test
     fun clickProfileButton_ShowNoUUIDSnackbar() {
-        launchFragment<BuddiesFragment>()
-        composeRule.waitForIdle()
+        composeRule.apply {
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
 
-        composeRule.onNodeWithText(getString(R.string.no_uuid))
-            .assertDoesNotExist()
-        composeRule.onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-            .performClick()
-        composeRule.onNodeWithText(getString(R.string.no_uuid))
-            .assertIsDisplayed()
-        composeRule.onNodeWithTag(BuddyFragment.APPBAR_TAG)
-            .assertDoesNotExist()
+            onNodeWithText(getString(R.string.no_uuid))
+                .assertDoesNotExist()
+            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
+                .performClick()
+            onNodeWithText(getString(R.string.no_uuid))
+                .assertIsDisplayed()
+            onNodeWithTag(BuddyFragment.APPBAR_TAG)
+                .assertDoesNotExist()
+        }
     }
 
     @Test
     fun clickProfileButton_navigateToProfile() = runTest {
-        val info = buildInfo()
-        infoRepository.saveInfo(info)
-        remoteService.mockRemoteService(info)
+        composeRule.apply {
+            val info = buildInfo()
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info)
 
-        launchFragment<BuddiesFragment>()
-        composeRule.waitForIdle()
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
 
-        composeRule.onNodeWithText(getString(R.string.no_uuid))
-            .assertDoesNotExist()
-        composeRule.onAllNodesWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-            .onFirst() // but why multiple?
-            .performClick()
-        composeRule.onNodeWithText(getString(R.string.no_uuid))
-            .assertDoesNotExist()
+            onNodeWithText(getString(R.string.no_uuid))
+                .assertDoesNotExist()
+            onAllNodesWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
+                .onFirst() // but why multiple?
+                .performClick()
+            onNodeWithText(getString(R.string.no_uuid))
+                .assertDoesNotExist()
 
-        composeRule.waitForIdle()
-        composeRule.onNodeWithTag(BuddyFragment.APPBAR_TAG)
-            .assertIsDisplayed()
+            waitForIdle()
+            onNodeWithTag(BuddyFragment.APPBAR_TAG)
+                .assertIsDisplayed()
+        }
     }
 
     @Test
     fun clickScanButton_navigateToScan() = runTest {
-        val info = buildInfo()
-        infoRepository.saveInfo(info)
-        remoteService.mockRemoteService(info)
+        composeRule.apply {
+            val info = buildInfo()
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info)
 
-        launchFragment<BuddiesFragment>()
-        composeRule.waitForIdle()
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
 
-        composeRule.onAllNodesWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
-            .onFirst() // but why multiple?
-            .performClick()
+            onAllNodesWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
+                .onFirst() // but why multiple?
+                .performClick()
 
-        composeRule.waitForIdle()
-        composeRule.onNodeWithTag(ScanFragment.APPBAR_TAG)
-            .assertIsDisplayed()
+            waitForIdle()
+            onNodeWithTag(ScanFragment.APPBAR_TAG)
+                .assertIsDisplayed()
+        }
     }
 
 }
