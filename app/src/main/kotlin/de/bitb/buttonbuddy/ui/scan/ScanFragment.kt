@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -33,6 +34,10 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class ScanFragment : BaseFragment<ScanViewModel>() {
+    companion object {
+        const val APPBAR_TAG = "ScanAppbar"
+    }
+
     override val viewModel: ScanViewModel by viewModels()
 
     override fun onCreateView(
@@ -57,7 +62,12 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
         )
 
         Scaffold(
-            topBar = { TopAppBar(title = { Text("Scan") }) },
+            topBar = {
+                TopAppBar(
+                    modifier = Modifier.testTag(APPBAR_TAG),
+                    title = { Text("Scan") }
+                )
+            },
         ) { innerPadding ->
             ScannerPreview(innerPadding)
             cameraPermissionResultLauncher.launch(

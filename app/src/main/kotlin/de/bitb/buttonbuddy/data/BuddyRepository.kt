@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.source.LocalDatabase
@@ -20,7 +19,6 @@ class BuddyRepositoryImpl(
 
     override suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>> {
         val response = remoteDB.loadBuddies(buddyIds)
-        Log.e("TAG", "response: ${response.data?.size}")
         if (response is Resource.Success) {
             localDB.insertAll(response.data!!)
         }

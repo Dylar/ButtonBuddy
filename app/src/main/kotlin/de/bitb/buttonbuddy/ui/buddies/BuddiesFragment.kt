@@ -37,7 +37,13 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddiesAppbar"
+
         const val PROFILE_BUTTON_TAG = "BuddiesProfileButton"
+        const val SCAN_BUTTON_TAG = "BuddiesScanButton"
+        const val SEND_BUTTON_TAG = "BuddiesSendButton"
+
+        const val LIST_TAG = "BuddiesList"
+        const val REFRESH_INDICATOR_TAG = "BuddiesRefreshingIndicator"
     }
 
     override val viewModel: BuddiesViewModel by viewModels()
@@ -53,6 +59,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
     @Composable
     fun BuddiesScreen(info: Info?) {
+        Log.e("TAG:", "BUILD SCREEN: ${toString()}")
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -75,8 +82,10 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { naviToScan() })
-                { Icon(Icons.Filled.QrCodeScanner, contentDescription = "Scan Buddy") }
+                FloatingActionButton(
+                    modifier = Modifier.testTag(SCAN_BUTTON_TAG),
+                    onClick = { naviToScan() }
+                ) { Icon(Icons.Filled.QrCodeScanner, contentDescription = "Scan Buddy") }
             }
         ) { innerPadding ->
             val buddies by viewModel.buddies.observeAsState(null)
@@ -93,22 +102,27 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .pullRefresh(state)
-                .verticalScroll(rememberScrollState())
+//                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
             when {
                 buddies == null -> LoadingIndicator()
                 buddies.isEmpty() ->
-                    Text(text = "Du hast keine Freunde")
+                    Text(text = getString(R.string.no_buddies))
                 else -> {
-                    LazyColumn(contentPadding = innerPadding) {
+                    LazyColumn(
+                        modifier = Modifier.testTag(LIST_TAG),
+                        contentPadding = innerPadding
+                    ) {
                         items(buddies.size) { BuddyListItem(buddies[it]) }
                     }
                 }
             }
             PullRefreshIndicator(
-                modifier = Modifier.align(Alignment.TopCenter),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .testTag(REFRESH_INDICATOR_TAG),
                 refreshing = refreshing,
                 state = state
             )
@@ -118,19 +132,21 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
     @Composable
     fun BuddyListItem(buddy: Buddy) {
         Box(modifier = Modifier
-            .fillMaxSize()
+//            .fillMaxSize()
             .clickable { naviToBuddy(buddy.uuid) })
         {
             Card(
                 elevation = 4.dp, modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
+//                    .fillMaxWidth()
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                 ) {
-                    Text("${buddy.firstName} ${buddy.lastName}")
-                    Button(onClick = { viewModel.sendMessage(buddy) }) { Text("Send") }
+                    Text(buddy.fullName)
+                    Button(
+                        modifier = Modifier.testTag(SEND_BUTTON_TAG + buddy.fullName),
+                        onClick = { viewModel.sendMessage(buddy) }) { Text("Send") }
                 }
             }
         }
