@@ -16,6 +16,7 @@ import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
 import de.bitb.buttonbuddy.ui.scan.ScanFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import launchFragment
 import org.junit.Before
@@ -87,6 +88,56 @@ class BuddiesFragmentTest {
             waitForIdle()
             onNodeWithText(getString(R.string.no_buddies))
                 .assertDoesNotExist()
+            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
+                .onFirst() // but why multiple?
+                .apply {
+                    onChildren().assertCountEquals(buddies.size)
+                    onChildAt(0).assert(hasText(buddies[0].fullName))
+                    onChildAt(1).assert(hasText(buddies[1].fullName))
+                    onChildAt(2).assert(hasText(buddies[2].fullName))
+                }
+        }
+    }
+
+    @Test
+    fun refreshBuddies() = runTest {
+        composeRule.apply {
+            val info = buildInfo()
+            val buddy = buildBuddy()
+            val buddies =
+                mutableListOf(
+                    buddy.copy(uuid = "uuid1", firstName = "first1"),
+                    buddy.copy(uuid = "uuid2", firstName = "first2"),
+                )
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info, buddies)
+
+            launchFragment<BuddiesFragment>()
+            waitForIdle()
+
+            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
+                .onFirst() // but why multiple?
+                .apply {
+                    onChildren().assertCountEquals(buddies.size)
+                    onChildAt(0).assert(hasText(buddies[0].fullName))
+                    onChildAt(1).assert(hasText(buddies[1].fullName))
+                }
+
+            buddies.add(buddy.copy(uuid = "uuid3", firstName = "first3"))
+            remoteService.mockRemoteService(info, buddies)
+
+//            onAllNodesWithTag(BuddiesFragment.REFRESH_INDICATOR_TAG)
+//                .onFirst()
+//                .assertExists()
+
+            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
+                .onFirst()
+                .assertExists()
+                .performTouchInput { swipeDown() }
+
+            delay(400)
+            waitForIdle()
+
             onAllNodesWithTag(BuddiesFragment.LIST_TAG)
                 .onFirst() // but why multiple?
                 .apply {

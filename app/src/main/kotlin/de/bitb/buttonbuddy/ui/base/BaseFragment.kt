@@ -2,8 +2,9 @@ package de.bitb.buttonbuddy.ui.base
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.ScaffoldState
-import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.Composable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -14,8 +15,11 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     abstract val viewModel: T
 
-    lateinit var scaffoldState: ScaffoldState
     val navController by lazy { NavHostFragment.findNavController(this) }
+    lateinit var scaffoldState: ScaffoldState
+
+    @Composable // TODO make depending on settings
+    fun isDarkMode() = isSystemInDarkTheme()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

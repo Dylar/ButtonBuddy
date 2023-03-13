@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -43,9 +45,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
         const val LIST_TAG = "BuddiesList"
         const val REFRESH_INDICATOR_TAG = "BuddiesRefreshingIndicator"
 
-        fun buddySendButtonTag(buddy: Buddy): String {
-            return "BuddiesSendButton" + buddy.fullName
-        }
+        fun buddySendButtonTag(buddy: Buddy): String = "BuddiesSendButton" + buddy.fullName
     }
 
     override val viewModel: BuddiesViewModel by viewModels()
@@ -61,7 +61,6 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
     @Composable
     fun BuddiesScreen(info: Info?) {
-        Log.e("TAG:", "BUILD SCREEN: ${toString()}")
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -104,21 +103,20 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .pullRefresh(state)
-//                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
                 .padding(innerPadding)
         ) {
             when {
                 buddies == null -> LoadingIndicator()
-                buddies.isEmpty() ->
-                    Text(text = getString(R.string.no_buddies))
+                buddies.isEmpty() -> Text(text = getString(R.string.no_buddies))
                 else -> {
                     LazyColumn(
-                        modifier = Modifier.testTag(LIST_TAG),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag(LIST_TAG),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         contentPadding = innerPadding
-                    ) {
-                        items(buddies.size) { BuddyListItem(buddies[it]) }
-                    }
+                    ) { items(buddies.size) { BuddyListItem(buddies[it]) } }
                 }
             }
             PullRefreshIndicator(
@@ -133,22 +131,35 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
     @Composable
     fun BuddyListItem(buddy: Buddy) {
-        Box(modifier = Modifier
-//            .fillMaxSize()
-            .clickable { naviToBuddy(buddy.uuid) })
-        {
-            Card(
-                elevation = 4.dp, modifier = Modifier
-                    .padding(16.dp)
-//                    .fillMaxWidth()
+        Card(
+            elevation = 4.dp,
+            modifier = Modifier
+                .padding(8.dp)
+                .clickable { naviToBuddy(buddy.uuid) }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
+                Text(
+                    buddy.fullName,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                )
+                Box(
+                    modifier = Modifier.padding(end = 16.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(buddy.fullName)
                     Button(
+                        shape = RoundedCornerShape(30),
                         modifier = Modifier.testTag(buddySendButtonTag(buddy)),
-                        onClick = { viewModel.sendMessage(buddy) }) { Text("Send") }
+                        onClick = { viewModel.sendMessage(buddy) }) {
+                        Text("Send")
+                    }
                 }
             }
         }

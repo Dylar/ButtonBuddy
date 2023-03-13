@@ -27,6 +27,7 @@ class SplashFragment : BaseFragment<IntroViewModel>() {
         // TODO check das xD
         if (intent?.hasExtra(KEY_BUDDY_UUID) == true) {
             val uuid = intent.getStringExtra(KEY_BUDDY_UUID)
+            navController.popBackStack(destinationId = R.id.splashFragment, inclusive = false)
             navController.navigate(R.id.buddiesFragment)
             navController.navigate(R.id.buddyFragment, bundleOf(KEY_BUDDY_UUID to uuid))
         }else{

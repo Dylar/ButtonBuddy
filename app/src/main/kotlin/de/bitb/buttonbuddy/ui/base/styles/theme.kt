@@ -10,19 +10,17 @@ import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 
 fun <T : BaseViewModel> BaseFragment<T>.createComposeView(
-    darkTheme: Boolean? = null,
     content: @Composable () -> Unit
 ): View =
     ComposeView(requireContext()).apply {
         setContent {
             scaffoldState = rememberScaffoldState()
-            ButtonBuddyAppTheme(darkTheme = darkTheme) { content() }
+            ButtonBuddyAppTheme(useDarkTheme = isDarkMode()) { content() }
         }
     }
 
 @Composable
-fun ButtonBuddyAppTheme(darkTheme: Boolean?, content: @Composable () -> Unit) {
-    val useDarkTheme = darkTheme ?: isSystemInDarkTheme()
+fun ButtonBuddyAppTheme(useDarkTheme: Boolean, content: @Composable () -> Unit) {
     MaterialTheme(
         colors = if (useDarkTheme) darkColorPalette else lightColorPalette,
         typography = Typography,

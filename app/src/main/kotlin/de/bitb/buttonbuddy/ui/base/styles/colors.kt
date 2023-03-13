@@ -18,9 +18,9 @@ val ZergPurple = Color(0xffA259FF)
 val FireRed = Color(0xFFFF4500)
 
 val lightColorPalette = lightColors(
-//    primary = AdultBlue,
+    primary = AdultBlue,
 //    primaryVariant = AdultBlue.copy(alpha = 0.70f),
-//    secondary = LightGreen,
+    secondary = LightGreen,
 //    secondaryVariant = LightGreen.copy(alpha = 0.70f),
 //    background = White,
 //    surface = DarkGray,
@@ -34,9 +34,9 @@ val lightColorPalette = lightColors(
 )
 
 val darkColorPalette = darkColors(
-//    primary = BabyBlue,
+    primary = BabyBlue,
 //    primaryVariant = BabyBlue.copy(alpha = 0.70f),
-//    secondary = SunYellow,
+    secondary = SunYellow,
 //    secondaryVariant = SunYellow.copy(alpha = 0.70f),
 //    background = Black,
 //    surface = LightGray,

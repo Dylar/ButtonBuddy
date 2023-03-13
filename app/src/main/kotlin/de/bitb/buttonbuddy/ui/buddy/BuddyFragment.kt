@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.ui.buddy
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,17 +8,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
 import com.google.zxing.WriterException
@@ -30,7 +32,8 @@ import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.naviToBuddy
+import de.bitb.buttonbuddy.ui.base.styles.BabyBlue
+import de.bitb.buttonbuddy.ui.base.styles.ZergPurple
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 
@@ -38,6 +41,7 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class BuddyFragment : BaseFragment<BuddyViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddyAppbar"
+        const val SEND_BUTTON = "BuddySendButton"
     }
 
     override val viewModel: BuddyViewModel by viewModels()
@@ -61,7 +65,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     fun BuddyScreen(buddy: Buddy?) {
         val info by viewModel.info.observeAsState(null)
         val isMyself = viewModel.uuid == info?.uuid
-        val title = if (isMyself) "Profil" else "Buddy"
+        val title = if (isMyself) "Profil" else "Buddy${buddy?.let { ": " + it.fullName } ?: ""}"
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -69,6 +73,14 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                     modifier = Modifier.testTag(APPBAR_TAG),
                     title = { Text(title) }
                 )
+            },
+            floatingActionButton = {
+                if (buddy != null && !isMyself) {
+                    FloatingActionButton(
+                        modifier = Modifier.testTag(SEND_BUTTON),
+                        onClick = { viewModel.sendMessage(buddy) }
+                    ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
+                }
             },
             content = {
                 when {
@@ -92,20 +104,40 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                 modifier = Modifier.align(Alignment.TopCenter),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Card(
-                    elevation = 4.dp, modifier = Modifier
+                Box(
+                    modifier = Modifier.padding(16.dp),
+                    contentAlignment = Alignment.Center,
+                ) { Text("Mit diesem QR-Code können Buddys Sie hinzufügen") }
+                Box(
+                    modifier = Modifier
                         .padding(16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Text("${info.firstName} ${info.lastName}")
-                    }
-                }
-                QrCodeImage(info.uuid)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) { QrCodeImage(info.uuid) }
             }
         }
+    }
+
+    @Composable
+    fun QrCodeImage(uuid: String) {
+        val black = MaterialTheme.colors.background
+        val white = MaterialTheme.colors.onBackground
+        return AndroidView(
+            modifier = Modifier,
+            factory = { context ->
+                ImageView(context).apply {
+                    QRGEncoder(uuid, null, QRGContents.Type.TEXT, 800).apply {
+                        colorBlack = black.toArgb()
+                        colorWhite = white.toArgb()
+                        try {
+                            setImageBitmap(bitmap)
+                        } catch (e: WriterException) {
+                            Log.v(toString(), e.toString());
+                        }
+                    }
+                }
+            }
+        )
     }
 
     @Composable
@@ -116,51 +148,11 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-        ) {
-            Column(
-                modifier = Modifier.align(Alignment.TopCenter),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Card(
-                    elevation = 4.dp, modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Text("${buddy.firstName} ${buddy.lastName}")
-                        Button(onClick = { viewModel.sendMessage(buddy) }) { Text("Send") }
-                    }
-                }
-                MessagesList(innerPadding = padding, messages = messages)
-            }
-        }
+        ) { MessagesList(innerPadding = padding, messages = messages, buddy.uuid) }
     }
 
     @Composable
-    fun QrCodeImage(uuid: String) {
-        return AndroidView(
-            modifier = Modifier,
-            factory = { context ->
-                ImageView(context).apply {
-                    val qrgEncoder =
-                        QRGEncoder(uuid, null, QRGContents.Type.TEXT, 500)
-                    qrgEncoder.colorBlack = Color.BLACK//FireRed.value.toInt()
-                    qrgEncoder.colorWhite = Color.WHITE// ZergPurple.value.toInt()
-                    try {
-                        val bitmap = qrgEncoder.bitmap
-                        setImageBitmap(bitmap)
-                    } catch (e: WriterException) {
-                        Log.v(toString(), e.toString());
-                    }
-                }
-            }
-        )
-    }
-
-    @Composable
-    fun MessagesList(innerPadding: PaddingValues, messages: List<Message>?) {
+    fun MessagesList(innerPadding: PaddingValues, messages: List<Message>?, uuid: String) {
         when {
             messages == null -> LoadingIndicator()
             messages.isEmpty() ->
@@ -174,30 +166,42 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                 }
             else -> {
                 LazyColumn(contentPadding = innerPadding) {
-                    items(messages.size) { MessageListItem(messages[it]) }
+                    items(messages.size) { MessageListItem(messages[it], uuid) }
                 }
             }
         }
     }
 
     @Composable
-    fun MessageListItem(msg: Message) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .clickable { naviToBuddy(msg.uuid) })
-        {
+    fun MessageListItem(msg: Message, uuid: String) {
+        val isMyMessage = uuid == msg.fromUuid
+        val backgroundColor =
+            if (isMyMessage) MaterialTheme.colors.primary else MaterialTheme.colors.surface
+        val textColor =
+            if (isMyMessage) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (!isMyMessage) Spacer(modifier = Modifier.weight(1f))
             Card(
-                elevation = 4.dp, modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
+                modifier = Modifier.padding(8.dp),
+                elevation = 4.dp,
+                backgroundColor = backgroundColor
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Text("${msg.title} ${msg.message}")
-                    Text("${msg.date}")
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = msg.title, color = textColor, fontSize = 12.sp)
+                        Spacer(modifier = Modifier.width(32.dp))
+                        Text(text = msg.formatDate, color = textColor, fontSize = 12.sp)
+                    }
+                    Text(text = msg.message, color = textColor, fontSize = 16.sp)
                 }
             }
+            if (isMyMessage) Spacer(modifier = Modifier.weight(1f))
         }
     }
+
 }
