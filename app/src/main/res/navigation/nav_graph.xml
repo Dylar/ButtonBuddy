@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="de.bitb.buttonbuddy.ui.splash.SplashFragment"
+        android:name="de.bitb.buttonbuddy.ui.intro.SplashFragment"
         android:label="splash">
 
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="de.bitb.buttonbuddy.ui.splash.LoginFragment"
+        android:name="de.bitb.buttonbuddy.ui.intro.LoginFragment"
         android:label="login">
 
         <action

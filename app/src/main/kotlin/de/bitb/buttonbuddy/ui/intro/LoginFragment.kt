@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.splash
+package de.bitb.buttonbuddy.ui.intro
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,8 +18,8 @@ import de.bitb.buttonbuddy.ui.base.styles.FireRed
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
-class LoginFragment : BaseFragment<IntroViewModel>() {
-    override val viewModel: IntroViewModel by viewModels()
+class LoginFragment : BaseFragment<LoginViewModel>() {
+    override val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

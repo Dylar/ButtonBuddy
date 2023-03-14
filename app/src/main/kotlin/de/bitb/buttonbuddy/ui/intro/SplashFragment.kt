@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.ui.splash
+package de.bitb.buttonbuddy.ui.intro
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,8 +15,8 @@ import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
-class SplashFragment : BaseFragment<IntroViewModel>() {
-    override val viewModel: IntroViewModel by viewModels()
+class SplashFragment : BaseFragment<SplashViewModel>() {
+    override val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +27,12 @@ class SplashFragment : BaseFragment<IntroViewModel>() {
         // TODO check das xD
         if (intent?.hasExtra(KEY_BUDDY_UUID) == true) {
             val uuid = intent.getStringExtra(KEY_BUDDY_UUID)
-            navController.popBackStack(destinationId = R.id.splashFragment, inclusive = false)
-            navController.navigate(R.id.buddiesFragment)
-            navController.navigate(R.id.buddyFragment, bundleOf(KEY_BUDDY_UUID to uuid))
-        }else{
+            navController.apply {
+                popBackStack(destinationId = R.id.splashFragment, inclusive = false)
+                navigate(R.id.buddiesFragment)
+                navigate(R.id.buddyFragment, bundleOf(KEY_BUDDY_UUID to uuid))
+            }
+        } else {
             viewModel.loadData()
         }
     }
