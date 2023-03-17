@@ -69,9 +69,6 @@ class BuddiesFragmentTest {
                 .assertIsDisplayed()
             onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
                 .assertIsDisplayed()
-//        onNodeWithTag(BuddiesFragment.REFRESH_INDICATOR_TAG)
-//            .assertExists()
-//            .assertIsNotDisplayed()
         }
     }
 
@@ -91,6 +88,7 @@ class BuddiesFragmentTest {
 
             launchActivity()
             waitForIdle()
+
             onNodeWithText(getString(R.string.no_buddies))
                 .assertDoesNotExist()
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -132,7 +130,6 @@ class BuddiesFragmentTest {
             onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .assertExists()
                 .performTouchInput { swipeDown() }
-
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -188,6 +185,26 @@ class BuddiesFragmentTest {
     }
 
     @Test
+    fun clickBuddy_navigateToBuddy() = runTest {
+        composeRule.apply {
+            val info = buildInfo()
+            val buddy = buildBuddy()
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info, listOf(buddy))
+
+            launchActivity()
+            waitForIdle()
+
+            onNodeWithTag(BuddiesFragment.LIST_TAG).onChildAt(0).performClick()
+            waitForIdle()
+
+            onNodeWithTag(BuddyFragment.APPBAR_TAG)
+                .assertExists()
+                .assertIsDisplayed()
+        }
+    }
+
+    @Test
     fun clickProfileButton_navigateToProfile() = runTest {
         composeRule.apply {
             val info = buildInfo()
@@ -200,8 +217,8 @@ class BuddiesFragmentTest {
             onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
                 .assertExists()
                 .performClick()
-
             waitForIdle()
+
             onNodeWithTag(ProfileFragment.APPBAR_TAG)
                 .assertExists()
                 .assertIsDisplayed()
