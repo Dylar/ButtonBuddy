@@ -11,6 +11,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
+import de.bitb.buttonbuddy.data.source.migrations.Migration1To2
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.InfoUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
@@ -34,7 +35,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLocalDatabase(app: Application): LocalDatabase {
-        val db = Room.databaseBuilder(app, RoomDatabaseImpl::class.java, DATABASE_NAME).build()
+        val db = Room.databaseBuilder(app, RoomDatabaseImpl::class.java, DATABASE_NAME)
+            .addMigrations(Migration1To2())
+            .build()
         val pref = app.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return BuddyLocalDatabase(db, PreferenceDatabaseImpl(pref))
     }

@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 
 abstract class BaseViewModel : ViewModel() {
-    lateinit var navigate: (Int, Int?) -> Unit
-    fun navigateBack() = navigate(BACK_ID, null)
-
-    open lateinit var showSnackBar: (ResString) -> Unit
+    lateinit var navigate: (Int) -> Unit
+    lateinit var navigateBack: (Int?) -> Unit
+    open lateinit var showSnackbar: (ResString) -> Unit
 }

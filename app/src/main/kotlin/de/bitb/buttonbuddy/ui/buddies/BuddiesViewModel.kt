@@ -12,6 +12,7 @@ import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
+import de.bitb.buttonbuddy.ui.buddy.BuddyViewModel
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
@@ -24,25 +25,20 @@ class BuddiesViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
     private val buddyUC: BuddyUseCases,
     buddyRepo: BuddyRepository,
-    infoRepo: InfoRepository,
 ) : BaseViewModel(), SendMessageDelegate {
-    override val scope: CoroutineScope
-        get() = viewModelScope
-
     val isRefreshing = mutableStateOf(false)
-
-    val info: LiveData<Info> = infoRepo.getLiveInfo()
     val buddies: LiveData<List<Buddy>> = buddyRepo.getLiveBuddies()
 
     fun refreshData() {
         isRefreshing.value = true
         viewModelScope.launch {
             when (val resp = buddyUC.loadBuddiesUC()) {
-                is Resource.Error -> showSnackBar(resp.message!!)
-                is Resource.Success -> showSnackBar(ResString.ResourceString(R.string.buddies_loaded))
+                is Resource.Error -> showSnackbar(resp.message!!)
+                is Resource.Success -> showSnackbar(ResString.ResourceString(R.string.buddies_loaded))
             }
             isRefreshing.value = false
         }
     }
 
+    fun sendMessageToBuddy(buddy: Buddy) = sendMessage(buddy)
 }

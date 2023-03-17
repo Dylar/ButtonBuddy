@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val result = infoUseCases.loginUC(firstName, lastName)
             if (result is Resource.Success) {
-                navigate(R.id.login_to_buddies, R.id.loginFragment)
+                navigate(R.id.login_to_buddies)
             } else {
                 error = result.message
             }

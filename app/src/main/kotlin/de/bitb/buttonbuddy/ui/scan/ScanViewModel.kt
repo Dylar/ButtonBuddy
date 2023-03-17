@@ -28,7 +28,7 @@ class ScanViewModel @Inject constructor(
             if (res is Resource.Error) {
                 error = res.message
             } else {
-                navigateBack()
+                navigateBack(null)
             }
         }
     }

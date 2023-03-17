@@ -1,6 +1,7 @@
 package de.bitb.buttonbuddy.ui.intro
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,10 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class LoginFragment : BaseFragment<LoginViewModel>() {
     override val viewModel: LoginViewModel by viewModels()
 
+    init {
+        Log.e("LoginFragment", "INIT haha")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,9 +43,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
             }
         ) { innerPadding ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 OutlinedTextField(
@@ -58,8 +61,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 Box(
                     contentAlignment = Alignment.TopCenter,
-                    modifier = Modifier
-                        .padding(16.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     viewModel.error?.let { Text(it.asString(), color = FireRed) }
                 }

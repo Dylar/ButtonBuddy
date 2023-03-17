@@ -10,7 +10,7 @@ import de.bitb.buttonbuddy.data.model.converter.StringListConverter
 
 @Database(
     entities = [Info::class, Buddy::class, Message::class],
-    version = 2,
+    version = 1,
     exportSchema = false,
 )
 @TypeConverters(value = [StringListConverter::class, DateConverter::class])

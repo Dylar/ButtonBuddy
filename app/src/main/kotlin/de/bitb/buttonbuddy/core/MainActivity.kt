@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         navHostFragment.navController.navigateUp() || super.onSupportNavigateUp()
 
     private fun setupNavigation() {
-        navHostFragment.navController.setGraph(R.navigation.nav_graph)
+//        navHostFragment.navController.setGraph(R.navigation.nav_graph)
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navHostFragment.navController.navigateUp()

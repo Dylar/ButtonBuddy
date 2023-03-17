@@ -26,11 +26,10 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.naviToBuddy
+import de.bitb.buttonbuddy.ui.base.naviToProfile
 import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
@@ -54,13 +53,10 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = createComposeView {
-        val info by viewModel.info.observeAsState(null)
-        BuddiesScreen(info)
-    }
+    ): View = createComposeView { BuddiesScreen() }
 
     @Composable
-    fun BuddiesScreen(info: Info?) {
+    fun BuddiesScreen() {
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -70,14 +66,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                     actions = {
                         IconButton(
                             modifier = Modifier.testTag(PROFILE_BUTTON_TAG),
-                            onClick = {
-                                val uuid = info?.uuid
-                                if (uuid?.isNotBlank() == true) {
-                                    naviToBuddy(uuid)
-                                } else {
-                                    showSnackBar(ResString.ResourceString(R.string.no_uuid))
-                                }
-                            }
+                            onClick = { naviToProfile() }
                         ) { Icon(Icons.Default.Person, contentDescription = "Profil") }
                     },
                 )
@@ -157,7 +146,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                     Button(
                         shape = RoundedCornerShape(30),
                         modifier = Modifier.testTag(buddySendButtonTag(buddy)),
-                        onClick = { viewModel.sendMessage(buddy) }) {
+                        onClick = { viewModel.sendMessageToBuddy(buddy) }) {
                         Text("Send")
                     }
                 }

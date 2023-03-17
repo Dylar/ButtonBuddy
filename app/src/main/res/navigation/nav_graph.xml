@@ -8,50 +8,56 @@
         android:id="@+id/splashFragment"
         android:name="de.bitb.buttonbuddy.ui.intro.SplashFragment"
         android:label="splash">
-
         <action
             android:id="@+id/splash_to_buddies"
-            app:destination="@id/buddiesFragment" />
-
+            app:destination="@id/buddiesFragment"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/splash_to_login"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="de.bitb.buttonbuddy.ui.intro.LoginFragment"
         android:label="login">
-
         <action
             android:id="@+id/login_to_buddies"
-            app:destination="@id/buddiesFragment" />
+            app:destination="@id/buddiesFragment"
+            app:popUpTo="@+id/buddiesFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/buddiesFragment"
         android:name="de.bitb.buttonbuddy.ui.buddies.BuddiesFragment"
         android:label="buddies">
-
+        <action
+            android:id="@+id/buddies_to_profile"
+            app:destination="@id/profileFragment" />
         <action
             android:id="@+id/buddies_to_buddy"
             app:destination="@id/buddyFragment" />
-
         <action
             android:id="@+id/buddies_to_scan"
             app:destination="@id/scanFragment" />
     </fragment>
 
     <fragment
+        android:id="@+id/profileFragment"
+        android:name="de.bitb.buttonbuddy.ui.profile.ProfileFragment"
+        android:label="profile" />
+
+    <fragment
         android:id="@+id/buddyFragment"
         android:name="de.bitb.buttonbuddy.ui.buddy.BuddyFragment"
-        android:label="buddy">
-    </fragment>
+        android:label="buddy" />
 
     <fragment
         android:id="@+id/scanFragment"
         android:name="de.bitb.buttonbuddy.ui.scan.ScanFragment"
-        android:label="buddy">
-    </fragment>
-
+        android:label="buddy" />
 </navigation>

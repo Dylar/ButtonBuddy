@@ -33,3 +33,5 @@ sealed class ResString {
         }
     }
 }
+
+fun String.asResString() : ResString = ResString.DynamicString(this)

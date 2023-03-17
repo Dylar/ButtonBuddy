@@ -8,6 +8,7 @@ import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.ui.base.composable.asResString
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import io.mockk.*
@@ -51,9 +52,9 @@ class BuddiesViewModelTest {
 
         buddyUC = mockk()
         messageUC = mockk()
-        viewModel = BuddiesViewModel(messageUC, buddyUC, buddyRepo, infoRepo)
+        viewModel = BuddiesViewModel(messageUC, buddyUC, buddyRepo)
         viewModel.showSnackbar = mockk()
-        justRun { viewModel.showSnackbar(any()) }
+        justRun { viewModel.showSnackbar.invoke(any()) }
     }
 
     @Test
@@ -71,13 +72,13 @@ class BuddiesViewModelTest {
         assertEquals(true, viewModel.isRefreshing.value)
         advanceTimeBy(2L)
         assertEquals(false, viewModel.isRefreshing.value)
-        verify { viewModel.showSnackbar("Buddys geladen") }
+        verify { viewModel.showSnackbar("Buddys geladen".asResString()) }
     }
 
     @Test
     fun `refreshData shows error if loading buddies fails`() = runTest {
         // Given
-        val errorMessage = "Error message"
+        val errorMessage = "Error message".asResString()
         coEvery { buddyUC.loadBuddiesUC() } returns Resource.Error(errorMessage)
 
         // When
@@ -92,7 +93,7 @@ class BuddiesViewModelTest {
     fun `sendMessage shows error if sending message fails`() = runTest {
         // Given
         val buddy = buildBuddy()
-        val errorMessage = "Error message"
+        val errorMessage = "Error message".asResString()
         coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Error(errorMessage)
 
         // When
@@ -114,6 +115,6 @@ class BuddiesViewModelTest {
         advanceTimeBy(1L)
 
         // Then
-        verify { viewModel.showSnackbar("Nachricht gesendet") }
+        verify { viewModel.showSnackbar("Nachricht gesendet".asResString()) }
     }
 }

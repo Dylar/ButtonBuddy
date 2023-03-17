@@ -2,6 +2,7 @@ package de.bitb.buttonbuddy.ui.intro
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,23 +19,26 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class SplashFragment : BaseFragment<SplashViewModel>() {
     override val viewModel: SplashViewModel by viewModels()
 
+    init {
+        Log.e("SplashFragment", "INIT haha")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("TAG", "AHA-1")
         handleNotificationIntent(activity?.intent)
     }
 
     private fun handleNotificationIntent(intent: Intent?) {
+        Log.e("TAG", "AHA0")
         // TODO check das xD
-        if (intent?.hasExtra(KEY_BUDDY_UUID) == true) {
-            val uuid = intent.getStringExtra(KEY_BUDDY_UUID)
+        intent?.getStringExtra(KEY_BUDDY_UUID)?.let { uuid->
             navController.apply {
                 popBackStack(destinationId = R.id.splashFragment, inclusive = false)
                 navigate(R.id.buddiesFragment)
                 navigate(R.id.buddyFragment, bundleOf(KEY_BUDDY_UUID to uuid))
             }
-        } else {
-            viewModel.loadData()
-        }
+        } ?: viewModel.loadData()
     }
 
     override fun onCreateView(

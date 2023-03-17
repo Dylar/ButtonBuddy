@@ -26,6 +26,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
 import com.google.zxing.WriterException
 import dagger.hilt.android.AndroidEntryPoint
+import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
@@ -63,80 +64,29 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
 
     @Composable
     fun BuddyScreen(buddy: Buddy?) {
-        val info by viewModel.info.observeAsState(null)
-        val isMyself = viewModel.uuid == info?.uuid
-        val title = if (isMyself) "Profil" else "Buddy${buddy?.let { ": " + it.fullName } ?: ""}"
+        val title = getString(R.string.buddy_title, buddy?.let { ": " + it.fullName } ?: "");
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),
-                    title = { Text(title) }
+                    title = { Text(title) },
                 )
             },
             floatingActionButton = {
-                if (buddy != null && !isMyself) {
+                if (buddy != null) {
                     FloatingActionButton(
                         modifier = Modifier.testTag(SEND_BUTTON),
-                        onClick = { viewModel.sendMessage(buddy) }
+                        onClick = { viewModel.sendMessageToBuddy(buddy) }
                     ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
                 }
             },
             content = {
                 when {
-                    isMyself && info != null -> InfoDetails(it, info!!)
                     buddy != null -> BuddyDetails(it, buddy)
                     else -> LoadingIndicator()
                 }
             },
-        )
-    }
-
-    @Composable
-    fun InfoDetails(padding: PaddingValues, info: Info) {
-        Box(
-            contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            Column(
-                modifier = Modifier.align(Alignment.TopCenter),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Box(
-                    modifier = Modifier.padding(16.dp),
-                    contentAlignment = Alignment.Center,
-                ) { Text("Mit diesem QR-Code können Buddys Sie hinzufügen") }
-                Box(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
-                ) { QrCodeImage(info.uuid) }
-            }
-        }
-    }
-
-    @Composable
-    fun QrCodeImage(uuid: String) {
-        val black = MaterialTheme.colors.background
-        val white = MaterialTheme.colors.onBackground
-        return AndroidView(
-            modifier = Modifier,
-            factory = { context ->
-                ImageView(context).apply {
-                    QRGEncoder(uuid, null, QRGContents.Type.TEXT, 800).apply {
-                        colorBlack = black.toArgb()
-                        colorWhite = white.toArgb()
-                        try {
-                            setImageBitmap(bitmap)
-                        } catch (e: WriterException) {
-                            Log.v(toString(), e.toString());
-                        }
-                    }
-                }
-            }
         )
     }
 
@@ -161,9 +111,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                ) {
-                    Text(text = "Ihr habt noch nicht an euch gedacht")
-                }
+                ) { Text(text = getString(R.string.buddy_no_messages)) }
             else -> {
                 LazyColumn(contentPadding = innerPadding) {
                     items(messages.size) { MessageListItem(messages[it], uuid) }
@@ -179,6 +127,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             if (isMyMessage) MaterialTheme.colors.primary else MaterialTheme.colors.surface
         val textColor =
             if (isMyMessage) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface
+        val align = if (isMyMessage) Alignment.End else Alignment.Start
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -189,7 +138,10 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                 elevation = 4.dp,
                 backgroundColor = backgroundColor
             ) {
-                Column(modifier = Modifier.padding(8.dp)) {
+                Column(
+                    modifier = Modifier.padding(8.dp),
+                    horizontalAlignment = align,
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

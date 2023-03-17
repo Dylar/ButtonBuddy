@@ -23,22 +23,16 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.navigate = { id, popId ->
+        viewModel.navigate = { navController.navigate(it) }
+        viewModel.navigateBack = { id ->
             navController.apply {
-                if (id == BACK_ID) {
-                    popBackStack()
-                } else {
-                    if (popId != null) { // TODO thats not working
-                        popBackStack(popId, false)
-                    }
-                    navigate(id)
-                }
+                id?.let { popBackStack(id, false) } ?: popBackStack()
             }
         }
-        viewModel.showSnackBar = ::showSnackBar
+        viewModel.showSnackbar = ::showSnackBar
     }
 
-    fun showSnackBar(string: ResString) {
+    private fun showSnackBar(string: ResString) {
         lifecycleScope.launch {
             scaffoldState.snackbarHostState.showSnackbar(
                 message = string.asString(resources::getString),

@@ -10,6 +10,7 @@ import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.ui.base.composable.asResString
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +67,6 @@ class BuddyViewModelTest {
         viewModel.initLiveState(uuid)
 
         // Then
-        assert(viewModel.uuid == uuid)
         verify { buddyRepo.getLiveBuddy(uuid) }
         verify { msgRepo.getLiveMessages(uuid) }
     }
@@ -75,7 +75,7 @@ class BuddyViewModelTest {
     fun `sendMessage shows error if sending message fails`() = runTest {
         // Given
         val buddy = buildBuddy()
-        val errorMessage = "Error message"
+        val errorMessage = "Error message".asResString()
         coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Error(errorMessage)
 
         // When
@@ -97,6 +97,6 @@ class BuddyViewModelTest {
         advanceTimeBy(1L)
 
         // Then
-        verify { viewModel.showSnackbar("Nachricht gesendet") }
+        verify { viewModel.showSnackbar("Nachricht gesendet".asResString()) }
     }
 }

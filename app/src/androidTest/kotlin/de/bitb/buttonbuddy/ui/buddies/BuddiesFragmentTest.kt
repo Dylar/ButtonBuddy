@@ -12,13 +12,14 @@ import de.bitb.buttonbuddy.buildBuddy
 import de.bitb.buttonbuddy.buildInfo
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
+import de.bitb.buttonbuddy.ui.profile.ProfileFragment
 import de.bitb.buttonbuddy.ui.scan.ScanFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
-import launchFragment
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,9 +51,13 @@ class BuddiesFragmentTest {
     }
 
     @Test
-    fun render_buddiesFragment() {
+    fun render_buddiesFragment() = runTest {
         composeRule.apply {
-            launchFragment<BuddiesFragment>()
+            val info = buildInfo()
+            infoRepository.saveInfo(info)
+            remoteService.mockRemoteService(info)
+
+            launchActivity()
             waitForIdle()
             onNodeWithTag(BuddiesFragment.APPBAR_TAG)
                 .assertIsDisplayed()
@@ -84,12 +89,11 @@ class BuddiesFragmentTest {
             infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info, buddies)
 
-            launchFragment<BuddiesFragment>()
+            launchActivity()
             waitForIdle()
             onNodeWithText(getString(R.string.no_buddies))
                 .assertDoesNotExist()
-            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .apply {
                     onChildren().assertCountEquals(buddies.size)
                     onChildAt(0).assert(hasText(buddies[0].fullName))
@@ -112,11 +116,10 @@ class BuddiesFragmentTest {
             infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info, buddies)
 
-            launchFragment<BuddiesFragment>()
+            launchActivity()
             waitForIdle()
 
-            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .apply {
                     onChildren().assertCountEquals(buddies.size)
                     onChildAt(0).assert(hasText(buddies[0].fullName))
@@ -126,20 +129,13 @@ class BuddiesFragmentTest {
             buddies.add(buddy.copy(uuid = "uuid3", firstName = "first3"))
             remoteService.mockRemoteService(info, buddies)
 
-//            onAllNodesWithTag(BuddiesFragment.REFRESH_INDICATOR_TAG)
-//                .onFirst()
-//                .assertExists()
-
-            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
-                .onFirst()
+            onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .assertExists()
                 .performTouchInput { swipeDown() }
 
-            delay(400)
             waitForIdle()
 
-            onAllNodesWithTag(BuddiesFragment.LIST_TAG)
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .apply {
                     onChildren().assertCountEquals(buddies.size)
                     onChildAt(0).assert(hasText(buddies[0].fullName))
@@ -157,14 +153,13 @@ class BuddiesFragmentTest {
             infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info, listOf(buddy))
 
-            launchFragment<BuddiesFragment>()
+            launchActivity()
             waitForIdle()
 
             val snackMsg = String.format(getString(R.string.message_sent_toast), buddy.fullName)
             onNodeWithText(snackMsg)
                 .assertDoesNotExist()
-            onAllNodesWithTag(BuddiesFragment.buddySendButtonTag(buddy))
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.buddySendButtonTag(buddy))
                 .performClick()
             onNodeWithText(snackMsg)
                 .assertIsDisplayed()
@@ -180,33 +175,15 @@ class BuddiesFragmentTest {
             infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info, listOf(buddy), sendMessageError = error)
 
-            launchFragment<BuddiesFragment>()
+            launchActivity()
             waitForIdle()
 
             onNodeWithText(error)
                 .assertDoesNotExist()
-            onAllNodesWithTag(BuddiesFragment.buddySendButtonTag(buddy))
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.buddySendButtonTag(buddy))
                 .performClick()
             onNodeWithText(error)
                 .assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun clickProfileButton_ShowNoUUIDSnackbar() {
-        composeRule.apply {
-            launchFragment<BuddiesFragment>()
-            waitForIdle()
-
-            onNodeWithText(getString(R.string.no_uuid))
-                .assertDoesNotExist()
-            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-                .performClick()
-            onNodeWithText(getString(R.string.no_uuid))
-                .assertIsDisplayed()
-            onNodeWithTag(BuddyFragment.APPBAR_TAG)
-                .assertDoesNotExist()
         }
     }
 
@@ -217,19 +194,16 @@ class BuddiesFragmentTest {
             infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info)
 
-            launchFragment<BuddiesFragment>()
+            launchActivity()
             waitForIdle()
 
-            onNodeWithText(getString(R.string.no_uuid))
-                .assertDoesNotExist()
-            onAllNodesWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
+                .assertExists()
                 .performClick()
-            onNodeWithText(getString(R.string.no_uuid))
-                .assertDoesNotExist()
 
             waitForIdle()
-            onNodeWithTag(BuddyFragment.APPBAR_TAG)
+            onNodeWithTag(ProfileFragment.APPBAR_TAG)
+                .assertExists()
                 .assertIsDisplayed()
         }
     }
@@ -241,11 +215,10 @@ class BuddiesFragmentTest {
             infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info)
 
-            launchFragment<BuddiesFragment>()
+            launchActivity()
             waitForIdle()
 
-            onAllNodesWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
-                .onFirst() // but why multiple?
+            onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
                 .performClick()
 
             waitForIdle()
