@@ -8,15 +8,16 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 import de.bitb.buttonbuddy.ui.intro.LoginFragment
-import de.bitb.buttonbuddy.usecase.info.LoginResponse
 
 sealed class TestNavigation {
     object Splash : TestNavigation()
     object Login : TestNavigation()
     data class Buddies(val info: Info) : TestNavigation()
-    object Buddy : TestNavigation()
+    data class BuddyDetail(val info: Info, val buddy: Buddy) : TestNavigation()
     object Profile : TestNavigation()
     object Scan : TestNavigation()
     object Settings : TestNavigation()
@@ -39,7 +40,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
     waitForIdle()
 
     when (naviTo) {
-        TestNavigation.Buddy -> TODO()
+        is TestNavigation.BuddyDetail -> doLogin(naviTo.info).also { tapBuddy(naviTo.buddy) }
         TestNavigation.Login -> doNothing()
         is TestNavigation.Buddies -> doLogin(naviTo.info)
         TestNavigation.Profile -> TODO()
@@ -50,6 +51,15 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
 }
 
 fun doNothing() {}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapBuddy(buddy: Buddy) {
+    onNodeWithTag(BuddiesFragment.LIST_TAG)
+        .onChildren()
+        .filterToOne(hasText(buddy.fullName))
+        .performClick()
+    waitForIdle()
+}
+
 
 fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.doLogin(info: Info) {
     onNodeWithTag(LoginFragment.FIRST_NAME_TAG).performTextInput(info.firstName)

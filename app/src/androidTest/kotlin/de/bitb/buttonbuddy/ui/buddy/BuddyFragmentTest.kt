@@ -1,18 +1,31 @@
 package de.bitb.buttonbuddy.ui.buddy
 
+import android.util.Log
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import de.bitb.buttonbuddy.R
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.source.LocalDatabase
+import de.bitb.buttonbuddy.data.source.MessageDao
 import de.bitb.buttonbuddy.data.source.RemoteService
+import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.shared.buildInfo
+import de.bitb.buttonbuddy.shared.buildMessage
+import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 import javax.inject.Inject
 
 @MediumTest
@@ -29,188 +42,62 @@ class BuddyFragmentTest {
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var infoRepository: InfoRepository
+    lateinit var remoteService: RemoteService
 
     @Inject
-    lateinit var remoteService: RemoteService
+    lateinit var localDatabase: LocalDatabase
 
     @Before
     fun setUp() {
         hiltRule.inject()
     }
 
-//    @Test
-//    fun render_buddyFragment() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info)
-//
-//            launchActivity()
-//            waitForIdle()
-//            onNodeWithTag(BuddiesFragment.APPBAR_TAG)
-//                .assertIsDisplayed()
-//                .onChildren()
-//                .assertAny(hasText(getString(R.string.buddies_title)))
-//            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-//                .assertIsDisplayed()
-//            onNodeWithText(getString(R.string.no_buddies))
-//                .assertIsDisplayed()
-//            onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
-//                .assertIsDisplayed()
-//        }
-//    }
-//
-//    @Test
-//    fun render_buddiesList() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            val buddy = buildBuddy()
-//            val buddies =
-//                listOf(
-//                    buddy.copy(uuid = "uuid1", firstName = "first1"),
-//                    buddy.copy(uuid = "uuid2", firstName = "first2"),
-//                    buddy.copy(uuid = "uuid3", firstName = "first3")
-//                )
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info, buddies)
-//
-//            launchActivity()
-//            waitForIdle()
-//
-//            onNodeWithText(getString(R.string.no_buddies))
-//                .assertDoesNotExist()
-//            onNodeWithTag(BuddiesFragment.LIST_TAG)
-//                .apply {
-//                    onChildren().assertCountEquals(buddies.size)
-//                    onChildAt(0).assert(hasText(buddies[0].fullName))
-//                    onChildAt(1).assert(hasText(buddies[1].fullName))
-//                    onChildAt(2).assert(hasText(buddies[2].fullName))
-//                }
-//        }
-//    }
-//
-//    @Test
-//    fun refreshBuddies() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            val buddy = buildBuddy()
-//            val buddies =
-//                mutableListOf(
-//                    buddy.copy(uuid = "uuid1", firstName = "first1"),
-//                    buddy.copy(uuid = "uuid2", firstName = "first2"),
-//                )
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info, buddies)
-//
-//            launchActivity()
-//            waitForIdle()
-//
-//            onNodeWithTag(BuddiesFragment.LIST_TAG)
-//                .apply {
-//                    onChildren().assertCountEquals(buddies.size)
-//                    onChildAt(0).assert(hasText(buddies[0].fullName))
-//                    onChildAt(1).assert(hasText(buddies[1].fullName))
-//                }
-//
-//            buddies.add(buddy.copy(uuid = "uuid3", firstName = "first3"))
-//            remoteService.mockRemoteService(info, buddies)
-//
-//            onNodeWithTag(BuddiesFragment.LIST_TAG)
-//                .assertExists()
-//                .performTouchInput { swipeDown() }
-//            waitForIdle()
-//
-//            onNodeWithTag(BuddiesFragment.LIST_TAG)
-//                .apply {
-//                    onChildren().assertCountEquals(buddies.size)
-//                    onChildAt(0).assert(hasText(buddies[0].fullName))
-//                    onChildAt(1).assert(hasText(buddies[1].fullName))
-//                    onChildAt(2).assert(hasText(buddies[2].fullName))
-//                }
-//        }
-//    }
-//
-//    @Test
-//    fun clickSendButton_success() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            val buddy = buildBuddy()
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info, listOf(buddy))
-//
-//            launchActivity()
-//            waitForIdle()
-//
-//            val snackMsg = String.format(getString(R.string.message_sent_toast), buddy.fullName)
-//            onNodeWithText(snackMsg)
-//                .assertDoesNotExist()
-//            onNodeWithTag(BuddiesFragment.buddySendButtonTag(buddy))
-//                .performClick()
-//            onNodeWithText(snackMsg)
-//                .assertIsDisplayed()
-//        }
-//    }
-//
-//    @Test
-//    fun clickSendButton_error() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            val buddy = buildBuddy()
-//            val error = "ERROR"
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info, listOf(buddy), sendMessageError = error)
-//
-//            launchActivity()
-//            waitForIdle()
-//
-//            onNodeWithText(error)
-//                .assertDoesNotExist()
-//            onNodeWithTag(BuddiesFragment.buddySendButtonTag(buddy))
-//                .performClick()
-//            onNodeWithText(error)
-//                .assertIsDisplayed()
-//        }
-//    }
-//
-//    @Test
-//    fun clickProfileButton_navigateToProfile() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info)
-//
-//            launchActivity()
-//            waitForIdle()
-//
-//            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-//                .assertExists()
-//                .performClick()
-//            waitForIdle()
-//
-//            onNodeWithTag(ProfileFragment.APPBAR_TAG)
-//                .assertExists()
-//                .assertIsDisplayed()
-//        }
-//    }
-//
-//    @Test
-//    fun clickScanButton_navigateToScan() = runTest {
-//        composeRule.apply {
-//            val info = buildInfo()
-//            infoRepository.saveInfo(info)
-//            remoteService.mockRemoteService(info)
-//
-//            launchActivity()
-//            waitForIdle()
-//
-//            onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
-//                .performClick()
-//
-//            waitForIdle()
-//            onNodeWithTag(ScanFragment.APPBAR_TAG)
-//                .assertIsDisplayed()
-//        }
-//    }
+    @Test
+    fun render_buddyFragment() = runTest {
+        composeRule.apply {
+            val buddy = buildBuddy()
+            val info = buildInfo(mutableListOf(buddy.uuid))
+            remoteService.mockRemoteService(info, listOf(buddy))
+
+            launchActivity(TestNavigation.BuddyDetail(info, buddy))
+            waitForIdle()
+            onNodeWithTag(BuddyFragment.APPBAR_TAG)
+                .assertIsDisplayed()
+                .onChildren()
+                .assertAny(hasText(getString(R.string.buddy_title, ": ${buddy.fullName}")))
+            onNodeWithTag(BuddyFragment.SEND_BUTTON_TAG)
+                .assertIsDisplayed()
+            onNodeWithText(getString(R.string.buddy_no_messages)).assertIsDisplayed()
+            onNodeWithTag(BuddyFragment.SEND_BUTTON_TAG)
+                .assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun renderMessages() = runTest {
+        composeRule.apply {
+            val buddy = buildBuddy()
+            val info = buildInfo(mutableListOf(buddy.uuid))
+            val message1 = buildMessage(uuid = "msgUuid1", date = Date(200000000))
+            val message2 = buildMessage(uuid = "msgUuid2", "uuid2", "uuid1", Date(100000000))
+            val messages = listOf(message1, message2)
+            remoteService.mockRemoteService(info, listOf(buddy))
+            localDatabase.mockLocalDatabase(messages)
+
+            launchActivity(TestNavigation.BuddyDetail(info, buddy))
+            waitForIdle()
+
+            onNodeWithTag(BuddyFragment.LIST_TAG)
+                .apply {
+                    onChildren().assertCountEquals(messages.size)
+                    onChildAt(0)
+                        .onChildren()
+                        .assertAny(hasText(messages[1].formatDate))
+                    onChildAt(1)
+                        .onChildren()
+                        .assertAny(hasText(messages[0].formatDate))
+                }
+        }
+    }
 
 }

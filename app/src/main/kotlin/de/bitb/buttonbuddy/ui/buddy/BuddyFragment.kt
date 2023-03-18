@@ -5,9 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -18,23 +15,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
-import com.google.zxing.WriterException
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.styles.BabyBlue
-import de.bitb.buttonbuddy.ui.base.styles.ZergPurple
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 
@@ -42,7 +33,8 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class BuddyFragment : BaseFragment<BuddyViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddyAppbar"
-        const val SEND_BUTTON = "BuddySendButton"
+        const val SEND_BUTTON_TAG = "BuddySendButton"
+        const val LIST_TAG = "BuddyList"
     }
 
     override val viewModel: BuddyViewModel by viewModels()
@@ -64,7 +56,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
 
     @Composable
     fun BuddyScreen(buddy: Buddy?) {
-        val title = getString(R.string.buddy_title, buddy?.let { ": " + it.fullName } ?: "");
+        val title = getString(R.string.buddy_title, buddy?.let { ": ${it.fullName}" } ?: "");
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -76,7 +68,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             floatingActionButton = {
                 if (buddy != null) {
                     FloatingActionButton(
-                        modifier = Modifier.testTag(SEND_BUTTON),
+                        modifier = Modifier.testTag(SEND_BUTTON_TAG),
                         onClick = { viewModel.sendMessageToBuddy(buddy) }
                     ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
                 }
@@ -113,7 +105,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                         .padding(innerPadding)
                 ) { Text(text = getString(R.string.buddy_no_messages)) }
             else -> {
-                LazyColumn(contentPadding = innerPadding) {
+                LazyColumn(modifier = Modifier.testTag(LIST_TAG), contentPadding = innerPadding) {
                     items(messages.size) { MessageListItem(messages[it], uuid) }
                 }
             }

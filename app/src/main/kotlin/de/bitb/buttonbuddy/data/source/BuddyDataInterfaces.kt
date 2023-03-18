@@ -36,6 +36,7 @@ interface InfoRemoteDao {
 
 interface MessageRemoteDao {
     suspend fun saveMessage(msg: Message): Resource<Unit>
+//    suspend fun getMessage(uuid: String): Resource<Unit>
 }
 
 interface MessageService {

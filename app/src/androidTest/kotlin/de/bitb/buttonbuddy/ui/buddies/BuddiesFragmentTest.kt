@@ -11,7 +11,6 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.shared.buildInfo
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.data.InfoRepository
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
 import de.bitb.buttonbuddy.ui.profile.ProfileFragment
