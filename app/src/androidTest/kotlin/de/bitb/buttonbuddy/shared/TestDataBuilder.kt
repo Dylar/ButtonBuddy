@@ -33,12 +33,3 @@ fun buildMessage(
         token = "token1",
         date = date
     )
-
-//@PrimaryKey
-//val uuid: String = "",
-//val title: String = "",
-//val message: String = "",
-//val fromUuid: String = "",
-//val toUuid: String = "",
-//val token: String = "",
-//val date: Date = Date(System.currentTimeMillis()),

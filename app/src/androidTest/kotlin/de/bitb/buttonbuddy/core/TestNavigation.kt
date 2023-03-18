@@ -36,7 +36,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
         R.style.Theme_ButtonBuddy
     )
 
-    ActivityScenario.launch<TestActivity>(startActivityIntent)
+    ActivityScenario.launch<MainActivity>(startActivityIntent)
     waitForIdle()
 
     when (naviTo) {
