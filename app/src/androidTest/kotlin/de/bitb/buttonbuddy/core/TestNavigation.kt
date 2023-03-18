@@ -18,7 +18,7 @@ sealed class TestNavigation {
     object Login : TestNavigation()
     data class Buddies(val info: Info) : TestNavigation()
     data class BuddyDetail(val info: Info, val buddy: Buddy) : TestNavigation()
-    object Profile : TestNavigation()
+    data class Profile(val info: Info) : TestNavigation()
     object Scan : TestNavigation()
     object Settings : TestNavigation()
 }
@@ -40,10 +40,10 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
     waitForIdle()
 
     when (naviTo) {
-        is TestNavigation.BuddyDetail -> doLogin(naviTo.info).also { tapBuddy(naviTo.buddy) }
         TestNavigation.Login -> doNothing()
         is TestNavigation.Buddies -> doLogin(naviTo.info)
-        TestNavigation.Profile -> TODO()
+        is TestNavigation.BuddyDetail -> doLogin(naviTo.info).also { tapBuddy(naviTo.buddy) }
+        is TestNavigation.Profile -> doLogin(naviTo.info).also { tapProfile() }
         TestNavigation.Scan -> TODO()
         TestNavigation.Settings -> TODO()
         TestNavigation.Splash -> TODO()
@@ -51,6 +51,13 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
 }
 
 fun doNothing() {}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.doLogin(info: Info) {
+    onNodeWithTag(LoginFragment.FIRST_NAME_TAG).performTextInput(info.firstName)
+    onNodeWithTag(LoginFragment.LAST_NAME_TAG).performTextInput(info.lastName)
+    onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
+    waitForIdle()
+}
 
 fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapBuddy(buddy: Buddy) {
     onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -60,10 +67,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tap
     waitForIdle()
 }
 
-
-fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.doLogin(info: Info) {
-    onNodeWithTag(LoginFragment.FIRST_NAME_TAG).performTextInput(info.firstName)
-    onNodeWithTag(LoginFragment.LAST_NAME_TAG).performTextInput(info.lastName)
-    onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapProfile() {
+    onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG).performClick()
     waitForIdle()
 }

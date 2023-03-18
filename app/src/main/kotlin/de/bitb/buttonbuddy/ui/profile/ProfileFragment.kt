@@ -38,6 +38,8 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class ProfileFragment : BaseFragment<ProfileViewModel>() {
     companion object {
         const val APPBAR_TAG = "ProfileAppbar"
+        const val QR_INFO_TAG = "ProfileQRInfo"
+        const val QR_TAG = "ProfileQR"
     }
 
     override val viewModel: ProfileViewModel by viewModels()
@@ -81,7 +83,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Box(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(16.dp).testTag(QR_INFO_TAG),
                     contentAlignment = Alignment.Center,
                 ) { Text(getString(R.string.profile_qr_info)) }
                 Box(
@@ -99,7 +101,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
         val black = MaterialTheme.colors.background
         val white = MaterialTheme.colors.onBackground
         return AndroidView(
-            modifier = Modifier,
+            modifier = Modifier.testTag(QR_TAG),
             factory = { context ->
                 ImageView(context).apply {
                     QRGEncoder(uuid, null, QRGContents.Type.TEXT, 800).apply {
@@ -108,7 +110,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
                         try {
                             setImageBitmap(bitmap)
                         } catch (e: WriterException) {
-                            Log.v(toString(), e.toString());
+                            Log.e(toString(), e.toString());
                         }
                     }
                 }
