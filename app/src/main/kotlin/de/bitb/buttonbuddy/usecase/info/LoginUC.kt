@@ -9,7 +9,7 @@ import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.ResString.*
 import java.util.*
 
-sealed class LoginResponse(val string: ResString) {
+sealed class LoginResponse(val message: ResString) {
     class LoggedIn : LoginResponse(ResourceString(R.string.ok))
     class FirstNameEmpty : LoginResponse(ResourceString(R.string.firstname_is_empty))
     class LastNameEmpty : LoginResponse(ResourceString(R.string.lastname_is_empty))
@@ -17,7 +17,7 @@ sealed class LoginResponse(val string: ResString) {
         LoginResponse(error.message ?: DynamicString("Error thrown"))
 
     val asError: Resource<LoginResponse>
-        get() = Resource.Error(string, this)
+        get() = Resource.Error(message, this)
 }
 
 class LoginUC(

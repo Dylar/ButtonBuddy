@@ -8,17 +8,15 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.buildBuddy
-import de.bitb.buttonbuddy.buildInfo
+import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.shared.buildInfo
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.InfoRepository
-import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
 import de.bitb.buttonbuddy.ui.profile.ProfileFragment
 import de.bitb.buttonbuddy.ui.scan.ScanFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -40,9 +38,6 @@ class BuddiesFragmentTest {
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var infoRepository: InfoRepository
-
-    @Inject
     lateinit var remoteService: RemoteService
 
     @Before
@@ -54,11 +49,11 @@ class BuddiesFragmentTest {
     fun render_buddiesFragment() = runTest {
         composeRule.apply {
             val info = buildInfo()
-            infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info)
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
+
             onNodeWithTag(BuddiesFragment.APPBAR_TAG)
                 .assertIsDisplayed()
                 .onChildren()
@@ -73,48 +68,19 @@ class BuddiesFragmentTest {
     }
 
     @Test
-    fun render_buddiesList() = runTest {
+    fun renderAndRefreshBuddies() = runTest {
         composeRule.apply {
-            val info = buildInfo()
-            val buddy = buildBuddy()
-            val buddies =
-                listOf(
-                    buddy.copy(uuid = "uuid1", firstName = "first1"),
-                    buddy.copy(uuid = "uuid2", firstName = "first2"),
-                    buddy.copy(uuid = "uuid3", firstName = "first3")
-                )
-            infoRepository.saveInfo(info)
-            remoteService.mockRemoteService(info, buddies)
-
-            launchActivity()
-            waitForIdle()
-
-            onNodeWithText(getString(R.string.no_buddies))
-                .assertDoesNotExist()
-            onNodeWithTag(BuddiesFragment.LIST_TAG)
-                .apply {
-                    onChildren().assertCountEquals(buddies.size)
-                    onChildAt(0).assert(hasText(buddies[0].fullName))
-                    onChildAt(1).assert(hasText(buddies[1].fullName))
-                    onChildAt(2).assert(hasText(buddies[2].fullName))
-                }
-        }
-    }
-
-    @Test
-    fun refreshBuddies() = runTest {
-        composeRule.apply {
-            val info = buildInfo()
             val buddy = buildBuddy()
             val buddies =
                 mutableListOf(
                     buddy.copy(uuid = "uuid1", firstName = "first1"),
                     buddy.copy(uuid = "uuid2", firstName = "first2"),
                 )
-            infoRepository.saveInfo(info)
+
+            val info = buildInfo(mutableListOf(buddies.first().uuid, buddies.last().uuid))
             remoteService.mockRemoteService(info, buddies)
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -145,15 +111,14 @@ class BuddiesFragmentTest {
     @Test
     fun clickSendButton_success() = runTest {
         composeRule.apply {
-            val info = buildInfo()
             val buddy = buildBuddy()
-            infoRepository.saveInfo(info)
+            val info = buildInfo(mutableListOf(buddy.uuid))
             remoteService.mockRemoteService(info, listOf(buddy))
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
-            val snackMsg = String.format(getString(R.string.message_sent_toast), buddy.fullName)
+            val snackMsg = getString(R.string.message_sent_toast, buddy.fullName)
             onNodeWithText(snackMsg)
                 .assertDoesNotExist()
             onNodeWithTag(BuddiesFragment.buddySendButtonTag(buddy))
@@ -166,13 +131,12 @@ class BuddiesFragmentTest {
     @Test
     fun clickSendButton_error() = runTest {
         composeRule.apply {
-            val info = buildInfo()
             val buddy = buildBuddy()
+            val info = buildInfo(mutableListOf(buddy.uuid))
             val error = "ERROR"
-            infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info, listOf(buddy), sendMessageError = error)
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
             onNodeWithText(error)
@@ -187,12 +151,11 @@ class BuddiesFragmentTest {
     @Test
     fun clickBuddy_navigateToBuddy() = runTest {
         composeRule.apply {
-            val info = buildInfo()
             val buddy = buildBuddy()
-            infoRepository.saveInfo(info)
+            val info = buildInfo(mutableListOf(buddy.uuid))
             remoteService.mockRemoteService(info, listOf(buddy))
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG).onChildAt(0).performClick()
@@ -208,10 +171,9 @@ class BuddiesFragmentTest {
     fun clickProfileButton_navigateToProfile() = runTest {
         composeRule.apply {
             val info = buildInfo()
-            infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info)
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
@@ -229,10 +191,9 @@ class BuddiesFragmentTest {
     fun clickScanButton_navigateToScan() = runTest {
         composeRule.apply {
             val info = buildInfo()
-            infoRepository.saveInfo(info)
             remoteService.mockRemoteService(info)
 
-            launchActivity()
+            launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)

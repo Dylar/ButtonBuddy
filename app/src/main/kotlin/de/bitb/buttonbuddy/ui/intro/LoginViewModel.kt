@@ -1,5 +1,6 @@
 package de.bitb.buttonbuddy.ui.intro
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,9 +28,14 @@ class LoginViewModel @Inject constructor(
         error = null
         viewModelScope.launch {
             val result = infoUseCases.loginUC(firstName, lastName)
+            Log.e("TAG", "login")
             if (result is Resource.Success) {
+                Log.e("TAG", "Success")
                 navigate(R.id.login_to_buddies)
             } else {
+                if(result.message is ResString.DynamicString){
+                    Log.e("TAG", "ERROR: ${result.message.value}")
+                }
                 error = result.message
             }
         }

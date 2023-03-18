@@ -16,6 +16,10 @@
 
     <string name="ok">OK</string>
 
+    <string name="login_title">Login</string>
+    <string name="login_first_name">Vorname</string>
+    <string name="login_last_name">Nachname</string>
+
     <string name="profile_title">Profil</string>
     <string name="profile_qr_info">Mit diesem QR-Code können Sie von Buddys hinzugefügt werden</string>
 

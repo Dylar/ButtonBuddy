@@ -25,13 +25,6 @@ sealed class ResString {
             is ResourceString -> stringResource(id, args)
         }
     }
-
-    fun rawString(): String {
-        return when (this) {
-            is DynamicString -> value
-            is ResourceString -> id.toString()
-        }
-    }
 }
 
 fun String.asResString() : ResString = ResString.DynamicString(this)

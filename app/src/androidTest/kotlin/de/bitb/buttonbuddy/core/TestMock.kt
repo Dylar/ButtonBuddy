@@ -1,6 +1,6 @@
 package de.bitb.buttonbuddy.core
 
-import de.bitb.buttonbuddy.buildInfo
+import de.bitb.buttonbuddy.shared.buildInfo
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Info

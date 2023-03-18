@@ -19,18 +19,12 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class SplashFragment : BaseFragment<SplashViewModel>() {
     override val viewModel: SplashViewModel by viewModels()
 
-    init {
-        Log.e("SplashFragment", "INIT haha")
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("TAG", "AHA-1")
         handleNotificationIntent(activity?.intent)
     }
 
     private fun handleNotificationIntent(intent: Intent?) {
-        Log.e("TAG", "AHA0")
         // TODO check das xD
         intent?.getStringExtra(KEY_BUDDY_UUID)?.let { uuid->
             navController.apply {
