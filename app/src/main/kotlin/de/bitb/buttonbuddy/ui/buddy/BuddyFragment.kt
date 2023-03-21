@@ -1,7 +1,6 @@
 package de.bitb.buttonbuddy.ui.buddy
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +24,10 @@ import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
+import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -56,6 +57,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
 
     @Composable
     fun BuddyScreen(buddy: Buddy?) {
+        val messages by viewModel.messages.observeAsState(null)
         val title = getString(R.string.buddy_title, buddy?.let { ": ${it.fullName}" } ?: "");
         Scaffold(
             scaffoldState = scaffoldState,
@@ -67,15 +69,19 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             },
             floatingActionButton = {
                 if (buddy != null) {
-                    FloatingActionButton(
-                        modifier = Modifier.testTag(SEND_BUTTON_TAG),
-                        onClick = { viewModel.sendMessageToBuddy(buddy) }
-                    ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
+                    val lastMsg = messages?.last()
+                    CoolDownButton(lastMsg?.date ?: Date(0))
+                    {
+                        FloatingActionButton(
+                            modifier = Modifier.testTag(SEND_BUTTON_TAG),
+                            onClick = { viewModel.sendMessageToBuddy(buddy) }
+                        ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
+                    }
                 }
             },
             content = {
                 when {
-                    buddy != null -> BuddyDetails(it, buddy)
+                    buddy != null -> BuddyDetails(it, buddy, messages)
                     else -> LoadingIndicator()
                 }
             },
@@ -83,8 +89,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     }
 
     @Composable
-    fun BuddyDetails(padding: PaddingValues, buddy: Buddy) {
-        val messages by viewModel.messages.observeAsState(null)
+    fun BuddyDetails(padding: PaddingValues, buddy: Buddy, messages: List<Message>?) {
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier

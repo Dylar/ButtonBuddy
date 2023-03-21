@@ -5,10 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
@@ -27,11 +28,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.ui.base.BaseFragment
+import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
 import de.bitb.buttonbuddy.ui.base.naviToBuddy
 import de.bitb.buttonbuddy.ui.base.naviToProfile
 import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
+import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
+import java.util.*
 
 @AndroidEntryPoint
 class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
@@ -139,16 +143,20 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                         .weight(1f)
                         .padding(start = 16.dp)
                 )
-                Box(
-                    modifier = Modifier.padding(end = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
-                        shape = RoundedCornerShape(30),
-                        modifier = Modifier.testTag(buddySendButtonTag(buddy)),
-                        onClick = { viewModel.sendMessageToBuddy(buddy) }) {
-                        Text("Send")
-                    }
+                val lastMsg = viewModel.getLastMessage(buddy.uuid).observeAsState()
+                CoolDownButton(lastMsg.value?.date ?: Date(0))
+                {
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .testTag(BuddyFragment.SEND_BUTTON_TAG),
+                        onClick = { viewModel.sendMessageToBuddy(buddy) }
+                    ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
+//                    Button(
+//                        modifier = Modifier.testTag(buddySendButtonTag(buddy)),
+//                        shape = RoundedCornerShape(180.dp),
+//                        onClick = { viewModel.sendMessageToBuddy(buddy) }) {
+//                        Text(getString(R.string.send_button))
+//                    }
                 }
             }
         }

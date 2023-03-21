@@ -49,6 +49,12 @@ interface MessageDao {
     @Query("SELECT * FROM message WHERE fromUuid = :uuid OR toUuid = :uuid ORDER BY date ASC")
     fun getLiveMessages(uuid: String): LiveData<List<Message>>
 
+    @Query("SELECT * FROM message WHERE toUuid = :uuid ORDER BY date DESC LIMIT 1")
+    fun getLiveLastMessage(uuid: String): LiveData<Message?>
+
+    @Query("SELECT * FROM message WHERE toUuid = :uuid ORDER BY date DESC LIMIT 1")
+    fun getLastMessage(uuid: String): Message?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(msg: Message)
 }

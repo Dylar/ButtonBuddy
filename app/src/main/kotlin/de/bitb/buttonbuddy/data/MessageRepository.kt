@@ -7,6 +7,8 @@ import de.bitb.buttonbuddy.core.misc.Resource
 
 interface MessageRepository {
     fun getLiveMessages(uuid: String): LiveData<List<Message>>
+    fun getLiveLastMessage(uuid: String): LiveData<Message?>
+    suspend fun getLastMessage(uuid: String): Message?
     suspend fun saveMessage(msg: Message): Resource<Unit>
 }
 
@@ -17,6 +19,11 @@ class MessageRepositoryImpl constructor(
 
     override fun getLiveMessages(uuid: String): LiveData<List<Message>> =
         localDB.getLiveMessages(uuid)
+
+    override fun getLiveLastMessage(uuid: String): LiveData<Message?> =
+        localDB.getLiveLastMessage(uuid)
+
+    override suspend fun getLastMessage(uuid: String): Message? = localDB.getLastMessage(uuid)
 
     override suspend fun saveMessage(msg: Message): Resource<Unit> {
         return try {

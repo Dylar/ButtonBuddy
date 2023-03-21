@@ -112,7 +112,7 @@ object AppModule {
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
         updateTokenUC = UpdateTokenUC(infoRepo),
-        sendMessageUC = SendMessageUC(remoteService, localDB, infoRepo),
+        sendMessageUC = SendMessageUC(remoteService, localDB, infoRepo, msgRepo),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }

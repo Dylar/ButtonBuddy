@@ -16,12 +16,14 @@ interface SendMessageDelegate {
         viewModelScope.launch {
             when (val resp = messageUC.sendMessageUC(buddy)) {
                 is Resource.Error -> showSnackbar(resp.message!!)
-                is Resource.Success -> showSnackbar(
-                    ResString.ResourceString(
-                        R.string.message_sent_toast,
-                        arrayOf(buddy.fullName),
+                is Resource.Success -> {
+                    showSnackbar(
+                        ResString.ResourceString(
+                            R.string.message_sent_toast,
+                            arrayOf(buddy.fullName),
+                        )
                     )
-                )
+                }
             }
         }
     }
