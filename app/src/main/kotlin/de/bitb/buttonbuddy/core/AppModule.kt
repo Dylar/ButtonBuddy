@@ -13,13 +13,14 @@ import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.data.source.migrations.Migration1To2
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
-import de.bitb.buttonbuddy.usecase.InfoUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.buddies.*
-import de.bitb.buttonbuddy.usecase.info.LoginUC
+import de.bitb.buttonbuddy.usecase.user.LoginUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
-import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
+import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
+import de.bitb.buttonbuddy.usecase.user.RegisterUC
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -39,7 +40,7 @@ object AppModule {
             .addMigrations(Migration1To2())
             .build()
         val pref = app.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return BuddyLocalDatabase(db, PreferenceDatabaseImpl(pref))
+        return BuddyLocalDatabase(db, PreferenceDatabase(pref))
     }
 
     @Provides
@@ -61,10 +62,17 @@ object AppModule {
     // REPO
     @Provides
     @Singleton
-    fun provideInfoRepository(
+    fun provideSettingsRepository(
         remoteService: RemoteService,
         localDB: LocalDatabase,
-    ): InfoRepository = InfoRepositoryImpl(remoteService, localDB)
+    ): SettingsRepository = SettingsRepositoryImpl(remoteService, localDB)
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        remoteService: RemoteService,
+        localDB: LocalDatabase,
+    ): UserRepository = UserRepositoryImpl(remoteService, localDB)
 
     @Provides
     @Singleton
@@ -83,22 +91,23 @@ object AppModule {
     //USE CASES
     @Provides
     @Singleton
-    fun provideInfoUseCases(
-        infoRepo: InfoRepository,
+    fun provideUserUseCases(
+        userRepo: UserRepository,
         buddyRepo: BuddyRepository,
-    ): InfoUseCases = InfoUseCases(
-        loginUC = LoginUC(infoRepo, buddyRepo),
+    ): UserUseCases = UserUseCases(
+        loginUC = LoginUC(userRepo, buddyRepo),
+        registerUC = RegisterUC(userRepo),
     )
 
     @Provides
     @Singleton
     fun provideBuddyUseCases(
-        infoRepo: InfoRepository,
+        userRepo: UserRepository,
         buddyRepo: BuddyRepository,
     ): BuddyUseCases {
         return BuddyUseCases(
-            scanBuddyUC = ScanBuddyUC(infoRepo, buddyRepo),
-            loadBuddiesUC = LoadBuddiesUC(infoRepo, buddyRepo),
+            scanBuddyUC = ScanBuddyUC(userRepo, buddyRepo),
+            loadBuddiesUC = LoadBuddiesUC(userRepo, buddyRepo),
         )
     }
 
@@ -108,11 +117,11 @@ object AppModule {
         app: Application,
         remoteService: RemoteService,
         localDB: LocalDatabase,
-        infoRepo: InfoRepository,
+        userRepo: UserRepository,
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
-        updateTokenUC = UpdateTokenUC(infoRepo),
-        sendMessageUC = SendMessageUC(remoteService, localDB, infoRepo, msgRepo),
+        updateTokenUC = UpdateTokenUC(userRepo),
+        sendMessageUC = SendMessageUC(remoteService, localDB, userRepo, msgRepo),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }

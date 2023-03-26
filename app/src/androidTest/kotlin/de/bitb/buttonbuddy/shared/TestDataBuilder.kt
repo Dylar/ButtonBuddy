@@ -1,13 +1,12 @@
 package de.bitb.buttonbuddy.shared
 
-import androidx.room.PrimaryKey
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import java.util.*
 
-fun buildInfo(buddies: MutableList<String> = mutableListOf()): Info =
-    Info(
+fun buildInfo(buddies: MutableList<String> = mutableListOf()): User =
+    User(
         uuid = "uuid1",
         token = "token1",
         firstName = "name1",

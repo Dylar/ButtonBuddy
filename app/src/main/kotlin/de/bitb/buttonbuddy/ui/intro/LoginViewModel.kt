@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.ui.intro
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,13 +9,13 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
-import de.bitb.buttonbuddy.usecase.InfoUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val infoUseCases: InfoUseCases,
+    private val userUseCases: UserUseCases,
 ) : BaseViewModel() {
 
     var firstName by mutableStateOf("")
@@ -27,7 +26,7 @@ class LoginViewModel @Inject constructor(
     fun login() {
         error = null
         viewModelScope.launch {
-            val result = infoUseCases.loginUC(firstName, lastName)
+            val result = userUseCases.loginUC(firstName, lastName)
             if (result is Resource.Success) {
                 navigate(R.id.login_to_buddies)
             } else {

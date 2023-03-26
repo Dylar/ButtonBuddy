@@ -4,9 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.ui.base.composable.asResString
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
@@ -42,9 +42,9 @@ class BuddiesViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        val infoRepo = mockk<InfoRepository>()
-        val infoLiveData = mockk<LiveData<Info>>()
-        every { infoRepo.getLiveInfo() }.returns(infoLiveData)
+        val infoRepo = mockk<UserRepository>()
+        val userLiveData = mockk<LiveData<User>>()
+        every { infoRepo.getLiveUser() }.returns(userLiveData)
 
         val buddyRepo = mockk<BuddyRepository>()
         val buddiesLiveData = mockk<LiveData<List<Buddy>>>()

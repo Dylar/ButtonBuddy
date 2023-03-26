@@ -3,8 +3,6 @@ package de.bitb.buttonbuddy.core
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,17 +10,15 @@ import dagger.hilt.components.SingletonComponent
 import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
-import de.bitb.buttonbuddy.usecase.InfoUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.buddies.LoadBuddiesUC
 import de.bitb.buttonbuddy.usecase.buddies.ScanBuddyUC
-import de.bitb.buttonbuddy.usecase.info.LoginUC
-import de.bitb.buttonbuddy.usecase.info.UpdateTokenUC
+import de.bitb.buttonbuddy.usecase.user.LoginUC
+import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
 import io.mockk.mockk
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -35,7 +31,7 @@ object TestAppModule {
     fun provideLocalDatabase(app: Application): LocalDatabase {
         val db = Room.inMemoryDatabaseBuilder(app, RoomDatabaseImpl::class.java).build()
         val pref = app.getSharedPreferences("test_pref", Context.MODE_PRIVATE)
-        return BuddyLocalDatabase(db, PreferenceDatabaseImpl(pref))
+        return BuddyLocalDatabase(db, PreferenceDatabase(pref))
     }
 
     @Provides
@@ -48,7 +44,7 @@ object TestAppModule {
     fun provideInfoRepository(
         remoteService: RemoteService,
         localDB: LocalDatabase,
-    ): InfoRepository = InfoRepositoryImpl(remoteService, localDB)
+    ): UserRepository = UserRepositoryImpl(remoteService, localDB)
 
     @Provides
     @Singleton
@@ -68,16 +64,16 @@ object TestAppModule {
     @Provides
     @Singleton
     fun provideInfoUseCases(
-        infoRepo: InfoRepository,
+        infoRepo: UserRepository,
         buddyRepo: BuddyRepository,
-    ): InfoUseCases = InfoUseCases(
+    ): UserUseCases = UserUseCases(
         loginUC = LoginUC(infoRepo, buddyRepo),
     )
 
     @Provides
     @Singleton
     fun provideBuddyUseCases(
-        infoRepo: InfoRepository,
+        infoRepo: UserRepository,
         buddyRepo: BuddyRepository,
     ): BuddyUseCases {
         return BuddyUseCases(
@@ -92,7 +88,7 @@ object TestAppModule {
         app: Application,
         remoteService: RemoteService,
         localDB: LocalDatabase,
-        infoRepo: InfoRepository,
+        infoRepo: UserRepository,
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
         updateTokenUC = UpdateTokenUC(infoRepo),

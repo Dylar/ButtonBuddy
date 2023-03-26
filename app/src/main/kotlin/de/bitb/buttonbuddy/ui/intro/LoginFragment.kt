@@ -16,7 +16,7 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.ui.base.BaseFragment
-import de.bitb.buttonbuddy.ui.base.styles.FireRed
+import de.bitb.buttonbuddy.ui.base.styles.BaseColors
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
@@ -79,7 +79,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                         .padding(16.dp)
                         .testTag(ERROR_TAG),
                     contentAlignment = Alignment.TopCenter,
-                ) { viewModel.error?.let { Text(it.asString(), color = FireRed) } }
+                ) { viewModel.error?.let { Text(it.asString(), color = BaseColors.FireRed) } }
             }
         }
     }

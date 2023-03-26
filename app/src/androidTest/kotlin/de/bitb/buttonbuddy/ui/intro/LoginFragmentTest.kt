@@ -9,10 +9,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
-import de.bitb.buttonbuddy.usecase.info.LoginResponse
+import de.bitb.buttonbuddy.usecase.user.LoginResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -35,7 +35,7 @@ class LoginFragmentTest {
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var infoRepository: InfoRepository
+    lateinit var infoRepository: UserRepository
 
     @Inject
     lateinit var remoteService: RemoteService

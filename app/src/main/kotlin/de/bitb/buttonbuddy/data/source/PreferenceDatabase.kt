@@ -2,14 +2,15 @@ package de.bitb.buttonbuddy.data.source
 
 import android.content.SharedPreferences
 
-interface PreferenceDatabase {
-    fun saveToken(token: String)
-    fun getToken(): String
-}
+class PreferenceDatabase(private val pref: SharedPreferences) : TokenDao, SettingsDao {
 
-class PreferenceDatabaseImpl(private val pref: SharedPreferences) : PreferenceDatabase {
-
-    override fun saveToken(token: String) = pref.edit().putString("token", token).apply()
-
+    override fun setToken(token: String) = pref.edit().putString("token", token).apply()
     override fun getToken(): String = pref.getString("token", "")!!
+
+    override fun setCoolDown(cd: Long) = pref.edit().putLong("cooldown", cd).apply()
+    override fun getCoolDown(): Long = pref.getLong("cooldown", 1000 * 60 * 60 * 2)
+
+    override fun setDarkMode(isDark: Boolean) = pref.edit().putBoolean("darkMode", isDark).apply()
+    override fun getDarkMode(): Boolean = pref.getBoolean("darkMode", true)
+
 }

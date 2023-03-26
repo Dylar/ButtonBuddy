@@ -1,27 +1,40 @@
 package de.bitb.buttonbuddy.data.source
 
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.core.misc.Resource
 
 // LOCAL
-interface LocalDatabase : InfoDao, BuddyDao, MessageDao, PreferenceDatabase
+interface LocalDatabase : UserDao, BuddyDao, MessageDao, TokenDao, SettingsDao
 
-class BuddyLocalDatabase(db: RoomDatabaseImpl, pref: PreferenceDatabaseImpl) :
+class BuddyLocalDatabase(db: RoomDatabaseImpl, pref: PreferenceDatabase) :
     LocalDatabase,
-    InfoDao by db.infoDao,
+    UserDao by db.userDao,
     BuddyDao by db.buddyDao,
     MessageDao by db.messageDao,
-    PreferenceDatabase by pref
+    TokenDao by pref,
+    SettingsDao by pref
+
+interface TokenDao {
+    fun setToken(token: String)
+    fun getToken(): String
+}
+
+interface SettingsDao {
+    fun getCoolDown(): Long
+    fun setCoolDown(cd: Long)
+    fun getDarkMode(): Boolean
+    fun setDarkMode(isDark: Boolean)
+}
 
 // REMOTE
-interface RemoteService : BuddyRemoteDao, InfoRemoteDao, MessageRemoteDao, MessageService
+interface RemoteService : BuddyRemoteDao, UserRemoteDao, MessageRemoteDao, MessageService
 
 class BuddyRemoteService(fireService: FirestoreService, retrofitService: RetrofitService) :
     RemoteService,
     BuddyRemoteDao by fireService,
-    InfoRemoteDao by fireService,
+    UserRemoteDao by fireService,
     MessageRemoteDao by fireService,
     MessageService by retrofitService
 
@@ -29,9 +42,9 @@ interface BuddyRemoteDao {
     suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>>
 }
 
-interface InfoRemoteDao {
-    suspend fun saveInfo(info: Info): Resource<Unit>
-    suspend fun getInfo(firstName: String, lastName: String): Resource<Info?>
+interface UserRemoteDao {
+    suspend fun saveUser(user: User): Resource<Unit>
+    suspend fun getUser(firstName: String, lastName: String): Resource<User?>
 }
 
 interface MessageRemoteDao {

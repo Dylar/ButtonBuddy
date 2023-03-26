@@ -6,10 +6,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.bitb.buttonbuddy.core.misc.getMillisecondsBetweenDates
 import de.bitb.buttonbuddy.core.misc.getPercentageDiff
+import de.bitb.buttonbuddy.ui.base.styles.Colors
 import de.bitb.buttonbuddy.usecase.message.COOLDOWN
 import kotlinx.coroutines.delay
 import java.util.*
@@ -34,7 +34,7 @@ fun CoolDownButton(
             modifier = Modifier
                 .size(56.dp)
                 .alpha(0.4f),
-            color = Color.Gray,
+            color = Colors.DarkGray,
             progress = progress,
             strokeWidth = 40.dp
         )

@@ -1,8 +1,6 @@
 package de.bitb.buttonbuddy.ui.profile
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -28,18 +23,10 @@ import androidx.fragment.app.viewModels
 import com.google.zxing.WriterException
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.unit.*
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<ProfileViewModel>() {
@@ -59,7 +46,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
 
     @Composable
     fun ProfileScreen() {
-        val info by viewModel.info.observeAsState(null)
+        val user by viewModel.user.observeAsState(null)
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -70,7 +57,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
             },
             content = {
                 when {
-                    info != null -> InfoDetails(it, info!!)
+                    user != null -> UserDetails(it, user!!)
                     else -> LoadingIndicator()
                 }
             },
@@ -78,7 +65,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
     }
 
     @Composable
-    fun InfoDetails(padding: PaddingValues, info: Info) {
+    fun UserDetails(padding: PaddingValues, user: User) {
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
@@ -100,7 +87,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
                         .padding(16.dp)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center,
-                ) { QrCodeImage(info.uuid) }
+                ) { QrCodeImage(user.uuid) }
             }
         }
     }

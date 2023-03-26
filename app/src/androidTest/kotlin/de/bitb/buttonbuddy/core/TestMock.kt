@@ -3,7 +3,7 @@ package de.bitb.buttonbuddy.core
 import de.bitb.buttonbuddy.shared.buildInfo
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
@@ -18,17 +18,17 @@ suspend fun LocalDatabase.mockLocalDatabase(
 }
 
 fun RemoteService.mockRemoteService(
-    info: Info? = null,
+    user: User? = null,
     buddies: List<Buddy> = emptyList(),
     sendMessageError: String? = null,
     saveMessageError: String? = null
 ) {
-    var xInfo = info ?: buildInfo()
+    var xInfo = user ?: buildInfo()
     coEvery { loadBuddies(any()) }.returns(Resource.Success(buddies))
-    coEvery { saveInfo(any()) }.answers {
-        Resource.Success(Unit).also { xInfo = args.first() as Info }
+    coEvery { saveUser(any()) }.answers {
+        Resource.Success(Unit).also { xInfo = args.first() as User }
     }
-    coEvery { getInfo(any(), any()) }.answers { Resource.Success(xInfo) }
+    coEvery { getUser(any(), any()) }.answers { Resource.Success(xInfo) }
     coEvery { saveMessage(any()) }.returns(
         saveMessageError?.let { Resource.Error(it) } ?: Resource.Success(Unit)
     )

@@ -1,9 +1,9 @@
-package de.bitb.buttonbuddy.usecase.info
+package de.bitb.buttonbuddy.usecase.user
 
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.InfoRepository
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.UserRepository
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.ResString.*
@@ -21,7 +21,7 @@ sealed class LoginResponse(val message: ResString) {
 }
 
 class LoginUC(
-    private val infoRepo: InfoRepository,
+    private val userRepo: UserRepository,
     private val buddyRepo: BuddyRepository,
 ) {
     suspend operator fun invoke(firstName: String, lastName: String): Resource<LoginResponse> {
@@ -32,18 +32,18 @@ class LoginUC(
             return LoginResponse.LastNameEmpty().asError
         }
 
-        val loadInfoResp = infoRepo.loadInfo(firstName, lastName)
-        if (loadInfoResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(loadInfoResp).asError
+        val loadUserResp = userRepo.loadUser(firstName, lastName)
+        if (loadUserResp is Resource.Error) {
+            return LoginResponse.ErrorThrown(loadUserResp).asError
         }
 
-        val info = loadInfoResp.data
-            ?: Info(
+        val user = loadUserResp.data
+            ?: User(
                 firstName = firstName,
                 lastName = lastName,
                 uuid = UUID.randomUUID().toString(),
             )
-        val buddies = info.buddies
+        val buddies = user.buddies
         if (buddies.isNotEmpty()) {
             val loadBuddiesResp = buddyRepo.loadBuddies(buddies)
             if (loadBuddiesResp is Resource.Error) {
@@ -51,9 +51,9 @@ class LoginUC(
             }
         }
 
-        val saveInfoResp = infoRepo.saveInfo(info)
-        if (saveInfoResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(saveInfoResp).asError
+        val saveUserResp = userRepo.saveUser(user)
+        if (saveUserResp is Resource.Error) {
+            return LoginResponse.ErrorThrown(saveUserResp).asError
         }
 
         return Resource.Success(LoginResponse.LoggedIn())

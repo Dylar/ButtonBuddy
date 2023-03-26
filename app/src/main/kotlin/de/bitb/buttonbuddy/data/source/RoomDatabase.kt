@@ -3,19 +3,19 @@ package de.bitb.buttonbuddy.data.source
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.model.converter.DateConverter
 import de.bitb.buttonbuddy.data.model.converter.StringListConverter
 
 @Database(
-    entities = [Info::class, Buddy::class, Message::class],
+    entities = [User::class, Buddy::class, Message::class],
     version = 1,
     exportSchema = false,
 )
 @TypeConverters(value = [StringListConverter::class, DateConverter::class])
 abstract class RoomDatabaseImpl : RoomDatabase() {
-    abstract val infoDao: InfoDao
+    abstract val userDao: UserDao
     abstract val buddyDao: BuddyDao
     abstract val messageDao: MessageDao
 }
@@ -33,15 +33,15 @@ interface BuddyDao {
 }
 
 @Dao
-interface InfoDao {
-    @Query("SELECT * FROM info LIMIT 1")
-    fun getLiveInfo(): LiveData<Info>
+interface UserDao {
+    @Query("SELECT * FROM user LIMIT 1")
+    fun getLiveUser(): LiveData<User>
 
-    @Query("SELECT * FROM info LIMIT 1")
-    suspend fun getInfo(): Info?
+    @Query("SELECT * FROM user LIMIT 1")
+    suspend fun getUser(): User?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(info: Info)
+    suspend fun insert(user: User)
 }
 
 @Dao

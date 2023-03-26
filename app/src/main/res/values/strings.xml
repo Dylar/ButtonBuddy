@@ -18,6 +18,8 @@
 
     <string name="ok">OK</string>
 
+    <string name="settings_title">Einstellungen</string>
+
     <string name="login_title">Login</string>
     <string name="login_first_name">Vorname</string>
     <string name="login_last_name">Nachname</string>

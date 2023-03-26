@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.usecase.message
 
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.LocalDatabase
@@ -15,12 +15,10 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
-const val COOLDOWN: Long = 1000 * 60 * 60 * 2// TODO get cooldown from settings
-
 class SendMessageUC @Inject constructor(
     private val remoteService: RemoteService,
     private val localDB: LocalDatabase,
-    private val infoRepo: InfoRepository,
+    private val userRepo: UserRepository,
     private val msgRepo: MessageRepository,
 //    private val settingsRepo:MessageRepository // TODO get cooldown
 ) {
@@ -32,16 +30,16 @@ class SendMessageUC @Inject constructor(
                 return Resource.Error(ResString.ResourceString(R.string.send_on_cooldown))
             }
 
-            val infoResp = infoRepo.getInfo()
-            if (infoResp is Resource.Error) {
-                return Resource.Error(infoResp.message!!)
+            val userResp = userRepo.getUser()
+            if (userResp is Resource.Error) {
+                return Resource.Error(userResp.message!!)
             }
-            val info = infoResp.data!!
+            val user = userResp.data!!
             val msg = Message(
                 uuid = UUID.randomUUID().toString(),
-                title = info.fullName,
+                title = user.fullName,
                 message = "Denkt an dich",
-                fromUuid = info.uuid,
+                fromUuid = user.uuid,
                 toUuid = buddy.uuid,
                 token = buddy.token
             )

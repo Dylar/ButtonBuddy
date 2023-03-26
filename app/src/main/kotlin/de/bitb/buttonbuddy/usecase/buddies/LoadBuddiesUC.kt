@@ -1,20 +1,20 @@
 package de.bitb.buttonbuddy.usecase.buddies
 
 import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.core.misc.Resource
 
 class LoadBuddiesUC(
-    private val infoRepo: InfoRepository,
+    private val userRepo: UserRepository,
     private val buddyRepo: BuddyRepository,
 ) {
     suspend operator fun invoke(): Resource<Unit> {
-        val getInfoResp = infoRepo.getInfo()
-        if (getInfoResp is Resource.Error) {
-            return Resource.Error(getInfoResp.message!!)
+        val userResp = userRepo.getUser()
+        if (userResp is Resource.Error) {
+            return Resource.Error(userResp.message!!)
         }
-        if (getInfoResp.hasData) {
-            val loadBuddiesResp = buddyRepo.loadBuddies(getInfoResp.data!!.buddies)
+        if (userResp.hasData) {
+            val loadBuddiesResp = buddyRepo.loadBuddies(userResp.data!!.buddies)
             if (loadBuddiesResp is Resource.Error) {
                 return Resource.Error(loadBuddiesResp.message!!)
             }

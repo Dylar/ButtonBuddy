@@ -4,10 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.InfoRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.Info
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.ui.base.composable.asResString
@@ -35,9 +35,9 @@ class BuddyViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        val infoRepo = mockk<InfoRepository>()
-        val infoLiveData = mockk<LiveData<Info>>()
-        every { infoRepo.getLiveInfo() }.returns(infoLiveData)
+        val infoRepo = mockk<UserRepository>()
+        val userLiveData = mockk<LiveData<User>>()
+        every { infoRepo.getLiveUser() }.returns(userLiveData)
 
         buddyRepo = mockk()
         val buddyLiveData = mockk<LiveData<Buddy>>()
@@ -79,7 +79,7 @@ class BuddyViewModelTest {
         coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Error(errorMessage)
 
         // When
-        viewModel.sendMessage(buddy)
+        viewModel.sendMessageToBuddy(buddy)
         advanceTimeBy(1L)
 
         // Then
@@ -93,7 +93,7 @@ class BuddyViewModelTest {
         coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success(Unit)
 
         // When
-        viewModel.sendMessage(buddy)
+        viewModel.sendMessageToBuddy(buddy)
         advanceTimeBy(1L)
 
         // Then

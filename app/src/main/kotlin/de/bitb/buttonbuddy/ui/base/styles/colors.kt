@@ -4,23 +4,25 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
 
-val White = Color(0xFFFFFFFF)
-val Black = Color(0xFF000000)
+object BaseColors{
+    val White = Color(0xFFFFFFFF)
+    val Black = Color(0xFF000000)
 
-val LightGray = Color(0xFFE0E0E0)
-val DarkGray = Color(0xFF202020)
+    val LightGray = Color(0xFFE0E0E0)
+    val DarkGray = Color(0xFF202020)
 
-val AdultBlue = Color(0xff0B5394)
-val LightGreen = Color(0xffe7ed9b)
-val BabyBlue = Color(0xff89CFF0)
-val SunYellow = Color(0xFFFFFF00)
-val ZergPurple = Color(0xffA259FF)
-val FireRed = Color(0xFFFF4500)
+    val AdultBlue = Color(0xff0B5394)
+    val LightGreen = Color(0xffe7ed9b)
+    val BabyBlue = Color(0xff89CFF0)
+    val SunYellow = Color(0xFFFFFF00)
+    val ZergPurple = Color(0xffA259FF)
+    val FireRed = Color(0xFFFF4500)
+}
 
 val lightColorPalette = lightColors(
-    primary = AdultBlue,
+    primary = BaseColors.AdultBlue,
 //    primaryVariant = AdultBlue.copy(alpha = 0.70f),
-    secondary = LightGreen,
+    secondary = BaseColors.LightGreen,
 //    secondaryVariant = LightGreen.copy(alpha = 0.70f),
 //    background = White,
 //    surface = DarkGray,
@@ -34,9 +36,9 @@ val lightColorPalette = lightColors(
 )
 
 val darkColorPalette = darkColors(
-    primary = BabyBlue,
+    primary = BaseColors.BabyBlue,
 //    primaryVariant = BabyBlue.copy(alpha = 0.70f),
-    secondary = SunYellow,
+    secondary = BaseColors.SunYellow,
 //    secondaryVariant = SunYellow.copy(alpha = 0.70f),
 //    background = Black,
 //    surface = LightGray,

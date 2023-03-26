@@ -20,7 +20,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
@@ -34,7 +33,6 @@ import de.bitb.buttonbuddy.ui.base.naviToBuddy
 import de.bitb.buttonbuddy.ui.base.naviToProfile
 import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
-import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
 import java.util.*
 
 @AndroidEntryPoint
@@ -147,16 +145,9 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                 CoolDownButton(lastMsg.value?.date ?: Date(0))
                 {
                     FloatingActionButton(
-                        modifier = Modifier
-                            .testTag(BuddyFragment.SEND_BUTTON_TAG),
+                        modifier = Modifier.testTag(buddySendButtonTag(buddy)),
                         onClick = { viewModel.sendMessageToBuddy(buddy) }
                     ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
-//                    Button(
-//                        modifier = Modifier.testTag(buddySendButtonTag(buddy)),
-//                        shape = RoundedCornerShape(180.dp),
-//                        onClick = { viewModel.sendMessageToBuddy(buddy) }) {
-//                        Text(getString(R.string.send_button))
-//                    }
                 }
             }
         }

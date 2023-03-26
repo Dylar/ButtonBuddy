@@ -2,8 +2,8 @@ package de.bitb.buttonbuddy.data.model
 
 import androidx.room.*
 
-@Entity(tableName = "info")
-data class Info(
+@Entity(tableName = "user")
+data class User(
     @PrimaryKey val uuid: String = "",
     val token: String = "",
     val firstName: String = "",

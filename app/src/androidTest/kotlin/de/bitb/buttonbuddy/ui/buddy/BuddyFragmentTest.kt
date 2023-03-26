@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.ui.buddy
 
-import android.util.Log
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,15 +9,11 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.data.InfoRepository
-import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.LocalDatabase
-import de.bitb.buttonbuddy.data.source.MessageDao
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.shared.buildInfo
 import de.bitb.buttonbuddy.shared.buildMessage
-import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
