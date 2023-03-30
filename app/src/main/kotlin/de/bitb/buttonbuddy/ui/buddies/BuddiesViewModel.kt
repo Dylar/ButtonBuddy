@@ -9,7 +9,9 @@ import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.MessageRepository
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
@@ -22,9 +24,12 @@ import javax.inject.Inject
 class BuddiesViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
     private val buddyUC: BuddyUseCases,
-    buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
+    buddyRepo: BuddyRepository,
+    settingsRepo: SettingsRepository,
 ) : BaseViewModel(), SendMessageDelegate {
+    val settings: LiveData<Settings> = settingsRepo.getLiveSettings()
+
     val isRefreshing = mutableStateOf(false)
     val buddies: LiveData<List<Buddy>> = buddyRepo.getLiveBuddies()
     fun getLastMessage(uuid: String): LiveData<Message?> = msgRepo.getLiveLastMessage(uuid)

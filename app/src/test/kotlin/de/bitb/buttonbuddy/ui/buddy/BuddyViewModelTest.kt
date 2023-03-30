@@ -31,13 +31,18 @@ class BuddyViewModelTest {
 
     private lateinit var messageUC: MessageUseCases
 
+    @After
+    fun cleanup() {
+        Dispatchers.resetMain()
+    }
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        val infoRepo = mockk<UserRepository>()
+        val userRepo = mockk<UserRepository>()
         val userLiveData = mockk<LiveData<User>>()
-        every { infoRepo.getLiveUser() }.returns(userLiveData)
+        every { userRepo.getLiveUser() }.returns(userLiveData)
 
         buddyRepo = mockk()
         val buddyLiveData = mockk<LiveData<Buddy>>()
@@ -48,14 +53,9 @@ class BuddyViewModelTest {
         every { msgRepo.getLiveMessages(any()) }.returns(msgLiveData)
 
         messageUC = mockk()
-        viewModel = BuddyViewModel(messageUC, buddyRepo, msgRepo, infoRepo)
+        viewModel = BuddyViewModel(messageUC, buddyRepo, msgRepo, mockk(), userRepo)
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar(any()) }
-    }
-
-    @After
-    fun cleanup() {
-        Dispatchers.resetMain()
     }
 
     @Test

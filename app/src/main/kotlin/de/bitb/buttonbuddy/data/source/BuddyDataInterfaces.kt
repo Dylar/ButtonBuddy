@@ -43,8 +43,10 @@ interface BuddyRemoteDao {
 }
 
 interface UserRemoteDao {
-    suspend fun saveUser(user: User): Resource<Unit>
+    suspend fun registerUser(userName: String, pw: String): Resource<Unit>
+    suspend fun loginUser(userName: String, pw: String): Resource<Boolean>
     suspend fun getUser(firstName: String, lastName: String): Resource<User?>
+    suspend fun saveUser(user: User): Resource<Unit>
 }
 
 interface MessageRemoteDao {

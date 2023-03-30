@@ -12,6 +12,8 @@ sealed class RegisterResponse(val message: ResString) {
     class Registered : RegisterResponse(ResourceString(R.string.ok))
     class FirstNameEmpty : RegisterResponse(ResourceString(R.string.firstname_is_empty))
     class LastNameEmpty : RegisterResponse(ResourceString(R.string.lastname_is_empty))
+    class UserNameEmpty : RegisterResponse(ResourceString(R.string.user_is_empty))
+    class PWNotSame : RegisterResponse(ResourceString(R.string.pw_not_same))
     class ErrorThrown<T>(error: Resource.Error<T>) :
         RegisterResponse(error.message ?: DynamicString("Error thrown"))
 
@@ -25,33 +27,54 @@ class RegisterUC(
     suspend operator fun invoke(
         firstName: String,
         lastName: String,
+        userName: String,
         pw1: String,
         pw2: String,
-    ): Resource<LoginResponse> {
-        if (firstName.isBlank()) {
-            return LoginResponse.FirstNameEmpty().asError
-        }
-        if (lastName.isBlank()) {
-            return LoginResponse.LastNameEmpty().asError
+    ): Resource<RegisterResponse> {
+        val response = isValid(firstName, lastName, userName, pw1, pw2)
+        if (response != null) {
+            return response.asError
         }
 
-        val userResp = userRepo.loadUser(firstName, lastName)
-        if (userResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(userResp).asError
+        val registerResp = userRepo.registerUser(userName, pw1)
+        if (registerResp is Resource.Error) {
+            return RegisterResponse.ErrorThrown(registerResp).asError
         }
 
-        val user = userResp.data
-            ?: User(
-                firstName = firstName,
-                lastName = lastName,
-                uuid = UUID.randomUUID().toString(),
-            )
+        val user = User(
+            firstName = firstName,
+            lastName = lastName,
+            userName = userName,
+            uuid = UUID.randomUUID().toString(),
+        )
 
         val saveUserResp = userRepo.saveUser(user)
         if (saveUserResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(saveUserResp).asError
+            return RegisterResponse.ErrorThrown(saveUserResp).asError
         }
 
-        return Resource.Success(LoginResponse.LoggedIn())
+        return Resource.Success(RegisterResponse.Registered())
+    }
+
+    private fun isValid(
+        firstName: String,
+        lastName: String,
+        userName: String,
+        pw1: String,
+        pw2: String
+    ): RegisterResponse? {
+        if (firstName.isBlank()) {
+            return RegisterResponse.FirstNameEmpty()
+        }
+        if (lastName.isBlank()) {
+            return RegisterResponse.LastNameEmpty()
+        }
+        if (userName.isBlank()) {
+            return RegisterResponse.UserNameEmpty()
+        }
+        if (pw1 != pw2) { // TODO make more checks
+            return RegisterResponse.PWNotSame()
+        }
+        return null
     }
 }

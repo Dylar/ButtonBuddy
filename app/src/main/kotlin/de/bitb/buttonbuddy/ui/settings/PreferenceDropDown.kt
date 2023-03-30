@@ -24,8 +24,10 @@ fun <T> PreferenceDropDown(
     var dropDownExpanded by remember { mutableStateOf(value = false) }
 
     PreferenceComposable(
-        title = title,
-        subtitle = items.first { it.first == selectedItem }.second,
+        PreferenceItem(
+            title = title,
+            subtitle = items.first { it.first == selectedItem }.second,
+        ),
         onClick = {
             dropDownExpanded = true
         },
@@ -85,7 +87,7 @@ private fun DropDownPreferencePreview() {
         items = themes,
         selectedItem = selectedTheme,
         onItemSelected = { selected ->
-            selectedTheme = themes.first{ it.first ==  selected}
+            selectedTheme = themes.first { it.first == selected }
         },
     )
 }

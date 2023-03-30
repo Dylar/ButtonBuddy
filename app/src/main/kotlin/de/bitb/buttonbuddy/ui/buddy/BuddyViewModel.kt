@@ -5,9 +5,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.MessageRepository
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
@@ -18,8 +20,11 @@ class BuddyViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
     private val buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
+    settingsRepo: SettingsRepository,
     userRepo: UserRepository,
 ) : BaseViewModel(), SendMessageDelegate {
+
+    val settings: LiveData<Settings> = settingsRepo.getLiveSettings()
 
     val user: LiveData<User> = userRepo.getLiveUser()
     lateinit var buddy: LiveData<Buddy>

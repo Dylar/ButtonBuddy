@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -53,8 +54,9 @@ object AppModule {
         val retrofitService = RetrofitService(retrofit.create(RetrofitApi::class.java))
 
         FirebaseApp.initializeApp(app)
-        val firestore = FirebaseFirestore.getInstance()
-        val fireService = FirestoreService(firestore)
+        val fireData = FirebaseFirestore.getInstance()
+        val fireAuth = FirebaseAuth.getInstance()
+        val fireService = FirestoreService(fireData, fireAuth)
 
         return BuddyRemoteService(fireService, retrofitService)
     }
@@ -117,11 +119,12 @@ object AppModule {
         app: Application,
         remoteService: RemoteService,
         localDB: LocalDatabase,
+        settingsRepo: SettingsRepository,
         userRepo: UserRepository,
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
         updateTokenUC = UpdateTokenUC(userRepo),
-        sendMessageUC = SendMessageUC(remoteService, localDB, userRepo, msgRepo),
+        sendMessageUC = SendMessageUC(remoteService, localDB, settingsRepo, userRepo, msgRepo ),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }

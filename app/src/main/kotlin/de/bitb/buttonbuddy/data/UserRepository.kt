@@ -9,7 +9,8 @@ interface UserRepository {
     suspend fun getUser(): Resource<User?>
     fun getLiveUser(): LiveData<User>
     suspend fun updateToken(token: String): Resource<Unit>
-    suspend fun loadUser(firstName: String, lastName: String): Resource<User?>
+    suspend fun registerUser(userName: String, pw: String): Resource<Unit>
+    suspend fun loginUser(firstName: String, lastName: String): Resource<User?>
     suspend fun saveUser(user: User): Resource<User>
 }
 
@@ -41,7 +42,11 @@ class UserRepositoryImpl constructor(
         }
     }
 
-    override suspend fun loadUser(firstName: String, lastName: String): Resource<User?> {
+    override suspend fun registerUser(userName: String, pw: String): Resource<Unit> {
+        return remoteDB.registerUser(userName, pw)
+    }
+
+    override suspend fun loginUser(firstName: String, lastName: String): Resource<User?> {
         return try {
             when (val userRes = remoteDB.getUser(firstName, lastName)) {
                 is Resource.Success -> {

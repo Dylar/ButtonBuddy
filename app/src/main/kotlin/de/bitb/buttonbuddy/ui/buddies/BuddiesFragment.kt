@@ -141,8 +141,9 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                         .weight(1f)
                         .padding(start = 16.dp)
                 )
-                val lastMsg = viewModel.getLastMessage(buddy.uuid).observeAsState()
-                CoolDownButton(lastMsg.value?.date ?: Date(0))
+                val lastMsg by viewModel.getLastMessage(buddy.uuid).observeAsState()
+                val settings by viewModel.settings.observeAsState()
+                CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?: Date().time)
                 {
                     FloatingActionButton(
                         modifier = Modifier.testTag(buddySendButtonTag(buddy)),

@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
@@ -52,7 +53,7 @@ class BuddiesViewModelTest {
 
         buddyUC = mockk()
         messageUC = mockk()
-        viewModel = BuddiesViewModel(messageUC, buddyUC, buddyRepo)
+        viewModel = BuddiesViewModel(messageUC, buddyUC, mockk(), buddyRepo, mockk())
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar.invoke(any()) }
     }
@@ -97,7 +98,7 @@ class BuddiesViewModelTest {
         coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Error(errorMessage)
 
         // When
-        viewModel.sendMessage(buddy)
+        viewModel.sendMessageToBuddy(buddy)
         advanceTimeBy(1L)
 
         // Then
@@ -111,7 +112,7 @@ class BuddiesViewModelTest {
         coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success(Unit)
 
         // When
-        viewModel.sendMessage(buddy)
+        viewModel.sendMessageToBuddy(buddy)
         advanceTimeBy(1L)
 
         // Then

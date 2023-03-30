@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.core.misc
 
-import de.bitb.buttonbuddy.usecase.message.COOLDOWN
 import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.system.measureTimeMillis
@@ -13,7 +12,7 @@ suspend fun atLeast(duration: Long, func: suspend () -> Unit) {
     }
 }
 
-fun timeExceeded(date1: Date, date2: Date, diff: Long = COOLDOWN): Boolean =
+fun timeExceeded(date1: Date, date2: Date, diff: Long): Boolean =
     getMillisecondsBetweenDates(date1, date2) > diff
 
 fun getMillisecondsBetweenDates(date1: Date, date2: Date): Long = date2.time - date1.time

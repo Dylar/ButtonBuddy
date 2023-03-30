@@ -58,6 +58,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     @Composable
     fun BuddyScreen(buddy: Buddy?) {
         val messages by viewModel.messages.observeAsState(null)
+        val settings by viewModel.settings.observeAsState()
         val title = getString(R.string.buddy_title, buddy?.let { ": ${it.fullName}" } ?: "");
         Scaffold(
             scaffoldState = scaffoldState,
@@ -70,7 +71,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             floatingActionButton = {
                 if (buddy != null) {
                     val lastMsg = messages?.last()
-                    CoolDownButton(lastMsg?.date ?: Date(0))
+                    CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?:Date().time)
                     {
                         FloatingActionButton(
                             modifier = Modifier.testTag(SEND_BUTTON_TAG),
