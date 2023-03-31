@@ -5,12 +5,13 @@ import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import java.util.*
 
-fun buildInfo(buddies: MutableList<String> = mutableListOf()): User =
+fun buildUser(buddies: MutableList<String> = mutableListOf()): User =
     User(
         uuid = "uuid1",
         token = "token1",
-        firstName = "name1",
+        firstName = "firstName1",
         lastName = "lastName1",
+        userName = "name1",
         buddies = buddies,
     )
 

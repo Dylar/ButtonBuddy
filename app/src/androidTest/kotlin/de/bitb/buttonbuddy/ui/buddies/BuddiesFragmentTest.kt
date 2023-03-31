@@ -9,7 +9,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.shared.buildBuddy
-import de.bitb.buttonbuddy.shared.buildInfo
+import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
@@ -47,7 +47,7 @@ class BuddiesFragmentTest {
     @Test
     fun render_buddiesFragment() = runTest {
         composeRule.apply {
-            val info = buildInfo()
+            val info = buildUser()
             remoteService.mockRemoteService(info)
 
             launchActivity(TestNavigation.Buddies(info))
@@ -76,7 +76,7 @@ class BuddiesFragmentTest {
                     buddy.copy(uuid = "uuid2", firstName = "first2"),
                 )
 
-            val info = buildInfo(mutableListOf(buddies.first().uuid, buddies.last().uuid))
+            val info = buildUser(mutableListOf(buddies.first().uuid, buddies.last().uuid))
             remoteService.mockRemoteService(info, buddies)
 
             launchActivity(TestNavigation.Buddies(info))
@@ -111,7 +111,7 @@ class BuddiesFragmentTest {
     fun clickSendButton_success() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildInfo(mutableListOf(buddy.uuid))
+            val info = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockRemoteService(info, listOf(buddy))
 
             launchActivity(TestNavigation.Buddies(info))
@@ -131,7 +131,7 @@ class BuddiesFragmentTest {
     fun clickSendButton_error() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildInfo(mutableListOf(buddy.uuid))
+            val info = buildUser(mutableListOf(buddy.uuid))
             val error = "ERROR"
             remoteService.mockRemoteService(info, listOf(buddy), sendMessageError = error)
 
@@ -151,7 +151,7 @@ class BuddiesFragmentTest {
     fun clickBuddy_navigateToBuddy() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildInfo(mutableListOf(buddy.uuid))
+            val info = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockRemoteService(info, listOf(buddy))
 
             launchActivity(TestNavigation.Buddies(info))
@@ -169,7 +169,7 @@ class BuddiesFragmentTest {
     @Test
     fun clickProfileButton_navigateToProfile() = runTest {
         composeRule.apply {
-            val info = buildInfo()
+            val info = buildUser()
             remoteService.mockRemoteService(info)
 
             launchActivity(TestNavigation.Buddies(info))
@@ -189,7 +189,7 @@ class BuddiesFragmentTest {
     @Test
     fun clickScanButton_navigateToScan() = runTest {
         composeRule.apply {
-            val info = buildInfo()
+            val info = buildUser()
             remoteService.mockRemoteService(info)
 
             launchActivity(TestNavigation.Buddies(info))

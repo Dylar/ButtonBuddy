@@ -1,6 +1,6 @@
 package de.bitb.buttonbuddy.core
 
-import de.bitb.buttonbuddy.shared.buildInfo
+import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
@@ -23,7 +23,7 @@ fun RemoteService.mockRemoteService(
     sendMessageError: String? = null,
     saveMessageError: String? = null
 ) {
-    var xInfo = user ?: buildInfo()
+    var xInfo = user ?: buildUser()
     coEvery { loadBuddies(any()) }.returns(Resource.Success(buddies))
     coEvery { saveUser(any()) }.answers {
         Resource.Success(Unit).also { xInfo = args.first() as User }

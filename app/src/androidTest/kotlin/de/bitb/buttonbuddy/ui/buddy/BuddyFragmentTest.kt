@@ -12,7 +12,7 @@ import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildBuddy
-import de.bitb.buttonbuddy.shared.buildInfo
+import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.shared.buildMessage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -51,7 +51,7 @@ class BuddyFragmentTest {
     fun render_buddyFragment() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildInfo(mutableListOf(buddy.uuid))
+            val info = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockRemoteService(info, listOf(buddy))
 
             launchActivity(TestNavigation.BuddyDetail(info, buddy))
@@ -72,7 +72,7 @@ class BuddyFragmentTest {
     fun renderMessages() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildInfo(mutableListOf(buddy.uuid))
+            val info = buildUser(mutableListOf(buddy.uuid))
             val message1 = buildMessage(uuid = "msgUuid1", date = Date(200000000))
             val message2 = buildMessage(uuid = "msgUuid2", "uuid2", "uuid1", Date(100000000))
             val messages = listOf(message1, message2)

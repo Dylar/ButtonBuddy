@@ -11,16 +11,13 @@ import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
-import de.bitb.buttonbuddy.shared.buildBuddy
-import de.bitb.buttonbuddy.shared.buildInfo
-import de.bitb.buttonbuddy.shared.buildMessage
+import de.bitb.buttonbuddy.shared.buildUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.*
 import javax.inject.Inject
 
 @MediumTest
@@ -50,7 +47,7 @@ class ProfileFragmentTest {
     @Test
     fun render_profileFragment() = runTest {
         composeRule.apply {
-            val info = buildInfo()
+            val info = buildUser()
             remoteService.mockRemoteService(info)
 
             launchActivity(TestNavigation.Profile(info))
