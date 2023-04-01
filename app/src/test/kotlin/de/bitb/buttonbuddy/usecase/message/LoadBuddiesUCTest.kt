@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.usecase.user
+package de.bitb.buttonbuddy.usecase.message
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.core.misc.Resource
@@ -23,7 +23,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoginUCTest {
+class LoadBuddiesUCTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()

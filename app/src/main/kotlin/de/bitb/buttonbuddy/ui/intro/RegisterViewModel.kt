@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.usecase.UserUseCases
@@ -14,21 +15,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class RegisterViewModel @Inject constructor(
     private val userUseCases: UserUseCases,
 ) : BaseViewModel() {
 
+    var firstName by mutableStateOf("")
+    var lastName by mutableStateOf("")
     var userName by mutableStateOf("")
-    var pw by mutableStateOf("")
+    var pw1 by mutableStateOf("")
+    var pw2 by mutableStateOf("")
 
     var error by mutableStateOf<ResString?>(null)
 
-    fun login() {
+    fun register() {
         error = null
         viewModelScope.launch {
-            val result = userUseCases.loginUC(userName, pw)
+            val result = userUseCases.registerUC(firstName, lastName, userName, pw1, pw2)
             if (result is Resource.Success) {
-                navigate(R.id.login_to_buddies)
+                navigate(R.id.register_to_buddies)
             } else {
                 error = result.message
             }

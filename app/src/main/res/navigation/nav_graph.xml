@@ -29,6 +29,21 @@
             app:destination="@id/buddiesFragment"
             app:popUpTo="@+id/buddiesFragment"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/login_to_register"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="de.bitb.buttonbuddy.ui.intro.RegisterFragment"
+        android:label="register">
+        <action
+            android:id="@+id/register_to_buddies"
+            app:destination="@id/buddiesFragment"
+            app:popUpTo="@+id/buddiesFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

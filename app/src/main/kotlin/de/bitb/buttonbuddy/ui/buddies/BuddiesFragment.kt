@@ -68,7 +68,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                     actions = {
                         IconButton(
                             modifier = Modifier.testTag(PROFILE_BUTTON_TAG),
-                            onClick = { naviToProfile() }
+                            onClick = ::naviToProfile
                         ) { Icon(Icons.Default.Person, contentDescription = "Profil") }
                     },
                 )
@@ -76,7 +76,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
             floatingActionButton = {
                 FloatingActionButton(
                     modifier = Modifier.testTag(SCAN_BUTTON_TAG),
-                    onClick = { naviToScan() }
+                    onClick = ::naviToScan
                 ) { Icon(Icons.Filled.QrCodeScanner, contentDescription = "Scan Buddy") }
             }
         ) { innerPadding ->

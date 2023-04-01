@@ -28,3 +28,7 @@ fun Fragment.naviToProfile() {
 fun Fragment.naviToScan() {
     findNavController(this).navigate(R.id.buddies_to_scan)
 }
+
+fun Fragment.naviToRegister() {
+    findNavController(this).navigate(R.id.login_to_register)
+}
