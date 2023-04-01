@@ -2,6 +2,7 @@ package de.bitb.buttonbuddy.core.misc
 
 import androidx.annotation.StringRes
 import de.bitb.buttonbuddy.ui.base.composable.ResString
+import de.bitb.buttonbuddy.usecase.user.LoginResponse
 
 sealed class Resource<T>(val data: T? = null, val message: ResString? = null) {
     class Success<T>(data: T?) : Resource<T>(data)

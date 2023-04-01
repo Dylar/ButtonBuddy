@@ -28,7 +28,7 @@ class LoginUC(
         pw: String
     ): Resource<LoginResponse> {
         val response = isValid(userName, pw)
-        if(response != null){
+        if (response != null) {
             return response.asError
         }
 
@@ -37,7 +37,7 @@ class LoginUC(
             return LoginResponse.ErrorThrown(loadUserResp).asError
         }
 
-        if(!loadUserResp.hasData){
+        if (!loadUserResp.hasData) {
             return LoginResponse.UserNotFound().asError
         }
         val user = loadUserResp.data!!
