@@ -20,12 +20,17 @@ suspend fun LocalDatabase.mockLocalDatabase(
 fun RemoteService.mockUserService(
     user: User? = null,
     buddies: List<Buddy> = emptyList(),
+    registerError: Resource.Error<Unit>? = null,
+    loginError: Resource.Error<Boolean>? = null,
+    saveUserError: Resource.Error<Unit>? = null,
+    getUserError: Resource.Error<User?>? = null,
+    loadBuddiesError: Resource.Error<List<Buddy>>? = null,
 ) {
-    coEvery { registerUser(any(), any()) }.answers { Resource.Success(Unit) }
-    coEvery { loginUser(any(), any()) }.answers { Resource.Success(true) }
-    coEvery { saveUser(any()) }.answers { Resource.Success(Unit) }
-    coEvery { getUser(any(), any()) }.answers { Resource.Success(user) }
-    coEvery { loadBuddies(any()) }.returns(Resource.Success(buddies))
+    coEvery { registerUser(any(), any()) }.answers { registerError ?: Resource.Success(Unit) }
+    coEvery { loginUser(any(), any()) }.answers { loginError ?: Resource.Success(true) }
+    coEvery { saveUser(any()) }.answers { saveUserError ?: Resource.Success(Unit) }
+    coEvery { getUser(any(), any()) }.answers { getUserError ?: Resource.Success(user) }
+    coEvery { loadBuddies(any()) }.answers { loadBuddiesError ?: Resource.Success(buddies) }
 }
 
 fun RemoteService.mockMessageService(

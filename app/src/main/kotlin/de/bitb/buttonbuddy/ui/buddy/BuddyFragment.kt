@@ -70,8 +70,8 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             },
             floatingActionButton = {
                 if (buddy != null) {
-                    val lastMsg = messages?.last()
-                    CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?:Date().time)
+                    val lastMsg = messages?.lastOrNull()
+                    CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?: Date().time)
                     {
                         FloatingActionButton(
                             modifier = Modifier.testTag(SEND_BUTTON_TAG),

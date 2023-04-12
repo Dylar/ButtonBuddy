@@ -42,6 +42,7 @@ class BuddiesFragmentTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        remoteService.mockMessageService()
     }
 
     @Test
@@ -158,7 +159,9 @@ class BuddiesFragmentTest {
             launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
 
-            onNodeWithTag(BuddiesFragment.LIST_TAG).onChildAt(0).performClick()
+            onNodeWithTag(BuddiesFragment.LIST_TAG)
+                .onChildAt(0)
+                .performClick()
             waitForIdle()
 
             onNodeWithTag(BuddyFragment.APPBAR_TAG)
