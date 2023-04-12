@@ -59,14 +59,14 @@ class LoginFragmentTest {
                 .assertAny(hasText(getString(R.string.login_title)))
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG)
                 .assertIsDisplayed()
-            onNodeWithTag(LoginFragment.FIRST_NAME_TAG)
+            onNodeWithTag(LoginFragment.USER_NAME_TAG)
                 .assertIsDisplayed()
-//                .onChildren()
-//                .assertAny(hasText(getString(R.string.login_first_name)))
-            onNodeWithTag(LoginFragment.LAST_NAME_TAG)
+                .onChildren()
+                .assertAny(hasText(getString(R.string.user_name)))
+            onNodeWithTag(LoginFragment.PW_TAG)
                 .assertIsDisplayed()
-//                .onChildren()
-//                .assertAny(hasText(getString(R.string.login_last_name)))
+                .onChildren()
+                .assertAny(hasText(getString(R.string.pw1_label)))
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG)
                 .assertIsDisplayed()
         }
@@ -75,7 +75,7 @@ class LoginFragmentTest {
     @Test
     fun test_login_errors() = runTest {
         composeRule.apply {
-            remoteService.mockRemoteService()
+            remoteService.mockUserService()
 
             launchActivity(TestNavigation.Login)
             waitForIdle()
@@ -84,16 +84,16 @@ class LoginFragmentTest {
             waitForIdle()
             onNodeWithTag(LoginFragment.ERROR_TAG)
                 .onChildren()
-                .assertAny(hasText(LoginResponse.FirstNameEmpty().asString()))
+                .assertAny(hasText(LoginResponse.UserEmpty().asString()))
 
-            onNodeWithTag(LoginFragment.FIRST_NAME_TAG).performTextInput("Name")
+            onNodeWithTag(LoginFragment.USER_NAME_TAG).performTextInput("UserName")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
             waitForIdle()
             onNodeWithTag(LoginFragment.ERROR_TAG)
                 .onChildren()
-                .assertAny(hasText(LoginResponse.LastNameEmpty().asString()))
+                .assertAny(hasText(LoginResponse.PwEmpty().asString()))
 
-            onNodeWithTag(LoginFragment.LAST_NAME_TAG).performTextInput("LastName")
+            onNodeWithTag(LoginFragment.PW_TAG).performTextInput("password")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
             waitForIdle()
             onNodeWithTag(BuddiesFragment.APPBAR_TAG)

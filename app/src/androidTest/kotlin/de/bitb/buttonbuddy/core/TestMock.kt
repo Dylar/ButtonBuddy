@@ -17,18 +17,21 @@ suspend fun LocalDatabase.mockLocalDatabase(
     }
 }
 
-fun RemoteService.mockRemoteService(
+fun RemoteService.mockUserService(
     user: User? = null,
     buddies: List<Buddy> = emptyList(),
+) {
+    coEvery { registerUser(any(), any()) }.answers { Resource.Success(Unit) }
+    coEvery { loginUser(any(), any()) }.answers { Resource.Success(true) }
+    coEvery { saveUser(any()) }.answers { Resource.Success(Unit) }
+    coEvery { getUser(any(), any()) }.answers { Resource.Success(user) }
+    coEvery { loadBuddies(any()) }.returns(Resource.Success(buddies))
+}
+
+fun RemoteService.mockMessageService(
     sendMessageError: String? = null,
     saveMessageError: String? = null
 ) {
-    var xInfo = user ?: buildUser()
-    coEvery { loadBuddies(any()) }.returns(Resource.Success(buddies))
-    coEvery { saveUser(any()) }.answers {
-        Resource.Success(Unit).also { xInfo = args.first() as User }
-    }
-    coEvery { getUser(any(), any()) }.answers { Resource.Success(xInfo) }
     coEvery { saveMessage(any()) }.returns(
         saveMessageError?.let { Resource.Error(it) } ?: Resource.Success(Unit)
     )

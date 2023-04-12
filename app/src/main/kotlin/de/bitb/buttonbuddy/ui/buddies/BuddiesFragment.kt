@@ -46,7 +46,8 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
         const val LIST_TAG = "BuddiesList"
         const val REFRESH_INDICATOR_TAG = "BuddiesRefreshingIndicator"
 
-        fun buddySendButtonTag(buddy: Buddy): String = "BuddiesSendButton" + buddy.fullName
+        fun buddySendButtonTag(buddy: Buddy): String =
+            "BuddiesSendButton ${buddy.fullName}".replace(" ", "-")
     }
 
     override val viewModel: BuddiesViewModel by viewModels()

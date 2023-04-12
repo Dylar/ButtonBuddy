@@ -47,10 +47,10 @@ class ProfileFragmentTest {
     @Test
     fun render_profileFragment() = runTest {
         composeRule.apply {
-            val info = buildUser()
-            remoteService.mockRemoteService(info)
+            val user = buildUser()
+            remoteService.mockUserService(user)
 
-            launchActivity(TestNavigation.Profile(info))
+            launchActivity(TestNavigation.Profile(user))
             waitForIdle()
             onNodeWithTag(ProfileFragment.APPBAR_TAG)
                 .assertIsDisplayed()

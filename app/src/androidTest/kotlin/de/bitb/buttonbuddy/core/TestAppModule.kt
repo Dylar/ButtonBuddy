@@ -18,6 +18,7 @@ import de.bitb.buttonbuddy.usecase.user.LoginUC
 import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
+import de.bitb.buttonbuddy.usecase.user.RegisterUC
 import io.mockk.mockk
 import javax.inject.Singleton
 
@@ -41,7 +42,14 @@ object TestAppModule {
     // REPO
     @Provides
     @Singleton
-    fun provideInfoRepository(
+    fun provideSettingsRepository(
+        remoteService: RemoteService,
+        localDB: LocalDatabase,
+    ): SettingsRepository = SettingsRepositoryImpl(remoteService, localDB)
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
         remoteService: RemoteService,
         localDB: LocalDatabase,
     ): UserRepository = UserRepositoryImpl(remoteService, localDB)
@@ -63,22 +71,23 @@ object TestAppModule {
     //USE CASES
     @Provides
     @Singleton
-    fun provideInfoUseCases(
-        infoRepo: UserRepository,
+    fun provideUserUseCases(
+        userRepo: UserRepository,
         buddyRepo: BuddyRepository,
     ): UserUseCases = UserUseCases(
-        loginUC = LoginUC(infoRepo, buddyRepo),
+        loginUC = LoginUC(userRepo, buddyRepo),
+        registerUC = RegisterUC(userRepo),
     )
 
     @Provides
     @Singleton
     fun provideBuddyUseCases(
-        infoRepo: UserRepository,
+        userRepo: UserRepository,
         buddyRepo: BuddyRepository,
     ): BuddyUseCases {
         return BuddyUseCases(
-            scanBuddyUC = ScanBuddyUC(infoRepo, buddyRepo),
-            loadBuddiesUC = LoadBuddiesUC(infoRepo, buddyRepo),
+            scanBuddyUC = ScanBuddyUC(userRepo, buddyRepo),
+            loadBuddiesUC = LoadBuddiesUC(userRepo, buddyRepo),
         )
     }
 
@@ -88,11 +97,12 @@ object TestAppModule {
         app: Application,
         remoteService: RemoteService,
         localDB: LocalDatabase,
-        infoRepo: UserRepository,
+        settingsRepo: SettingsRepository,
+        userRepo: UserRepository,
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
-        updateTokenUC = UpdateTokenUC(infoRepo),
-        sendMessageUC = SendMessageUC(remoteService, localDB, infoRepo),
+        updateTokenUC = UpdateTokenUC(userRepo),
+        sendMessageUC = SendMessageUC(remoteService, localDB, settingsRepo, userRepo, msgRepo ),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }

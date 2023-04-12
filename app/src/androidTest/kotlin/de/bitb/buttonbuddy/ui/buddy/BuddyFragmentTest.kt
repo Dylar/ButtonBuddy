@@ -52,9 +52,9 @@ class BuddyFragmentTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val info = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockRemoteService(info, listOf(buddy))
+            remoteService.mockUserService(info, listOf(buddy))
 
-            launchActivity(TestNavigation.BuddyDetail(info, buddy))
+            launchActivity(TestNavigation.BuddyDetail(info, buddy = buddy))
             waitForIdle()
             onNodeWithTag(BuddyFragment.APPBAR_TAG)
                 .assertIsDisplayed()
@@ -76,10 +76,10 @@ class BuddyFragmentTest {
             val message1 = buildMessage(uuid = "msgUuid1", date = Date(200000000))
             val message2 = buildMessage(uuid = "msgUuid2", "uuid2", "uuid1", Date(100000000))
             val messages = listOf(message1, message2)
-            remoteService.mockRemoteService(info, listOf(buddy))
+            remoteService.mockUserService(info, listOf(buddy))
             localDatabase.mockLocalDatabase(messages)
 
-            launchActivity(TestNavigation.BuddyDetail(info, buddy))
+            launchActivity(TestNavigation.BuddyDetail(info, buddy = buddy))
             waitForIdle()
 
             onNodeWithTag(BuddyFragment.LIST_TAG)

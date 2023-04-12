@@ -439,5 +439,5 @@ $RECYCLE.BIN/
 caches
 daemon
 .tmp
-wrapper
+#wrapper
 native

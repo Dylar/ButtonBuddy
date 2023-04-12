@@ -25,8 +25,9 @@ import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 class LoginFragment : BaseFragment<LoginViewModel>() {
     companion object {
         const val APPBAR_TAG = "LoginAppbar"
-        const val FIRST_NAME_TAG = "LoginFirstName"
-        const val LAST_NAME_TAG = "LoginLastName"
+        const val USER_NAME_TAG = "LoginUserName"
+        const val PW_TAG = "LoginPW"
+        const val REGISTER_BUTTON_TAG = "LoginRegisterButton"
         const val LOGIN_BUTTON_TAG = "LoginButton"
         const val ERROR_TAG = "LoginError"
     }
@@ -62,7 +63,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 32.dp, start = 16.dp, end = 16.dp)
-                        .testTag(FIRST_NAME_TAG),
+                        .testTag(USER_NAME_TAG),
                     value = viewModel.userName,
                     onValueChange = { viewModel.userName = it },
                     label = { Text(getString(R.string.user_name)) },
@@ -70,7 +71,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        .testTag(LAST_NAME_TAG),
+                        .testTag(PW_TAG),
                     value = viewModel.pw,
                     onValueChange = { viewModel.pw = it },
                     label = { Text(getString(R.string.pw1_label)) }
@@ -85,8 +86,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     ) { Text(it.asString(), color = BaseColors.FireRed) }
                 }
                 Text(
+                    modifier = Modifier
+                        .clickable(onClick = ::naviToRegister)
+                        .testTag(REGISTER_BUTTON_TAG),
                     text = getString(R.string.login_register_account),
-                    modifier = Modifier.clickable(onClick = ::naviToRegister)
                 )
             }
         }

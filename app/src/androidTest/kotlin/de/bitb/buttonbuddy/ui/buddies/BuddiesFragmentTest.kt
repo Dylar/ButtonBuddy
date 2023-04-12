@@ -47,10 +47,10 @@ class BuddiesFragmentTest {
     @Test
     fun render_buddiesFragment() = runTest {
         composeRule.apply {
-            val info = buildUser()
-            remoteService.mockRemoteService(info)
+            val user = buildUser()
+            remoteService.mockUserService(user)
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.APPBAR_TAG)
@@ -76,10 +76,10 @@ class BuddiesFragmentTest {
                     buddy.copy(uuid = "uuid2", firstName = "first2"),
                 )
 
-            val info = buildUser(mutableListOf(buddies.first().uuid, buddies.last().uuid))
-            remoteService.mockRemoteService(info, buddies)
+            val user = buildUser(mutableListOf(buddies.first().uuid, buddies.last().uuid))
+            remoteService.mockUserService(user, buddies)
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -90,7 +90,7 @@ class BuddiesFragmentTest {
                 }
 
             buddies.add(buddy.copy(uuid = "uuid3", firstName = "first3"))
-            remoteService.mockRemoteService(info, buddies)
+            remoteService.mockUserService(user, buddies)
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .assertExists()
@@ -112,7 +112,7 @@ class BuddiesFragmentTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val info = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockRemoteService(info, listOf(buddy))
+            remoteService.mockUserService(info, listOf(buddy))
 
             launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
@@ -133,7 +133,8 @@ class BuddiesFragmentTest {
             val buddy = buildBuddy()
             val info = buildUser(mutableListOf(buddy.uuid))
             val error = "ERROR"
-            remoteService.mockRemoteService(info, listOf(buddy), sendMessageError = error)
+            remoteService.mockUserService(info, listOf(buddy))
+            remoteService.mockMessageService(sendMessageError = error)
 
             launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
@@ -152,7 +153,7 @@ class BuddiesFragmentTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val info = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockRemoteService(info, listOf(buddy))
+            remoteService.mockUserService(info, listOf(buddy))
 
             launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
@@ -170,7 +171,7 @@ class BuddiesFragmentTest {
     fun clickProfileButton_navigateToProfile() = runTest {
         composeRule.apply {
             val info = buildUser()
-            remoteService.mockRemoteService(info)
+            remoteService.mockUserService(info)
 
             launchActivity(TestNavigation.Buddies(info))
             waitForIdle()
@@ -190,7 +191,7 @@ class BuddiesFragmentTest {
     fun clickScanButton_navigateToScan() = runTest {
         composeRule.apply {
             val info = buildUser()
-            remoteService.mockRemoteService(info)
+            remoteService.mockUserService(info)
 
             launchActivity(TestNavigation.Buddies(info))
             waitForIdle()

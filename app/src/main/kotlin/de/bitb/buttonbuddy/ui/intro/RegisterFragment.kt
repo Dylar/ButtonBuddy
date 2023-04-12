@@ -25,6 +25,9 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
         const val APPBAR_TAG = "RegisterAppbar"
         const val FIRST_NAME_TAG = "RegisterFirstName"
         const val LAST_NAME_TAG = "RegisterLastName"
+        const val USER_NAME_TAG = "RegisterUserName"
+        const val PW1_TAG = "RegisterPW1"
+        const val PW2_TAG = "RegisterPW2"
         const val REGISTER_BUTTON_TAG = "RegisterButton"
         const val ERROR_TAG = "RegisterError"
     }
@@ -76,7 +79,7 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        .testTag(LAST_NAME_TAG),
+                        .testTag(USER_NAME_TAG),
                     value = viewModel.userName,
                     onValueChange = { viewModel.userName = it },
                     label = { Text(getString(R.string.user_name)) }
@@ -84,7 +87,7 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        .testTag(LAST_NAME_TAG),
+                        .testTag(PW1_TAG),
                     value = viewModel.pw1,
                     onValueChange = { viewModel.pw1 = it },
                     label = { Text(getString(R.string.pw1_label)) }
@@ -92,7 +95,7 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        .testTag(LAST_NAME_TAG),
+                        .testTag(PW2_TAG),
                     value = viewModel.pw2,
                     onValueChange = { viewModel.pw2 = it },
                     label = { Text(getString(R.string.pw2_label)) }

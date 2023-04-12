@@ -13,6 +13,7 @@ sealed class RegisterResponse(val message: ResString) {
     class FirstNameEmpty : RegisterResponse(ResourceString(R.string.firstname_is_empty))
     class LastNameEmpty : RegisterResponse(ResourceString(R.string.lastname_is_empty))
     class UserNameEmpty : RegisterResponse(ResourceString(R.string.user_is_empty))
+    class PWEmpty : RegisterResponse(ResourceString(R.string.pw_is_empty))
     class PWNotSame : RegisterResponse(ResourceString(R.string.pw_not_same))
     class ErrorThrown<T>(error: Resource.Error<T>) :
         RegisterResponse(error.message ?: DynamicString("Error thrown"))
@@ -71,6 +72,9 @@ class RegisterUC(
         }
         if (userName.isBlank()) {
             return RegisterResponse.UserNameEmpty()
+        }
+        if (pw1.isBlank() || pw2.isBlank()) {
+            return RegisterResponse.PWEmpty()
         }
         if (pw1 != pw2) { // TODO make more checks
             return RegisterResponse.PWNotSame()
