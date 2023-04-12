@@ -9,10 +9,11 @@ import de.bitb.buttonbuddy.core.getString
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.usecase.user.LoginResponse
+import de.bitb.buttonbuddy.usecase.user.LoginUC
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
@@ -57,7 +58,7 @@ class LoadBuddiesUCTest {
         coEvery { mockBuddyRepo.loadBuddies(any()) } returns Resource.Success(emptyList())
 
         val errorResp = loginUC(user.userName, "wrongPassword")
-        assert(errorResp is Resource.Error)
+        assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.ErrorThrown<*>)
         assertEquals(
             errorResp.message!!.asString(::getString),
@@ -74,7 +75,7 @@ class LoadBuddiesUCTest {
         val user = buildUser().copy(userName = "")
 
         val errorResp = loginUC(user.userName, "pw")
-        assert(errorResp is Resource.Error)
+        assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.UserEmpty)
     }
 
@@ -83,7 +84,7 @@ class LoadBuddiesUCTest {
         val user = buildUser()
 
         val errorResp = loginUC(user.userName, "")
-        assert(errorResp is Resource.Error)
+        assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.PwEmpty)
     }
 
@@ -93,7 +94,7 @@ class LoadBuddiesUCTest {
         coEvery { mockUserRepo.loginUser(user.userName, "pw") } returns Resource.Success(null)
 
         val errorResp = loginUC(user.userName, "pw")
-        assert(errorResp is Resource.Error)
+        assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.UserNotFound)
     }
 
@@ -106,7 +107,7 @@ class LoadBuddiesUCTest {
         coEvery { mockBuddyRepo.loadBuddies(any()) } returns expectedError
 
         val errorResp = loginUC(user.userName, "pw")
-        assert(errorResp is Resource.Error)
+        assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.ErrorThrown<*>)
         assertEquals(
             errorResp.message!!.asString(::getString),
