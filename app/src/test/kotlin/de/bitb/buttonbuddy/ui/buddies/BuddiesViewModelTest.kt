@@ -2,13 +2,17 @@ package de.bitb.buttonbuddy.ui.buddies
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.core.getString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
+import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.asResString
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
@@ -51,9 +55,13 @@ class BuddiesViewModelTest {
         val buddiesLiveData = mockk<LiveData<List<Buddy>>>()
         every { buddyRepo.getLiveBuddies() }.returns(buddiesLiveData)
 
+        val settingsRepo = mockk<SettingsRepository>()
+        val settingLiveData = mockk<LiveData<Settings>>()
+        every { settingsRepo.getLiveSettings() }.returns(settingLiveData)
+
         buddyUC = mockk()
         messageUC = mockk()
-        viewModel = BuddiesViewModel(messageUC, buddyUC, mockk(), buddyRepo, mockk())
+        viewModel = BuddiesViewModel(messageUC, buddyUC, mockk(), buddyRepo, settingsRepo)
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar.invoke(any()) }
     }
@@ -73,7 +81,15 @@ class BuddiesViewModelTest {
         assertEquals(true, viewModel.isRefreshing.value)
         advanceTimeBy(2L)
         assertEquals(false, viewModel.isRefreshing.value)
-        verify { viewModel.showSnackbar("Buddys geladen".asResString()) }
+        verify {
+            viewModel.showSnackbar(
+                match {
+                    it.asString(::getString) ==
+                            R.string.buddies_loaded.asResString()
+                                .asString(::getString)
+                },
+            )
+        }
     }
 
     @Test
@@ -116,6 +132,15 @@ class BuddiesViewModelTest {
         advanceTimeBy(1L)
 
         // Then
-        verify { viewModel.showSnackbar("Nachricht gesendet".asResString()) }
+        verify {
+            viewModel.showSnackbar(
+                match {
+                    it.asString(::getString) == ResString.ResourceString(
+                        R.string.message_sent_toast,
+                        arrayOf(buddy.fullName),
+                    ).asString(::getString)
+                },
+            )
+        }
     }
 }

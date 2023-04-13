@@ -2,14 +2,19 @@ package de.bitb.buttonbuddy.ui.buddy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.core.getString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.MessageRepository
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.asResString
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import io.mockk.*
@@ -52,8 +57,12 @@ class BuddyViewModelTest {
         val msgLiveData = mockk<LiveData<List<Message>>>()
         every { msgRepo.getLiveMessages(any()) }.returns(msgLiveData)
 
+        val settingsRepo = mockk<SettingsRepository>()
+        val settingLiveData = mockk<LiveData<Settings>>()
+        every { settingsRepo.getLiveSettings() }.returns(settingLiveData)
+
         messageUC = mockk()
-        viewModel = BuddyViewModel(messageUC, buddyRepo, msgRepo, mockk(), userRepo)
+        viewModel = BuddyViewModel(messageUC, buddyRepo, msgRepo, settingsRepo, userRepo)
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar(any()) }
     }
@@ -97,6 +106,15 @@ class BuddyViewModelTest {
         advanceTimeBy(1L)
 
         // Then
-        verify { viewModel.showSnackbar("Nachricht gesendet".asResString()) }
+        verify {
+            viewModel.showSnackbar(
+                match {
+                    it.asString(::getString) == ResString.ResourceString(
+                        R.string.message_sent_toast,
+                        arrayOf(buddy.fullName),
+                    ).asString(::getString)
+                },
+            )
+        }
     }
 }

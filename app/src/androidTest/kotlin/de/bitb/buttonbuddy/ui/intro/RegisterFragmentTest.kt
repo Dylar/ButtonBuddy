@@ -60,7 +60,7 @@ class RegisterFragmentTest {
             onNodeWithTag(RegisterFragment.USER_NAME_TAG)
                 .assertIsDisplayed()
 //                .assertTextEquals(getString(R.string.user_name))
-//                .onChildren()
+//                .onChildren() TODO why not? :/
 //                .assertAny(hasText(getString(R.string.user_name)))
             onNodeWithTag(RegisterFragment.APPBAR_TAG)
                 .assertIsDisplayed()
