@@ -65,10 +65,10 @@ class LoginFragmentTest {
                 .assertIsDisplayed()
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG)
                 .assertIsDisplayed()
-            onNodeWithTag(LoginFragment.USER_NAME_TAG)
+            onNodeWithTag(LoginFragment.EMAIL_TAG)
                 .assertIsDisplayed()
 //                .onChildren() TODO why not?
-//                .assertAny(hasText(getString(R.string.user_name)))
+//                .assertAny(hasText(getString(R.string.email)))
             onNodeWithTag(LoginFragment.PW_TAG)
                 .assertIsDisplayed()
 //                .onChildren()
@@ -92,7 +92,7 @@ class LoginFragmentTest {
                 .onChildren()
                 .assertAny(hasText(LoginResponse.UserEmpty().asString()))
 
-            onNodeWithTag(LoginFragment.USER_NAME_TAG).performTextInput("UserName")
+            onNodeWithTag(LoginFragment.EMAIL_TAG).performTextInput("email@gmx.de")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
             waitForIdle()
             onNodeWithTag(LoginFragment.ERROR_TAG)

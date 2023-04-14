@@ -21,7 +21,7 @@ class RegisterViewModel @Inject constructor(
 
     var firstName by mutableStateOf("")
     var lastName by mutableStateOf("")
-    var userName by mutableStateOf("")
+    var email by mutableStateOf("")
     var pw1 by mutableStateOf("")
     var pw2 by mutableStateOf("")
 
@@ -30,7 +30,7 @@ class RegisterViewModel @Inject constructor(
     fun register() {
         error = null
         viewModelScope.launch {
-            val result = userUseCases.registerUC(firstName, lastName, userName, pw1, pw2)
+            val result = userUseCases.registerUC(firstName, lastName, email, pw1, pw2)
             if (result is Resource.Success) {
                 navigate(R.id.register_to_buddies)
             } else {

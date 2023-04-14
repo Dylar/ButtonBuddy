@@ -12,7 +12,7 @@ sealed class RegisterResponse(val message: ResString) {
     class Registered : RegisterResponse(ResourceString(R.string.ok))
     class FirstNameEmpty : RegisterResponse(ResourceString(R.string.firstname_is_empty))
     class LastNameEmpty : RegisterResponse(ResourceString(R.string.lastname_is_empty))
-    class UserNameEmpty : RegisterResponse(ResourceString(R.string.user_is_empty))
+    class EmailEmpty : RegisterResponse(ResourceString(R.string.email_is_empty))
     class PWEmpty : RegisterResponse(ResourceString(R.string.pw_is_empty))
     class PWNotSame : RegisterResponse(ResourceString(R.string.pw_not_same))
     class ErrorThrown<T>(error: Resource.Error<T>) :
@@ -28,16 +28,16 @@ class RegisterUC(
     suspend operator fun invoke(
         firstName: String,
         lastName: String,
-        userName: String,
+        email: String,
         pw1: String,
         pw2: String,
     ): Resource<RegisterResponse> {
-        val response = isValid(firstName, lastName, userName, pw1, pw2)
+        val response = isValid(firstName, lastName, email, pw1, pw2)
         if (response != null) {
             return response.asError
         }
 
-        val registerResp = userRepo.registerUser(userName, pw1)
+        val registerResp = userRepo.registerUser(email, pw1)
         if (registerResp is Resource.Error) {
             return RegisterResponse.ErrorThrown(registerResp).asError
         }
@@ -45,7 +45,7 @@ class RegisterUC(
         val user = User(
             firstName = firstName,
             lastName = lastName,
-            userName = userName,
+            email = email,
             uuid = UUID.randomUUID().toString(),
         )
 
@@ -60,7 +60,7 @@ class RegisterUC(
     private fun isValid(
         firstName: String,
         lastName: String,
-        userName: String,
+        email: String,
         pw1: String,
         pw2: String
     ): RegisterResponse? {
@@ -70,8 +70,8 @@ class RegisterUC(
         if (lastName.isBlank()) {
             return RegisterResponse.LastNameEmpty()
         }
-        if (userName.isBlank()) {
-            return RegisterResponse.UserNameEmpty()
+        if (email.isBlank()) { // TODO check if exists
+            return RegisterResponse.EmailEmpty()
         }
         if (pw1.isBlank() || pw2.isBlank()) {
             return RegisterResponse.PWEmpty()

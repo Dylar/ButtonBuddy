@@ -15,7 +15,7 @@
 
     <string name="firstname_is_empty">Vorname darf nicht leer sein</string>
     <string name="lastname_is_empty">Nachname darf nicht leer sein</string>
-    <string name="user_is_empty">Benutzername darf nicht leer sein</string>
+    <string name="email_is_empty">Email darf nicht leer sein</string>
     <string name="user_not_found">Benutzer nicht gefunden</string>
     <string name="pw_is_empty">Passwort darf nicht leer sein</string>
     <string name="pw_not_same">Passwort stimmt nicht überein</string>
@@ -30,7 +30,7 @@
     <string name="register_title">Registrieren</string>
     <string name="first_name">Vorname</string>
     <string name="last_name">Nachname</string>
-    <string name="user_name">Benutzername</string>
+    <string name="email">Email</string>
     <string name="pw1_label">Passwort</string>
     <string name="pw2_label">Passwort wiederholen</string>
 

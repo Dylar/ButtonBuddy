@@ -31,7 +31,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     companion object {
         const val APPBAR_TAG = "LoginAppbar"
         const val INFO_BUTTON_TAG = "LoginInfoButton"
-        const val USER_NAME_TAG = "LoginUserName"
+        const val EMAIL_TAG = "LoginEmail"
         const val PW_TAG = "LoginPW"
         const val REGISTER_BUTTON_TAG = "LoginRegisterButton"
         const val LOGIN_BUTTON_TAG = "LoginButton"
@@ -77,10 +77,10 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 32.dp, start = 16.dp, end = 16.dp)
-                        .testTag(USER_NAME_TAG),
-                    value = viewModel.userName,
-                    onValueChange = { viewModel.userName = it },
-                    label = { Text(getString(R.string.user_name)) },
+                        .testTag(EMAIL_TAG),
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text(getString(R.string.email)) },
                 )
                 OutlinedTextField(
                     modifier = Modifier

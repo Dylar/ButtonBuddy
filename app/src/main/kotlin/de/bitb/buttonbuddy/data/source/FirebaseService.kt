@@ -17,14 +17,13 @@ class FirestoreService(
     private val buddyCollection
         get() = firestore.collection("Buddies")
 
-    override suspend fun getUser(firstName: String, lastName: String): Resource<User?> {
+    override suspend fun getUser(email: String): Resource<User?> {
         return try {
             if (!isUserLoggedIn()) {
                 throw Exception("User not logged in")
             }
             val snap = buddyCollection
-                .whereEqualTo("firstName", firstName) //TODO not by name
-                .whereEqualTo("lastName", lastName)
+                .whereEqualTo("email", email)
                 .get().await()
             Resource.Success(snap.toObjects(User::class.java).firstOrNull())
         } catch (e: Exception) {
@@ -37,17 +36,17 @@ class FirestoreService(
         return user != null
     }
 
-    override suspend fun registerUser(userName: String, pw: String): Resource<Unit> =
+    override suspend fun registerUser(email: String, pw: String): Resource<Unit> =
         try {
-            val authResult = fireAuth.createUserWithEmailAndPassword(userName, pw).await()
+            val authResult = fireAuth.createUserWithEmailAndPassword(email, pw).await()
             if (authResult.user != null) Resource.Success(Unit) else Resource.Error("Not registered")
         } catch (e: Exception) {
             Resource.Error(e)
         }
 
-    override suspend fun loginUser(userName: String, pw: String): Resource<Boolean> {
+    override suspend fun loginUser(email: String, pw: String): Resource<Boolean> {
         return try {
-            val authResult = fireAuth.signInWithEmailAndPassword(userName, pw).await()
+            val authResult = fireAuth.signInWithEmailAndPassword(email, pw).await()
             Resource.Success(authResult.user != null)
         } catch (e: Exception) {
             Resource.Error(e)

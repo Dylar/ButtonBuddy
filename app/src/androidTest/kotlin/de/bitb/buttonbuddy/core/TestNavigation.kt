@@ -68,7 +68,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.doL
     user: User,
     pw: String
 ) {
-    onNodeWithTag(LoginFragment.USER_NAME_TAG).performTextInput(user.userName)
+    onNodeWithTag(LoginFragment.EMAIL_TAG).performTextInput(user.email)
     onNodeWithTag(LoginFragment.PW_TAG).performTextInput(pw)
     onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
     waitForIdle()

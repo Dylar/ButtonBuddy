@@ -9,9 +9,9 @@ import de.bitb.buttonbuddy.ui.base.composable.ResString.*
 
 sealed class LoginResponse(val message: ResString) {
     class LoggedIn : LoginResponse(ResourceString(R.string.ok))
-    class UserEmpty : LoginResponse(ResourceString(R.string.user_is_empty))
+    class UserEmpty : LoginResponse(ResourceString(R.string.email_is_empty))
     class PwEmpty : LoginResponse(ResourceString(R.string.pw_is_empty))
-    class UserNotFound : LoginResponse(ResourceString(R.string.pw_is_empty))
+    class UserNotFound : LoginResponse(ResourceString(R.string.user_not_found))
     class ErrorThrown<T>(error: Resource.Error<T>) :
         LoginResponse(error.message ?: DynamicString("Error thrown"))
 
@@ -24,15 +24,15 @@ class LoginUC(
     private val buddyRepo: BuddyRepository,
 ) {
     suspend operator fun invoke(
-        userName: String,
+        email: String,
         pw: String
     ): Resource<LoginResponse> {
-        val response = isValid(userName, pw)
+        val response = isValid(email, pw)
         if (response != null) {
             return response.asError
         }
 
-        val loadUserResp = userRepo.loginUser(userName, pw)
+        val loadUserResp = userRepo.loginUser(email, pw)
         if (loadUserResp is Resource.Error) {
             return LoginResponse.ErrorThrown(loadUserResp).asError
         }
@@ -57,8 +57,8 @@ class LoginUC(
         return Resource.Success(LoginResponse.LoggedIn())
     }
 
-    private fun isValid(userName: String, pw: String): LoginResponse? {
-        if (userName.isBlank()) {
+    private fun isValid(email: String, pw: String): LoginResponse? {
+        if (email.isBlank()) {
             return LoginResponse.UserEmpty()
         }
         if (pw.isBlank()) {

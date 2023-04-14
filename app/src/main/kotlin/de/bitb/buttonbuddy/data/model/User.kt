@@ -6,7 +6,7 @@ import androidx.room.*
 data class User(
     @PrimaryKey val uuid: String = "",
     val token: String = "",
-    val userName: String = "",
+    val email: String = "",
     val firstName: String = "",
     val lastName: String = "",
     val buddies: MutableList<String> = mutableListOf(),

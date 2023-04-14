@@ -52,12 +52,12 @@ class LoadBuddiesUCTest {
         val pw = "validPassword"
         val user = buildUser()
         val expectedError = Resource.Error<User?>("WRONG PW")
-        coEvery { mockUserRepo.loginUser(user.userName, any()) } returns expectedError
-        coEvery { mockUserRepo.loginUser(user.userName, pw) } returns Resource.Success(user)
+        coEvery { mockUserRepo.loginUser(user.email, any()) } returns expectedError
+        coEvery { mockUserRepo.loginUser(user.email, pw) } returns Resource.Success(user)
         coEvery { mockUserRepo.saveUser(user) } returns Resource.Success(user)
         coEvery { mockBuddyRepo.loadBuddies(any()) } returns Resource.Success(emptyList())
 
-        val errorResp = loginUC(user.userName, "wrongPassword")
+        val errorResp = loginUC(user.email, "wrongPassword")
         assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.ErrorThrown<*>)
         assertEquals(
@@ -65,16 +65,16 @@ class LoadBuddiesUCTest {
             expectedError.message!!.asString(::getString)
         )
 
-        val actualResp = loginUC(user.userName, pw)
+        val actualResp = loginUC(user.email, pw)
         assert(actualResp is Resource.Success)
         assert(actualResp.data is LoginResponse.LoggedIn)
     }
 
     @Test
     fun `login with empty user name should return error`() = runTest {
-        val user = buildUser().copy(userName = "")
+        val user = buildUser().copy(email = "")
 
-        val errorResp = loginUC(user.userName, "pw")
+        val errorResp = loginUC(user.email, "pw")
         assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.UserEmpty)
     }
@@ -83,7 +83,7 @@ class LoadBuddiesUCTest {
     fun `login with empty password should return error`() = runTest {
         val user = buildUser()
 
-        val errorResp = loginUC(user.userName, "")
+        val errorResp = loginUC(user.email, "")
         assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.PwEmpty)
     }
@@ -91,9 +91,9 @@ class LoadBuddiesUCTest {
     @Test
     fun `login with non-existing user should return user not found error`() = runTest {
         val user = buildUser()
-        coEvery { mockUserRepo.loginUser(user.userName, "pw") } returns Resource.Success(null)
+        coEvery { mockUserRepo.loginUser(user.email, "pw") } returns Resource.Success(null)
 
-        val errorResp = loginUC(user.userName, "pw")
+        val errorResp = loginUC(user.email, "pw")
         assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.UserNotFound)
     }
@@ -102,11 +102,11 @@ class LoadBuddiesUCTest {
     fun `login, load buddies and return buddies not loaded error`() = runTest {
         val user = buildUser(buddies = mutableListOf("uuid1"))
         val expectedError = Resource.Error<List<Buddy>>("Load Buddies error")
-        coEvery { mockUserRepo.loginUser(user.userName, any()) } returns Resource.Success(user)
+        coEvery { mockUserRepo.loginUser(user.email, any()) } returns Resource.Success(user)
         coEvery { mockUserRepo.saveUser(user) } returns Resource.Success(user)
         coEvery { mockBuddyRepo.loadBuddies(any()) } returns expectedError
 
-        val errorResp = loginUC(user.userName, "pw")
+        val errorResp = loginUC(user.email, "pw")
         assert(errorResp is Resource.Error<*>)
         assert(errorResp.data is LoginResponse.ErrorThrown<*>)
         assertEquals(
@@ -119,11 +119,11 @@ class LoadBuddiesUCTest {
     fun `login, load buddies and return success`() = runTest {
         val buddy = buildBuddy()
         val user = buildUser(buddies = mutableListOf(buddy.uuid))
-        coEvery { mockUserRepo.loginUser(user.userName, any()) } returns Resource.Success(user)
+        coEvery { mockUserRepo.loginUser(user.email, any()) } returns Resource.Success(user)
         coEvery { mockUserRepo.saveUser(user) } returns Resource.Success(user)
         coEvery { mockBuddyRepo.loadBuddies(any()) } returns Resource.Success(listOf(buddy))
 
-        val actualResp = loginUC(user.userName, "pw")
+        val actualResp = loginUC(user.email, "pw")
         assert(actualResp is Resource.Success)
         assert(actualResp.data is LoginResponse.LoggedIn)
         coVerify { mockBuddyRepo.loadBuddies(any()) }

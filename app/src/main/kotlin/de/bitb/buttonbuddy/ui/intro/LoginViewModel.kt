@@ -18,7 +18,7 @@ class LoginViewModel @Inject constructor(
     private val userUseCases: UserUseCases,
 ) : BaseViewModel() {
 
-    var userName by mutableStateOf("")
+    var email by mutableStateOf("")
     var pw by mutableStateOf("")
 
     var error by mutableStateOf<ResString?>(null)
@@ -26,7 +26,7 @@ class LoginViewModel @Inject constructor(
     fun login() {
         error = null
         viewModelScope.launch {
-            val result = userUseCases.loginUC(userName, pw)
+            val result = userUseCases.loginUC(email, pw)
             if (result is Resource.Success) {
                 navigate(R.id.login_to_buddies)
             } else {

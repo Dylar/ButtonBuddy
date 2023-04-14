@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -25,7 +27,7 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
         const val APPBAR_TAG = "RegisterAppbar"
         const val FIRST_NAME_TAG = "RegisterFirstName"
         const val LAST_NAME_TAG = "RegisterLastName"
-        const val USER_NAME_TAG = "RegisterUserName"
+        const val EMAIL_TAG = "RegisterEmail"
         const val PW1_TAG = "RegisterPW1"
         const val PW2_TAG = "RegisterPW2"
         const val REGISTER_BUTTON_TAG = "RegisterButton"
@@ -57,7 +59,8 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 OutlinedTextField(
@@ -79,10 +82,10 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        .testTag(USER_NAME_TAG),
-                    value = viewModel.userName,
-                    onValueChange = { viewModel.userName = it },
-                    label = { Text(getString(R.string.user_name)) }
+                        .testTag(EMAIL_TAG),
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text(getString(R.string.email)) }
                 )
                 OutlinedTextField(
                     modifier = Modifier
@@ -109,6 +112,7 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                         contentAlignment = Alignment.TopCenter,
                     ) { Text(it.asString(), color = BaseColors.FireRed) }
                 }
+                Spacer(modifier = Modifier.padding(top = 100.dp))
             }
         }
     }

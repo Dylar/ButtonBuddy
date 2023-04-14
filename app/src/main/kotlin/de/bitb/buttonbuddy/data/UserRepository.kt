@@ -9,8 +9,8 @@ interface UserRepository {
     suspend fun getUser(): Resource<User?>
     fun getLiveUser(): LiveData<User>
     suspend fun updateToken(token: String): Resource<Unit>
-    suspend fun registerUser(userName: String, pw: String): Resource<Unit>
-    suspend fun loginUser(firstName: String, lastName: String): Resource<User?>
+    suspend fun registerUser(email: String, pw: String): Resource<Unit>
+    suspend fun loginUser(email: String, pw: String): Resource<User?>
     suspend fun saveUser(user: User): Resource<User>
 }
 
@@ -42,13 +42,17 @@ class UserRepositoryImpl constructor(
         }
     }
 
-    override suspend fun registerUser(userName: String, pw: String): Resource<Unit> {
-        return remoteDB.registerUser(userName, pw)
+    override suspend fun registerUser(email: String, pw: String): Resource<Unit> {
+        return remoteDB.registerUser(email, pw)
     }
 
-    override suspend fun loginUser(firstName: String, lastName: String): Resource<User?> {
+    override suspend fun loginUser(email: String, pw: String): Resource<User?> {
         return try {
-            when (val userRes = remoteDB.getUser(firstName, lastName)) {
+            val loginResp = remoteDB.loginUser(email, pw)
+            if (loginResp is Resource.Error) {
+                return Resource.Error(loginResp.message!!)
+            }
+            when (val userRes = remoteDB.getUser(email)) {
                 is Resource.Success -> {
                     val data = userRes.data
                     if (userRes.hasData) {
