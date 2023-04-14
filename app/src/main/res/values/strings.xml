@@ -22,10 +22,11 @@
 
     <string name="ok">OK</string>
 
+    <string name="info_title">Information</string>
     <string name="settings_title">Einstellungen</string>
 
     <string name="login_title">Login</string>
-    <string name="login_register_account">Noch kein Account? Klicken Sie hier um sich zu registrieren</string>
+    <string name="login_register_account">Noch kein Account?\nKlicken Sie hier um sich zu registrieren</string>
     <string name="register_title">Registrieren</string>
     <string name="first_name">Vorname</string>
     <string name="last_name">Nachname</string>

@@ -61,6 +61,8 @@ class LoginFragmentTest {
                 .assertIsDisplayed()
                 .onChildren()
                 .assertAny(hasText(getString(R.string.login_title)))
+            onNodeWithTag(LoginFragment.INFO_BUTTON_TAG)
+                .assertIsDisplayed()
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG)
                 .assertIsDisplayed()
             onNodeWithTag(LoginFragment.USER_NAME_TAG)

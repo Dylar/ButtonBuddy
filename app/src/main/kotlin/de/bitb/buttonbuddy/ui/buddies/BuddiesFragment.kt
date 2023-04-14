@@ -26,13 +26,11 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.ui.base.BaseFragment
+import de.bitb.buttonbuddy.ui.base.*
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.naviToBuddy
-import de.bitb.buttonbuddy.ui.base.naviToProfile
-import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
+import de.bitb.buttonbuddy.ui.info.InfoDialog
 import java.util.*
 
 @AndroidEntryPoint
@@ -40,6 +38,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddiesAppbar"
 
+        const val INFO_BUTTON_TAG = "BuddiesInfoButton"
         const val PROFILE_BUTTON_TAG = "BuddiesProfileButton"
         const val SCAN_BUTTON_TAG = "BuddiesScanButton"
 
@@ -60,6 +59,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
     @Composable
     fun BuddiesScreen() {
+        val showDialog = remember { mutableStateOf(false) }
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -71,6 +71,10 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                             modifier = Modifier.testTag(PROFILE_BUTTON_TAG),
                             onClick = ::naviToProfile
                         ) { Icon(Icons.Default.Person, contentDescription = "Profil") }
+                        IconButton(
+                            modifier = Modifier.testTag(INFO_BUTTON_TAG),
+                            onClick = { showDialog.value = !showDialog.value }
+                        ) { Icon(Icons.Default.Info, contentDescription = "Info") }
                     },
                 )
             },
@@ -83,6 +87,10 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
         ) { innerPadding ->
             val buddies by viewModel.buddies.observeAsState(null)
             BuddiesList(innerPadding, buddies)
+        }
+
+        if (showDialog.value) {
+            InfoDialog { showDialog.value = false }
         }
     }
 

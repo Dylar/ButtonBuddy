@@ -60,6 +60,8 @@ class BuddiesFragmentTest {
                 .assertAny(hasText(getString(R.string.buddies_title)))
             onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
                 .assertIsDisplayed()
+            onNodeWithTag(BuddiesFragment.INFO_BUTTON_TAG)
+                .assertIsDisplayed()
             onNodeWithText(getString(R.string.no_buddies))
                 .assertIsDisplayed()
             onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)

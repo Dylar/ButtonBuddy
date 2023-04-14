@@ -29,7 +29,6 @@
             app:destination="@id/buddiesFragment"
             app:popUpTo="@+id/buddiesFragment"
             app:popUpToInclusive="true" />
-
         <action
             android:id="@+id/login_to_register"
             app:destination="@id/registerFragment" />

@@ -10,6 +10,10 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -26,7 +30,9 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.naviToProfile
 import de.bitb.buttonbuddy.ui.base.styles.createComposeView
+import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<ProfileViewModel>() {
@@ -52,7 +58,13 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),
-                    title = { Text(getString(R.string.profile_title)) }
+                    title = { Text(getString(R.string.profile_title)) },
+//                    actions = {
+//                        IconButton(
+//                            modifier = Modifier.testTag(BuddiesFragment.PROFILE_BUTTON_TAG),
+//                            onClick = ::naviToSettings
+//                        ) { Icon(Icons.Default.Settings, contentDescription = "Settings") }
+//                    },
                 )
             },
             content = {
