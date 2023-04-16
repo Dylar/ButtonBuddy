@@ -18,13 +18,11 @@ import javax.inject.Inject
 @HiltViewModel
 class BuddyViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
+    override val settingsRepo: SettingsRepository,
     private val buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
-    settingsRepo: SettingsRepository,
     userRepo: UserRepository,
 ) : BaseViewModel(), SendMessageDelegate {
-
-    val settings: LiveData<Settings> = settingsRepo.getLiveSettings()
 
     val user: LiveData<User> = userRepo.getLiveUser()
     lateinit var buddy: LiveData<Buddy>

@@ -23,12 +23,11 @@ import javax.inject.Inject
 @HiltViewModel
 class BuddiesViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
+    override val settingsRepo: SettingsRepository,
     private val buddyUC: BuddyUseCases,
     private val msgRepo: MessageRepository,
     buddyRepo: BuddyRepository,
-    settingsRepo: SettingsRepository,
 ) : BaseViewModel(), SendMessageDelegate {
-    val settings: LiveData<Settings> = settingsRepo.getLiveSettings()
 
     val isRefreshing = mutableStateOf(false)
     val buddies: LiveData<List<Buddy>> = buddyRepo.getLiveBuddies()

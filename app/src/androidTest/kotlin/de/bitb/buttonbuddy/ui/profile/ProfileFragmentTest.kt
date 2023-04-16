@@ -56,6 +56,8 @@ class ProfileFragmentTest {
                 .assertIsDisplayed()
                 .onChildren()
                 .assertAny(hasText(getString(R.string.profile_title)))
+            onNodeWithTag(ProfileFragment.SETTINGS_BUTTON_TAG)
+                .assertIsDisplayed()
             onNodeWithTag(ProfileFragment.QR_TAG)
                 .assertIsDisplayed()
             onNodeWithTag(ProfileFragment.QR_INFO_TAG)

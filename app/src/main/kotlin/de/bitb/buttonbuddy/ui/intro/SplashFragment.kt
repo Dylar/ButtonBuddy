@@ -2,10 +2,7 @@ package de.bitb.buttonbuddy.ui.intro
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -13,7 +10,6 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class SplashFragment : BaseFragment<SplashViewModel>() {
@@ -35,10 +31,7 @@ class SplashFragment : BaseFragment<SplashViewModel>() {
         } ?: viewModel.loadData()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView { LoadingIndicator() }
+    @Composable
+    override fun ScreenContent() { LoadingIndicator() }
 
 }

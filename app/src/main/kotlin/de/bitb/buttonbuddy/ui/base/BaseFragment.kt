@@ -1,14 +1,21 @@
 package de.bitb.buttonbuddy.ui.base
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.ScaffoldState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import de.bitb.buttonbuddy.ui.base.composable.ResString
+import de.bitb.buttonbuddy.ui.base.styles.ButtonBuddyAppTheme
 import kotlinx.coroutines.launch
 
 abstract class BaseFragment<T : BaseViewModel> : Fragment() {
@@ -18,8 +25,22 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     val navController by lazy { NavHostFragment.findNavController(this) }
     lateinit var scaffoldState: ScaffoldState
 
-    @Composable // TODO make depending on settings
-    fun isDarkMode() = isSystemInDarkTheme()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setContent {
+            scaffoldState = rememberScaffoldState()
+            val settings by viewModel.settingsRepo.getLiveSettings().observeAsState()
+            ButtonBuddyAppTheme(
+                useDarkTheme = settings?.isDarkMode ?: isSystemInDarkTheme()
+            ) { ScreenContent() }
+        }
+    }
+
+    @Composable
+    abstract fun ScreenContent()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

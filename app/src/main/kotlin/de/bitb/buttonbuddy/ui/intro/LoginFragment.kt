@@ -1,15 +1,11 @@
 package de.bitb.buttonbuddy.ui.intro
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -23,7 +19,6 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.naviToRegister
 import de.bitb.buttonbuddy.ui.base.styles.BaseColors
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 import de.bitb.buttonbuddy.ui.info.InfoDialog
 
 @AndroidEntryPoint
@@ -40,11 +35,8 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
 
     override val viewModel: LoginViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView {
+    @Composable
+    override fun ScreenContent() {
         val showDialog = remember { mutableStateOf(false) }
         Scaffold(
             topBar = {

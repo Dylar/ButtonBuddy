@@ -1,15 +1,8 @@
 package de.bitb.buttonbuddy.ui.buddies
 
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,7 +22,6 @@ import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.ui.base.*
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 import de.bitb.buttonbuddy.ui.info.InfoDialog
 import java.util.*
 
@@ -51,14 +43,8 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
     override val viewModel: BuddiesViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView { BuddiesScreen() }
-
     @Composable
-    fun BuddiesScreen() {
+    override fun ScreenContent() {
         val showDialog = remember { mutableStateOf(false) }
         Scaffold(
             scaffoldState = scaffoldState,
@@ -151,7 +137,7 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                         .padding(start = 16.dp)
                 )
                 val lastMsg by viewModel.getLastMessage(buddy.uuid).observeAsState()
-                val settings by viewModel.settings.observeAsState()
+                val settings by viewModel.settingsRepo.getLiveSettings().observeAsState()
                 CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?: Date().time)
                 {
                     FloatingActionButton(

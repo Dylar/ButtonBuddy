@@ -35,7 +35,7 @@ fun PreferenceEditText(
             .padding(all = 16.dp),
     ) {
         Column(
-            modifier = Modifier.weight(weight = 1f, fill = true),
+            modifier = Modifier.weight(weight = 3f, fill = true),
         ) {
             Text(
                 text = item.title,
@@ -54,6 +54,7 @@ fun PreferenceEditText(
 
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
+            modifier = Modifier.weight(weight = 1f, fill = true),
             value = value,
             onValueChange = onChange,
             keyboardOptions = KeyboardOptions(

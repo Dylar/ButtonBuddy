@@ -61,11 +61,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="de.bitb.buttonbuddy.ui.profile.ProfileFragment"
-        android:label="profile" />
-
-    <fragment
         android:id="@+id/buddyFragment"
         android:name="de.bitb.buttonbuddy.ui.buddy.BuddyFragment"
         android:label="buddy" />
@@ -74,4 +69,18 @@
         android:id="@+id/scanFragment"
         android:name="de.bitb.buttonbuddy.ui.scan.ScanFragment"
         android:label="buddy" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="de.bitb.buttonbuddy.ui.profile.ProfileFragment"
+        android:label="profile" >
+        <action
+            android:id="@+id/profile_to_settings"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="de.bitb.buttonbuddy.ui.settings.SettingsFragment"
+        android:label="settings" />
 </navigation>

@@ -30,8 +30,6 @@ import de.bitb.buttonbuddy.ui.base.openAppSettings
 import de.bitb.buttonbuddy.ui.base.permission.CameraPermissionTextProvider
 import de.bitb.buttonbuddy.ui.base.permission.PermissionDialog
 
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
-
 @AndroidEntryPoint
 class ScanFragment : BaseFragment<ScanViewModel>() {
     companion object {
@@ -40,14 +38,8 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
 
     override val viewModel: ScanViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView { BuddiesScreen() }
-
     @Composable
-    fun BuddiesScreen() {
+    override fun ScreenContent() {
         scaffoldState = rememberScaffoldState()
 
         val dialogQueue = viewModel.visiblePermissionDialogQueue

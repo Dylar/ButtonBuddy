@@ -1,18 +1,12 @@
 package de.bitb.buttonbuddy.ui.profile
 
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,28 +24,21 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.naviToProfile
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
-import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
+import de.bitb.buttonbuddy.ui.base.naviToSettings
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<ProfileViewModel>() {
     companion object {
         const val APPBAR_TAG = "ProfileAppbar"
+        const val SETTINGS_BUTTON_TAG = "ProfileSettingsButton"
         const val QR_INFO_TAG = "ProfileQRInfo"
         const val QR_TAG = "ProfileQR"
     }
 
     override val viewModel: ProfileViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView { ProfileScreen() }
-
     @Composable
-    fun ProfileScreen() {
+    override fun ScreenContent() {
         val user by viewModel.user.observeAsState(null)
         Scaffold(
             scaffoldState = scaffoldState,
@@ -59,12 +46,12 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),
                     title = { Text(getString(R.string.profile_title)) },
-//                    actions = {
-//                        IconButton(
-//                            modifier = Modifier.testTag(BuddiesFragment.PROFILE_BUTTON_TAG),
-//                            onClick = ::naviToSettings
-//                        ) { Icon(Icons.Default.Settings, contentDescription = "Settings") }
-//                    },
+                    actions = {
+                        IconButton(
+                            modifier = Modifier.testTag(SETTINGS_BUTTON_TAG),
+                            onClick = ::naviToSettings
+                        ) { Icon(Icons.Default.Settings, contentDescription = "Settings") }
+                    },
                 )
             },
             content = {
@@ -118,7 +105,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
                         try {
                             setImageBitmap(bitmap)
                         } catch (e: WriterException) {
-                            Log.e(toString(), e.toString());
+                            Log.e(toString(), e.toString())
                         }
                     }
                 }

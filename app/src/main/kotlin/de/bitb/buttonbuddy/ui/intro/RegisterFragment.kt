@@ -1,15 +1,12 @@
 package de.bitb.buttonbuddy.ui.intro
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.testTag
@@ -19,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.styles.BaseColors
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 
 @AndroidEntryPoint
 class RegisterFragment : BaseFragment<RegisterViewModel>() {
@@ -36,11 +32,8 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
 
     override val viewModel: RegisterViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView {
+    @Composable
+    override fun ScreenContent() {
         Scaffold(
             topBar = {
                 TopAppBar(

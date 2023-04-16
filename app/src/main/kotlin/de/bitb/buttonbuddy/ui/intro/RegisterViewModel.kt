@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    override val settingsRepo: SettingsRepository,
     private val userUseCases: UserUseCases,
 ) : BaseViewModel() {
 

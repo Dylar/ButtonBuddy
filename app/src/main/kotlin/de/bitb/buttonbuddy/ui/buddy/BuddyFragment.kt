@@ -1,9 +1,6 @@
 package de.bitb.buttonbuddy.ui.buddy
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -26,7 +23,6 @@ import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.styles.createComposeView
 import java.util.*
 
 
@@ -46,20 +42,12 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
         viewModel.initLiveState(uuid)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = createComposeView {
-        val buddy by viewModel.buddy.observeAsState(null)
-        BuddyScreen(buddy)
-    }
-
     @Composable
-    fun BuddyScreen(buddy: Buddy?) {
+    override fun ScreenContent() {
+        val buddy by viewModel.buddy.observeAsState(null)
         val messages by viewModel.messages.observeAsState(null)
-        val settings by viewModel.settings.observeAsState()
-        val title = getString(R.string.buddy_title, buddy?.let { ": ${it.fullName}" } ?: "");
+        val settings by viewModel.settingsRepo.getLiveSettings().observeAsState()
+        val title = getString(R.string.buddy_title, buddy?.let { ": ${it.fullName}" } ?: "")
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -75,14 +63,14 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                     {
                         FloatingActionButton(
                             modifier = Modifier.testTag(SEND_BUTTON_TAG),
-                            onClick = { viewModel.sendMessageToBuddy(buddy) }
+                            onClick = { viewModel.sendMessageToBuddy(buddy as Buddy) }
                         ) { Icon(Icons.Filled.Send, contentDescription = "Send") }
                     }
                 }
             },
             content = {
                 when {
-                    buddy != null -> BuddyDetails(it, buddy, messages)
+                    buddy != null -> BuddyDetails(it, buddy as Buddy, messages)
                     else -> LoadingIndicator()
                 }
             },

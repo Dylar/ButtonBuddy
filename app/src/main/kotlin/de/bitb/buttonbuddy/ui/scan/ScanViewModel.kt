@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.permission.PermissionHandler
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScanViewModel @Inject constructor(
+    override val settingsRepo: SettingsRepository,
     private val useCases: BuddyUseCases,
 ) : BaseViewModel(), PermissionHandler by PermissionHandlerImpl() {
 
