@@ -1,17 +1,18 @@
 package de.bitb.buttonbuddy.ui.buddy
 
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
@@ -23,6 +24,8 @@ import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.naviToRegister
+import de.bitb.buttonbuddy.ui.info.InfoDialog
 import java.util.*
 
 
@@ -30,6 +33,7 @@ import java.util.*
 class BuddyFragment : BaseFragment<BuddyViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddyAppbar"
+        const val TIMER_BUTTON_TAG = "BuddyTimerButton"
         const val SEND_BUTTON_TAG = "BuddySendButton"
         const val LIST_TAG = "BuddyList"
     }
@@ -79,12 +83,40 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
 
     @Composable
     fun BuddyDetails(padding: PaddingValues, buddy: Buddy, messages: List<Message>?) {
-        Box(
-            contentAlignment = Alignment.TopCenter,
+        val showDialog = remember { mutableStateOf(false) }
+        val timePicked = remember { mutableStateOf("00:00") }
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(padding)
-        ) { MessagesList(innerPadding = padding, messages = messages, buddy.uuid) }
+        ) {
+            Button(
+                modifier = Modifier
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    .testTag(TIMER_BUTTON_TAG),
+                onClick = { showDialog.value = true },
+                content = {
+                    Text(
+                        text = timePicked.value,
+                        textAlign = TextAlign.Center,
+                    )
+                },
+            )
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier.fillMaxSize()
+            ) { MessagesList(innerPadding = padding, messages = messages, buddy.uuid) }
+        }
+
+        if (showDialog.value) {
+            TimerPicker(0, 0, { h, m ->
+                Log.e("TIME:", "$h:$m")
+                timePicked.value = "${h}h:${m}m"
+                showDialog.value = false
+            }, { showDialog.value = false })
+        }
     }
 
     @Composable
