@@ -1,7 +1,10 @@
 package de.bitb.buttonbuddy.ui.buddy
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.formatDuration
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.MessageRepository
@@ -11,8 +14,11 @@ import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
+import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,10 +27,9 @@ class BuddyViewModel @Inject constructor(
     override val settingsRepo: SettingsRepository,
     private val buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
-    userRepo: UserRepository,
+    private val buddyUC: BuddyUseCases,
 ) : BaseViewModel(), SendMessageDelegate {
 
-    val user: LiveData<User> = userRepo.getLiveUser()
     lateinit var buddy: LiveData<Buddy>
     lateinit var messages: LiveData<List<Message>>
 
@@ -34,5 +39,13 @@ class BuddyViewModel @Inject constructor(
     }
 
     fun sendMessageToBuddy(buddy: Buddy) = sendMessage(buddy)
+    fun setCooldown(buddy: Buddy, h: Int, m: Int) {
+        viewModelScope.launch {
+            val result = buddyUC.setCooldownUC(buddy, h, m)
+            if (result is Resource.Error) {
+                showSnackbar(result.message!!)
+            }
+        }
+    }
 }
 

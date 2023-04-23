@@ -22,24 +22,30 @@ interface TokenDao {
 }
 
 interface SettingsDao {
-    fun getCoolDown(): Long
-    fun setCoolDown(cd: Long)
+    fun getCoolDowns(): Map<String, Long>
+    fun setCoolDowns(cooldowns: Map<String, Long>)
     fun getDarkMode(): Boolean
     fun setDarkMode(isDark: Boolean)
 }
 
 // REMOTE
-interface RemoteService : BuddyRemoteDao, UserRemoteDao, MessageRemoteDao, MessageService
+interface RemoteService : SettingsRemoteDao, BuddyRemoteDao, UserRemoteDao, MessageRemoteDao, MessageService
 
 class BuddyRemoteService(fireService: FirestoreService, retrofitService: RetrofitService) :
     RemoteService,
-    BuddyRemoteDao by fireService,
+    SettingsRemoteDao by fireService,
     UserRemoteDao by fireService,
+    BuddyRemoteDao by fireService,
     MessageRemoteDao by fireService,
     MessageService by retrofitService
 
 interface BuddyRemoteDao {
-    suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>>
+    suspend fun loadBuddies(userUuid:String, buddyIds: List<String>): Resource<List<Buddy>>
+    suspend fun updateCooldown(
+        userUuid: String,
+        buddyUuid: String,
+        cooldown: Long,
+    ): Resource<Unit>
 }
 
 interface UserRemoteDao {
@@ -56,4 +62,8 @@ interface MessageRemoteDao {
 
 interface MessageService {
     suspend fun sendMessage(msg: Message): Resource<Unit>
+}
+
+interface SettingsRemoteDao {
+    suspend fun loadCooldowns(userUuid: String): Resource<Map<String, Long>>
 }

@@ -43,7 +43,11 @@ class UserRepositoryImpl constructor(
     }
 
     override suspend fun registerUser(email: String, pw: String): Resource<Unit> {
-        return remoteDB.registerUser(email, pw)
+        return try {
+            remoteDB.registerUser(email, pw)
+        } catch (e: Exception) {
+            Resource.Error(e)
+        }
     }
 
     override suspend fun loginUser(email: String, pw: String): Resource<User?> {

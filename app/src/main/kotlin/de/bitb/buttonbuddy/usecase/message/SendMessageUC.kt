@@ -39,7 +39,7 @@ class SendMessageUC @Inject constructor(
             val onCooldown = lastMsg != null && !timeExceeded(
                 lastMsg.date,
                 Date(),
-                settingsResp.data!!.cooldown
+                settingsResp.data!!.buddysCooldown[buddy.uuid] ?: Date().time
             )
             if (onCooldown) {
                 return Resource.Error(R.string.send_on_cooldown)

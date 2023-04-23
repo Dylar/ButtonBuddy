@@ -1,7 +1,6 @@
 package de.bitb.buttonbuddy.ui.buddy
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -19,13 +18,15 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
+import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
+import de.bitb.buttonbuddy.core.misc.formatDuration
+import de.bitb.buttonbuddy.core.misc.getHours
+import de.bitb.buttonbuddy.core.misc.getMins
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.naviToRegister
-import de.bitb.buttonbuddy.ui.info.InfoDialog
 import java.util.*
 
 
@@ -62,8 +63,10 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             },
             floatingActionButton = {
                 if (buddy != null) {
-                    val lastMsg = messages?.lastOrNull()
-                    CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?: Date().time)
+                    val lastMsgDate = messages?.lastOrNull()?.date ?: Date(0)
+                    val cooldown =
+                        buddy?.uuid.let { settings?.buddysCooldown?.get(it) } ?: DEFAULT_COOLDOWN
+                    CoolDownButton(lastMsgDate, cooldown)
                     {
                         FloatingActionButton(
                             modifier = Modifier.testTag(SEND_BUTTON_TAG),
@@ -82,9 +85,13 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
     }
 
     @Composable
-    fun BuddyDetails(padding: PaddingValues, buddy: Buddy, messages: List<Message>?) {
+    fun BuddyDetails(
+        padding: PaddingValues,
+        buddy: Buddy,
+        messages: List<Message>?
+    ) {
         val showDialog = remember { mutableStateOf(false) }
-        val timePicked = remember { mutableStateOf("00:00") }
+        val timePicked = remember { mutableStateOf(buddy.cooldown) }
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,7 +106,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                 onClick = { showDialog.value = true },
                 content = {
                     Text(
-                        text = timePicked.value,
+                        text = formatDuration(timePicked.value),
                         textAlign = TextAlign.Center,
                     )
                 },
@@ -111,11 +118,16 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
         }
 
         if (showDialog.value) {
-            TimerPicker(0, 0, { h, m ->
-                Log.e("TIME:", "$h:$m")
-                timePicked.value = "${h}h:${m}m"
+            val value = timePicked.value
+            TimerPicker(
+                getHours(value),
+                getMins(value),
+                { showDialog.value = false })
+            { h, m ->
+//                timePicked.value = "${h}h:${m}m"
                 showDialog.value = false
-            }, { showDialog.value = false })
+                viewModel.setCooldown(buddy, h, m)
+            }
         }
     }
 

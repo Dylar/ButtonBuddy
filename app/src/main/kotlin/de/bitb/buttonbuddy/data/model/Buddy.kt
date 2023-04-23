@@ -1,6 +1,7 @@
 package de.bitb.buttonbuddy.data.model
 
 import androidx.room.*
+import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 
 @Entity(tableName = "buddy")
 data class Buddy(
@@ -8,7 +9,17 @@ data class Buddy(
     val token: String = "",
     val firstName: String = "",
     val lastName: String = "",
-){
+    val cooldown: Long = DEFAULT_COOLDOWN,
+) {
+    constructor(userUuid: String, map: Map<String, Any>) : this(
+        uuid = map["uuid"] as String,
+        token = map["token"] as String,
+        firstName = map["firstName"] as String,
+        lastName = map["lastName"] as String,
+        cooldown = (map["cooldowns"] as? Map<String, String>
+            ?: mapOf<String, String>())[userUuid]?.toLong() ?: 0,
+    )
+
     val fullName: String
         get() = "$firstName $lastName"
 }

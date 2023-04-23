@@ -7,12 +7,11 @@ import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.core.misc.Resource
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class FirestoreService(
     private val firestore: FirebaseFirestore,
     private val fireAuth: FirebaseAuth
-) : UserRemoteDao, BuddyRemoteDao, MessageRemoteDao {
+) : UserRemoteDao, BuddyRemoteDao, MessageRemoteDao, SettingsRemoteDao {
 
     private val buddyCollection
         get() = firestore.collection("Buddies")
@@ -83,16 +82,55 @@ class FirestoreService(
         }
     }
 
-    override suspend fun loadBuddies(buddyIds: List<String>): Resource<List<Buddy>> {
+    override suspend fun loadBuddies(
+        userUuid: String,
+        buddyIds: List<String>
+    ): Resource<List<Buddy>> {
         return try {
             val buddies = buddyCollection
                 .whereIn("uuid", buddyIds)
-                .get().await()
-                .toObjects(Buddy::class.java)
+                .get().await().documents.map { snap ->
+                    Buddy(userUuid, snap.data?.mapValues { it.value as Any } ?: mapOf())
+                }
             Resource.Success(buddies)
         } catch (e: Exception) {
             Resource.Error(e)
         }
     }
 
+    override suspend fun loadCooldowns(
+        userUuid: String,
+    ): Resource<Map<String, Long>> {
+        return try {
+            val docs = buddyCollection
+                .whereEqualTo("uuid", userUuid)
+                .get().await().documents.firstOrNull()
+
+            val cooldowns = docs?.data?.get("cooldowns") as? Map<String, Long> ?: mapOf()
+            Resource.Success(cooldowns)
+        } catch (e: Exception) {
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun updateCooldown(
+        userUuid: String,
+        buddyUuid: String,
+        cooldown: Long,
+    ): Resource<Unit> {
+        return try {
+            val doc = buddyCollection
+                .whereEqualTo("uuid", buddyUuid)
+                .get().await()
+                .documents.firstOrNull()?.reference
+            val data = mapOf(
+                // only mutable values
+                "cooldowns.$userUuid" to cooldown
+            )
+            doc?.update(data) ?: Resource.Error<Unit>("no Buddy found")
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e)
+        }
+    }
 }

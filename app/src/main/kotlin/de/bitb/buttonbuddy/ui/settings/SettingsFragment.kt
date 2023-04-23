@@ -75,17 +75,17 @@ class SettingsFragment : BaseFragment<SettingsViewModel>() {
                     viewModel.saveSettings(settings.copy(isDarkMode = it))
                 },
             )
-            PreferenceEditText(
-                PreferenceItem(
-                    "Cooldown",
-                    "Zeit bis der Button wieder gedrückt werden darf"
-                ),
-                value = settings.cooldown.toString(),
-                onChange = {
-                    viewModel.saveSettings(settings.copy(cooldown = it.toLong()))
-                },
-                keyboardType = KeyboardType.Number,
-            )
+//            PreferenceEditText( //TODO show cooldowns?
+//                PreferenceItem(
+//                    "Cooldown",
+//                    "Zeit bis der Button wieder gedrückt werden darf"
+//                ),
+//                value = settings.cooldown.toString(),
+//                onChange = {
+//                    viewModel.saveSettings(settings.copy(cooldown = it.toLong()))
+//                },
+//                keyboardType = KeyboardType.Number,
+//            )
         }
     }
 

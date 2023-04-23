@@ -56,8 +56,17 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
                     modifier = Modifier
                         .padding(all = 32.dp)
                         .testTag(LOGIN_BUTTON_TAG),
-                    onClick = { viewModel.login() }
-                ) { Icon(Icons.Default.ArrowForward, contentDescription = "Login") }
+                    onClick = { viewModel.login() },
+                ) {
+                    if (viewModel.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    } else {
+                        Icon(Icons.Default.ArrowForward, contentDescription = "Login")
+                    }
+                }
             }
         ) { innerPadding ->
             Column(

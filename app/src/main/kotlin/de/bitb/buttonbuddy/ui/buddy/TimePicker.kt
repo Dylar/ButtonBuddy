@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -28,8 +29,7 @@ private val secondaryColor = Color(68, 71, 70)
 private val selectedColor = Color(104, 220, 255, 255)
 
 @Composable
-fun TimerPicker(hour: Int, min: Int, onSelected: (Int, Int) -> Unit, onCancel: () -> Unit) {
-
+fun TimerPicker(hour: Int, min: Int, onCancel: () -> Unit, onSelected: (Int, Int) -> Unit) {
     var selectedPart by remember { mutableStateOf(TimePart.Hour) }
     var selectedHour by remember { mutableStateOf(hour) }
     var selectedMinute by remember { mutableStateOf(min) }
@@ -41,12 +41,16 @@ fun TimerPicker(hour: Int, min: Int, onSelected: (Int, Int) -> Unit, onCancel: (
     val onTime: (Int) -> Unit = remember {
         { if (selectedPart == TimePart.Hour) selectedHour = it else selectedMinute = it * 5 }
     }
-
-    AlertDialog(
-        onDismissRequest = onCancel,
-        title = { Text("Select time") },//TODO
-        text = {
+    Dialog(onDismissRequest = onCancel) {
+        Box(
+            Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(
                         color = backgroundColor,
@@ -54,6 +58,8 @@ fun TimerPicker(hour: Int, min: Int, onSelected: (Int, Int) -> Unit, onCancel: (
                     )
                     .padding(16.dp)
             ) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text("Select time")
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -90,38 +96,38 @@ fun TimerPicker(hour: Int, min: Int, onSelected: (Int, Int) -> Unit, onCancel: (
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { onSelected(selectedHour, selectedMinute) },
-                modifier = Modifier
-                    .width(36.dp)
-                    .height(32.dp)
-            ) {
-                Text(
-                    text = "OK",
-                    fontSize = 10.sp,
-                    color = selectedColor
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onCancel,
-                modifier = Modifier
-                    .width(56.dp)
-                    .height(32.dp)
-            ) {
-                Text(
-                    text = "Cancel",
-                    fontSize = 10.sp,
-                    color = selectedColor,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = onCancel,
+//                        modifier = Modifier
+//                            .width(56.dp)
+//                            .height(32.dp)
+                    ) {
+                        Text(
+                            text = "Cancel",
+//                            fontSize = 10.sp,
+                            color = selectedColor,
+                        )
+                    }
+                    TextButton(
+                        onClick = { onSelected(selectedHour, selectedMinute) },
+//                        modifier = Modifier
+//                            .width(36.dp)
+//                            .height(32.dp)
+                    ) {
+                        Text(
+                            text = "OK",
+//                            fontSize = 10.sp,
+                            color = selectedColor
+                        )
+                    }
+                }
             }
         }
-    )
+    }
 }
 
 @Composable

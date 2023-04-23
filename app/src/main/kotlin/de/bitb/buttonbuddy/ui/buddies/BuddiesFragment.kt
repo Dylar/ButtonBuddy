@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.ui.base.*
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
@@ -138,7 +139,9 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                 )
                 val lastMsg by viewModel.getLastMessage(buddy.uuid).observeAsState()
                 val settings by viewModel.settingsRepo.getLiveSettings().observeAsState()
-                CoolDownButton(lastMsg?.date ?: Date(0), settings?.cooldown ?: Date().time)
+                val cooldown = settings?.buddysCooldown?.get(buddy.uuid) ?: DEFAULT_COOLDOWN
+                val lastMsgDate = lastMsg?.date ?: Date(0)
+                CoolDownButton(lastMsgDate, cooldown)
                 {
                     FloatingActionButton(
                         modifier = Modifier.testTag(buddySendButtonTag(buddy)),

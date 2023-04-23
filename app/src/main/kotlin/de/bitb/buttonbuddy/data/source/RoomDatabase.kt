@@ -5,12 +5,13 @@ import androidx.room.*
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.data.model.converter.DateConverter
 import de.bitb.buttonbuddy.data.model.converter.StringListConverter
 
 @Database(
     entities = [User::class, Buddy::class, Message::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 @TypeConverters(value = [StringListConverter::class, DateConverter::class])
@@ -18,18 +19,6 @@ abstract class RoomDatabaseImpl : RoomDatabase() {
     abstract val userDao: UserDao
     abstract val buddyDao: BuddyDao
     abstract val messageDao: MessageDao
-}
-
-@Dao
-interface BuddyDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(buddies: List<Buddy>)
-
-    @Query("SELECT * FROM buddy")
-    fun getAll(): LiveData<List<Buddy>>
-
-    @Query("SELECT * FROM buddy WHERE uuid = :uuid LIMIT 1")
-    fun getByUuid(uuid: String): LiveData<Buddy>
 }
 
 @Dao
@@ -42,6 +31,18 @@ interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
+}
+
+@Dao
+interface BuddyDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(buddies: List<Buddy>)
+
+    @Query("SELECT * FROM buddy")
+    fun getAll(): LiveData<List<Buddy>>
+
+    @Query("SELECT * FROM buddy WHERE uuid = :uuid LIMIT 1")
+    fun getByUuid(uuid: String): LiveData<Buddy>
 }
 
 @Dao

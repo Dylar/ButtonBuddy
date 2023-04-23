@@ -18,9 +18,10 @@ data class User(
         return mapOf(
             "uuid" to uuid,
             "token" to token,
+            "email" to email,
             "firstName" to firstName,
             "lastName" to lastName,
-            "buddies" to buddies
+            "buddies" to buddies,
         )
     }
 }

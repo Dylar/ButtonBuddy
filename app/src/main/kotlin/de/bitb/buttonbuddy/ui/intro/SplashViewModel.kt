@@ -21,7 +21,7 @@ class SplashViewModel @Inject constructor(
     fun loadData() {
         viewModelScope.launch {
             atLeast(2000) {
-                val userResp = userRepo.getUser()
+                val userResp = userRepo.getUser() // TODO load data
                 val route = if (userResp.data == null) {
                     R.id.splash_to_login
                 } else {

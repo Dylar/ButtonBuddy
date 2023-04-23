@@ -14,7 +14,8 @@ class LoadBuddiesUC(
             return Resource.Error(userResp.message!!)
         }
         if (userResp.hasData) {
-            val loadBuddiesResp = buddyRepo.loadBuddies(userResp.data!!.buddies)
+            val user = userResp.data!!
+            val loadBuddiesResp = buddyRepo.loadBuddies(user.uuid, user.buddies)
             if (loadBuddiesResp is Resource.Error) {
                 return Resource.Error(loadBuddiesResp.message!!)
             }

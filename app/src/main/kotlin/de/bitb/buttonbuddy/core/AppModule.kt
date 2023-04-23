@@ -38,7 +38,7 @@ object AppModule {
     @Singleton
     fun provideLocalDatabase(app: Application): LocalDatabase {
         val db = Room.databaseBuilder(app, RoomDatabaseImpl::class.java, DATABASE_NAME)
-            .addMigrations(Migration1To2())
+            .fallbackToDestructiveMigration() //TODO made real migrations
             .build()
         val pref = app.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return BuddyLocalDatabase(db, PreferenceDatabase(pref))
@@ -96,8 +96,9 @@ object AppModule {
     fun provideUserUseCases(
         userRepo: UserRepository,
         buddyRepo: BuddyRepository,
+        settingsRepo: SettingsRepository,
     ): UserUseCases = UserUseCases(
-        loginUC = LoginUC(userRepo, buddyRepo),
+        loginUC = LoginUC(settingsRepo, userRepo, buddyRepo),
         registerUC = RegisterUC(userRepo),
     )
 
@@ -110,6 +111,7 @@ object AppModule {
         return BuddyUseCases(
             scanBuddyUC = ScanBuddyUC(userRepo, buddyRepo),
             loadBuddiesUC = LoadBuddiesUC(userRepo, buddyRepo),
+            setCooldownUC = SetCooldownUC(userRepo, buddyRepo),
         )
     }
 
@@ -124,7 +126,7 @@ object AppModule {
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
         updateTokenUC = UpdateTokenUC(userRepo),
-        sendMessageUC = SendMessageUC(remoteService, localDB, settingsRepo, userRepo, msgRepo ),
+        sendMessageUC = SendMessageUC(remoteService, localDB, settingsRepo, userRepo, msgRepo),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }
