@@ -43,6 +43,7 @@
     <string name="buddies_loaded">Buddys geladen</string>
     <string name="buddies_title">Buddys</string>
     <string name="no_buddies">Du hast keine Freunde</string>
+    <string name="no_buddy_found">Kein Buddy gefunden</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

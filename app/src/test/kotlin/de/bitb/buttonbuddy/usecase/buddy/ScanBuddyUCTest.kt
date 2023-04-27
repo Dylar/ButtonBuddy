@@ -1,4 +1,4 @@
-package de.bitb.buttonbuddy.usecase.user
+package de.bitb.buttonbuddy.usecase.buddy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.R
@@ -12,6 +12,7 @@ import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.usecase.buddies.ScanBuddyUC
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -25,16 +26,15 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoadDataUCTest {
+class ScanBuddyUCTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var mockSettingsRepo: SettingsRepository
     private lateinit var mockUserRepo: UserRepository
     private lateinit var mockBuddyRepo: BuddyRepository
-    private lateinit var loadDataUC: LoadDataUC
+    private lateinit var scanBuddyUC: ScanBuddyUC
 
     @After
     fun cleanup() {
@@ -44,34 +44,19 @@ class LoadDataUCTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        mockSettingsRepo = mockk()
-        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success(mapOf())
-
         mockUserRepo = mockk()
         mockBuddyRepo = mockk()
-        loadDataUC = LoadDataUC(mockSettingsRepo, mockUserRepo, mockBuddyRepo)
-    }
-
-    @Test
-    fun `user not logged in, should return error`() = runTest {
-        val expectedError = "User not logged in".asResourceError<Boolean>()
-        coEvery { mockUserRepo.isUserLoggedIn() } returns expectedError
-
-        val errorResp = loadDataUC()
-        assert(errorResp is Resource.Error)
-        assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
-        )
+        scanBuddyUC = ScanBuddyUC(mockUserRepo, mockBuddyRepo)
     }
 
     @Test
     fun `get user error, should return error`() = runTest {
+        val user = buildUser()
         val expectedError = "Database Error".asResourceError<User?>()
         coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns expectedError
 
-        val errorResp = loadDataUC()
+        val errorResp = scanBuddyUC(user.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
             errorResp.message!!.asString(::getString),
@@ -80,44 +65,14 @@ class LoadDataUCTest {
     }
 
     @Test
-    fun `no user found, should return error`() = runTest {
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(null)
-
-        val errorResp = loadDataUC()
-        assert(errorResp is Resource.Error)
-        assertEquals(
-            errorResp.message!!.asString(::getString),
-            R.string.user_not_found.asResourceError<User?>().message!!.asString(::getString)
-        )
-    }
-
-    @Test
-    fun `load user error, should return error`() = runTest {
-        val expectedError = "Load User Error".asResourceError<User?>()
+    fun `load buddy error, should return error`() = runTest {
         val user = buildUser()
+        val expectedError = "Load Buddy Error".asResourceError<List<Buddy>>()
         coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
-        coEvery { mockUserRepo.loadUser(any()) } returns expectedError
-
-        val errorResp = loadDataUC()
-        assert(errorResp is Resource.Error)
-        assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
-        )
-    }
-
-    @Test
-    fun `load buddys error, should return error`() = runTest {
-        val expectedError = "Load Buddys Error".asResourceError<List<Buddy>>()
-        val user = buildUser(mutableListOf("uuidX"))
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
-        coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
         coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns expectedError
 
-        val errorResp = loadDataUC()
+        val errorResp = scanBuddyUC(user.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
             errorResp.message!!.asString(::getString),
@@ -126,36 +81,48 @@ class LoadDataUCTest {
     }
 
     @Test
-    fun `User has no buddys and load settings error, should return error`() = runTest {
-        val expectedError = "Load Settings Error".asResourceError<Map<String, Long>>()
+    fun `No buddy found, should return error`() = runTest {
         val user = buildUser()
         coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
-        coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
-        coEvery { mockSettingsRepo.loadSettings(any()) } returns expectedError
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns Resource.Success(listOf())
 
-        val errorResp = loadDataUC()
+        val errorResp = scanBuddyUC(user.uuid)
+        assert(errorResp is Resource.Error)
+        assertEquals(
+            errorResp.message!!.asString(::getString),
+            R.string.no_buddy_found.asResourceError<List<Buddy>>().message!!.asString(::getString)
+        )
+    }
+
+    @Test
+    fun `Save user error, should return error`() = runTest {
+        val user = buildUser()
+        val buddy = buildBuddy()
+        val expectedError = "Save user error".asResourceError<User>()
+        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
+        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns Resource.Success(listOf(buddy))
+        coEvery { mockUserRepo.saveUser(any()) } returns expectedError
+
+        val errorResp = scanBuddyUC(user.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
             errorResp.message!!.asString(::getString),
             expectedError.message!!.asString(::getString)
         )
-        coVerify(exactly = 0) { mockBuddyRepo.loadBuddies(any(), any()) }
     }
 
     @Test
-    fun `Load data complete, should return success`() = runTest {
-        val user = buildUser(mutableListOf("uuidX"))
+    fun `Buddy scanned, should return success`() = runTest {
+        val user = buildUser()
+        val buddy = buildBuddy()
         coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
-        coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
-        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns
-                Resource.Success(listOf(buildBuddy()))
-        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success()
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns Resource.Success(listOf(buddy))
+        coEvery { mockUserRepo.saveUser(any()) } returns Resource.Success(user)
 
-        val successResp = loadDataUC()
+        val successResp = scanBuddyUC(user.uuid)
         assert(successResp is Resource.Success)
-        assert(successResp.hasData)
-        assert(successResp.data == true)
     }
 }
