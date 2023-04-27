@@ -25,6 +25,17 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     val navController by lazy { NavHostFragment.findNavController(this) }
     lateinit var scaffoldState: ScaffoldState
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.navigate = { navController.navigate(it) }
+        viewModel.navigateBack = { id ->
+            navController.apply {
+                id?.let { popBackStack(id, false) } ?: popBackStack()
+            }
+        }
+        viewModel.showSnackbar = ::showSnackBar
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,17 +52,6 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
 
     @Composable
     abstract fun ScreenContent()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.navigate = { navController.navigate(it) }
-        viewModel.navigateBack = { id ->
-            navController.apply {
-                id?.let { popBackStack(id, false) } ?: popBackStack()
-            }
-        }
-        viewModel.showSnackbar = ::showSnackBar
-    }
 
     private fun showSnackBar(string: ResString) {
         lifecycleScope.launch {

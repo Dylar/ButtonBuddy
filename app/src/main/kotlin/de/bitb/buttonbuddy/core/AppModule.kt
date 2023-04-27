@@ -21,6 +21,7 @@ import de.bitb.buttonbuddy.usecase.user.LoginUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
+import de.bitb.buttonbuddy.usecase.user.LoadDataUC
 import de.bitb.buttonbuddy.usecase.user.RegisterUC
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -94,10 +95,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserUseCases(
+        settingsRepo: SettingsRepository,
         userRepo: UserRepository,
         buddyRepo: BuddyRepository,
-        settingsRepo: SettingsRepository,
     ): UserUseCases = UserUseCases(
+        loadDataUC = LoadDataUC(settingsRepo, userRepo, buddyRepo),
         loginUC = LoginUC(settingsRepo, userRepo, buddyRepo),
         registerUC = RegisterUC(userRepo),
     )
@@ -110,7 +112,6 @@ object AppModule {
     ): BuddyUseCases {
         return BuddyUseCases(
             scanBuddyUC = ScanBuddyUC(userRepo, buddyRepo),
-            loadBuddiesUC = LoadBuddiesUC(userRepo, buddyRepo),
             setCooldownUC = SetCooldownUC(userRepo, buddyRepo),
         )
     }

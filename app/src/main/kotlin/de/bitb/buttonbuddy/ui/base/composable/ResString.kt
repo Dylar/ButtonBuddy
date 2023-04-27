@@ -28,5 +28,5 @@ sealed class ResString {
     }
 }
 
-fun String.asResString() : ResString = ResString.DynamicString(this)
 fun Int.asResString() : ResString = ResString.ResourceString(this)
+fun String.asResString() : ResString = ResString.DynamicString(this)

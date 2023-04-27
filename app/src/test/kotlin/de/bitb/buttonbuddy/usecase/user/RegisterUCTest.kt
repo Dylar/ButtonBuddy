@@ -6,6 +6,7 @@ import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.misc.asResourceError
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -49,7 +50,7 @@ class RegisterUCTest {
         // Given
         val user = buildUser()
 
-        coEvery { mockUserRepo.registerUser(user.email, pw1) } returns Resource.Success(Unit)
+        coEvery { mockUserRepo.registerUser(user.email, pw1) } returns Resource.Success()
         coEvery { mockUserRepo.saveUser(any()) } returns Resource.Success(user)
 
         // When
@@ -133,7 +134,7 @@ class RegisterUCTest {
         runTest {
             val user = buildUser()
 
-            val expectedError = Resource.Error<Unit>("DATABASE_ERROR")
+            val expectedError = "DATABASE_ERROR".asResourceError<Unit>()
             coEvery { mockUserRepo.registerUser(user.email, pw1) } returns expectedError
 
             val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
@@ -148,8 +149,8 @@ class RegisterUCTest {
         runTest {
             val user = buildUser()
 
-            val expectedError = Resource.Error<User>("DATABASE_ERROR")
-            coEvery { mockUserRepo.registerUser(user.email, pw1) } returns Resource.Success(Unit)
+            val expectedError = "DATABASE_ERROR".asResourceError<User>()
+            coEvery { mockUserRepo.registerUser(user.email, pw1) } returns Resource.Success()
             coEvery { mockUserRepo.saveUser(any()) } returns expectedError
 
             val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)

@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.core
 
-import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
@@ -26,11 +25,11 @@ fun RemoteService.mockUserService(
     getUserError: Resource.Error<User?>? = null,
     loadBuddiesError: Resource.Error<List<Buddy>>? = null,
 ) {
-    coEvery { registerUser(any(), any()) }.answers { registerError ?: Resource.Success(Unit) }
+    coEvery { registerUser(any(), any()) }.answers { registerError ?: Resource.Success() }
     coEvery { loginUser(any(), any()) }.answers { loginError ?: Resource.Success(true) }
-    coEvery { saveUser(any()) }.answers { saveUserError ?: Resource.Success(Unit) }
-    coEvery { getUser(any(), any()) }.answers { getUserError ?: Resource.Success(user) }
-    coEvery { loadBuddies(any()) }.answers { loadBuddiesError ?: Resource.Success(buddies) }
+    coEvery { saveUser(any()) }.answers { saveUserError ?: Resource.Success() }
+    coEvery { getUser(any()) }.answers { getUserError ?: Resource.Success(user) }
+    coEvery { loadBuddies(any(), any()) }.answers { loadBuddiesError ?: Resource.Success(buddies) }
 }
 
 fun RemoteService.mockMessageService(
@@ -38,13 +37,13 @@ fun RemoteService.mockMessageService(
     saveMessageError: String? = null
 ) {
     coEvery { saveMessage(any()) }.returns(
-        saveMessageError?.let { Resource.Error(it) } ?: Resource.Success(Unit)
+        saveMessageError?.let { Resource.Error(it) } ?: Resource.Success()
     )
     coEvery { sendMessage(any()) }.returns(
-        sendMessageError?.let { Resource.Error(it) } ?: Resource.Success(Unit)
+        sendMessageError?.let { Resource.Error(it) } ?: Resource.Success()
     )
 
     coEvery { sendMessage(any()) }.returns(
-        sendMessageError?.let { Resource.Error(it) } ?: Resource.Success(Unit)
+        sendMessageError?.let { Resource.Error(it) } ?: Resource.Success()
     )
 }

@@ -2,6 +2,8 @@ package de.bitb.buttonbuddy.data.source
 
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.asResourceError
+import de.bitb.buttonbuddy.core.misc.tryIt
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -23,7 +25,7 @@ interface RetrofitApi {
 
 class RetrofitService(private val api: RetrofitApi) : MessageService {
     override suspend fun sendMessage(msg: Message): Resource<Unit> {
-        return try {
+        return tryIt {
             @Suppress("BlockingMethodInNonBlockingContext")
             withContext(IO) {
                 val appKey = // TODO key not in app
@@ -33,14 +35,12 @@ class RetrofitService(private val api: RetrofitApi) : MessageService {
                 val response = call.execute()
                 if (response.isSuccessful) {
 //                val msgResp = response.body()
-                    Resource.Success(Unit)
+                    Resource.Success()
                 } else {
                     val error = response.errorBody()?.string() ?: "Sending error"
-                    Resource.Error(error)
+                    error.asResourceError()
                 }
             }
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
 }

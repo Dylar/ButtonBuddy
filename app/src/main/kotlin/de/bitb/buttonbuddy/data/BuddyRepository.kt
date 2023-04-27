@@ -2,6 +2,7 @@ package de.bitb.buttonbuddy.data
 
 import androidx.lifecycle.LiveData
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.tryIt
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
@@ -29,14 +30,12 @@ class BuddyRepositoryImpl(
         userUuid: String,
         buddyIds: List<String>
     ): Resource<List<Buddy>> {
-        return try {
+        return tryIt {
             val response = remoteDB.loadBuddies(userUuid, buddyIds)
             if (response is Resource.Success) {
                 localDB.insertAll(response.data!!)
             }
             response
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
 
@@ -45,14 +44,12 @@ class BuddyRepositoryImpl(
         buddy: Buddy,
         cooldown: Long,
     ): Resource<Unit> {
-        return try {
+        return tryIt {
             val response = remoteDB.updateCooldown(userUuid, buddy.uuid, cooldown)
             if (response is Resource.Success) {
                 localDB.insertAll(listOf(buddy))
             }
             response
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
 

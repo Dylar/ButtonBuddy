@@ -29,7 +29,8 @@ interface SettingsDao {
 }
 
 // REMOTE
-interface RemoteService : SettingsRemoteDao, BuddyRemoteDao, UserRemoteDao, MessageRemoteDao, MessageService
+interface RemoteService : SettingsRemoteDao, BuddyRemoteDao, UserRemoteDao, MessageRemoteDao,
+    MessageService
 
 class BuddyRemoteService(fireService: FirestoreService, retrofitService: RetrofitService) :
     RemoteService,
@@ -40,7 +41,7 @@ class BuddyRemoteService(fireService: FirestoreService, retrofitService: Retrofi
     MessageService by retrofitService
 
 interface BuddyRemoteDao {
-    suspend fun loadBuddies(userUuid:String, buddyIds: List<String>): Resource<List<Buddy>>
+    suspend fun loadBuddies(userUuid: String, buddyIds: List<String>): Resource<List<Buddy>>
     suspend fun updateCooldown(
         userUuid: String,
         buddyUuid: String,
@@ -49,6 +50,7 @@ interface BuddyRemoteDao {
 }
 
 interface UserRemoteDao {
+    suspend fun isUserLoggedIn(): Resource<Boolean>
     suspend fun registerUser(email: String, pw: String): Resource<Unit>
     suspend fun loginUser(email: String, pw: String): Resource<Boolean>
     suspend fun getUser(email: String): Resource<User?>

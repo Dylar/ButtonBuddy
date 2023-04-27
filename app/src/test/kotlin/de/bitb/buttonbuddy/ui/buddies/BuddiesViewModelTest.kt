@@ -14,8 +14,8 @@ import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.asResString
-import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +35,7 @@ class BuddiesViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var viewModel: BuddiesViewModel
-    private lateinit var buddyUC: BuddyUseCases
+    private lateinit var userUC: UserUseCases
     private lateinit var messageUC: MessageUseCases
 
     @After
@@ -59,9 +59,8 @@ class BuddiesViewModelTest {
         val settingLiveData = mockk<LiveData<Settings>>()
         every { settingsRepo.getLiveSettings() }.returns(settingLiveData)
 
-        buddyUC = mockk()
         messageUC = mockk()
-        viewModel = BuddiesViewModel(messageUC, buddyUC, mockk(), buddyRepo, settingsRepo)
+        viewModel = BuddiesViewModel(messageUC, settingsRepo, userUC, mockk(), mockk())
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar.invoke(any()) }
     }
@@ -69,9 +68,9 @@ class BuddiesViewModelTest {
     @Test
     fun `refreshData sets isRefreshing to true then false - show success message`() = runTest {
         // Given
-        coEvery { buddyUC.loadBuddiesUC() } coAnswers {
+        coEvery { userUC.loadDataUC() } coAnswers {
             delay(1L)
-            Resource.Success(Unit)
+            Resource.Success()
         }
 
         // When
@@ -96,7 +95,7 @@ class BuddiesViewModelTest {
     fun `refreshData shows error if loading buddies fails`() = runTest {
         // Given
         val errorMessage = "Error message".asResString()
-        coEvery { buddyUC.loadBuddiesUC() } returns Resource.Error(errorMessage)
+        coEvery {userUC.loadDataUC() } returns Resource.Error(errorMessage)
 
         // When
         viewModel.refreshData()
@@ -125,7 +124,7 @@ class BuddiesViewModelTest {
     fun `sendMessage shows success if sending message succeeds`() = runTest {
         // Given
         val buddy = buildBuddy()
-        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success(Unit)
+        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success()
 
         // When
         viewModel.sendMessageToBuddy(buddy)

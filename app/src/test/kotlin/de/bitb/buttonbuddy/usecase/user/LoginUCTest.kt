@@ -6,7 +6,9 @@ import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.BuddyRepository
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.shared.buildBuddy
 import io.mockk.coEvery
@@ -29,6 +31,7 @@ class LoginUCTest {
     var instantExecutorRule = InstantTaskExecutorRule()
     private val testDispatcher = StandardTestDispatcher()
 
+    private lateinit var mockSettingsRepo: SettingsRepository
     private lateinit var mockUserRepo: UserRepository
     private lateinit var mockBuddyRepo: BuddyRepository
     private lateinit var loginUC: LoginUC
@@ -41,20 +44,21 @@ class LoginUCTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+        mockSettingsRepo = mockk()
         mockUserRepo = mockk()
         mockBuddyRepo = mockk()
-        loginUC = LoginUC(mockUserRepo, mockBuddyRepo)
+        loginUC = LoginUC(mockSettingsRepo, mockUserRepo, mockBuddyRepo)
     }
 
     @Test
     fun `login with valid credentials, should return success`() = runTest {
         val pw = "validPassword"
         val user = buildUser()
-        val expectedError = Resource.Error<User?>("WRONG PW")
+        val expectedError = "WRONG PW".asResourceError<User?>()
         coEvery { mockUserRepo.loginUser(user.email, any()) } returns expectedError
         coEvery { mockUserRepo.loginUser(user.email, pw) } returns Resource.Success(user)
         coEvery { mockUserRepo.saveUser(user) } returns Resource.Success(user)
-        coEvery { mockBuddyRepo.loadBuddies(any()) } returns Resource.Success(emptyList())
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
 
         val errorResp = loginUC(user.email, "wrongPassword")
         assert(errorResp is Resource.Error)
@@ -100,10 +104,10 @@ class LoginUCTest {
     @Test
     fun `login, load buddies and return buddies not loaded error`() = runTest {
         val user = buildUser(buddies = mutableListOf("uuid1"))
-        val expectedError = Resource.Error<List<Buddy>>("Load Buddies error")
+        val expectedError = "Load Buddies error".asResourceError<List<Buddy>>()
         coEvery { mockUserRepo.loginUser(user.email, any()) } returns Resource.Success(user)
         coEvery { mockUserRepo.saveUser(user) } returns Resource.Success(user)
-        coEvery { mockBuddyRepo.loadBuddies(any()) } returns expectedError
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns expectedError
 
         val errorResp = loginUC(user.email, "pw")
         assert(errorResp is Resource.Error)
@@ -120,11 +124,11 @@ class LoginUCTest {
         val user = buildUser(buddies = mutableListOf(buddy.uuid))
         coEvery { mockUserRepo.loginUser(user.email, any()) } returns Resource.Success(user)
         coEvery { mockUserRepo.saveUser(user) } returns Resource.Success(user)
-        coEvery { mockBuddyRepo.loadBuddies(any()) } returns Resource.Success(listOf(buddy))
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns Resource.Success(listOf(buddy))
 
         val actualResp = loginUC(user.email, "pw")
         assert(actualResp is Resource.Success)
         assert(actualResp.data is LoginResponse.LoggedIn)
-        coVerify { mockBuddyRepo.loadBuddies(any()) }
+        coVerify { mockBuddyRepo.loadBuddies(any(), any()) }
     }
 }

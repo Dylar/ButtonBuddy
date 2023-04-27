@@ -25,8 +25,8 @@ import javax.inject.Inject
 class BuddyViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
     override val settingsRepo: SettingsRepository,
-    private val buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
+    private val buddyRepo: BuddyRepository,
     private val buddyUC: BuddyUseCases,
 ) : BaseViewModel(), SendMessageDelegate {
 

@@ -7,6 +7,8 @@ import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.asResourceError
+import de.bitb.buttonbuddy.core.misc.tryIt
 import de.bitb.buttonbuddy.core.misc.timeExceeded
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
@@ -23,16 +25,16 @@ class SendMessageUC @Inject constructor(
     private val msgRepo: MessageRepository,
 ) {
     suspend operator fun invoke(buddy: Buddy): Resource<Unit> {
-        return try {
+        return tryIt {
             val lastMsgResp =
                 withContext(Dispatchers.IO) { msgRepo.getLastMessage(buddy.uuid) }
             if (lastMsgResp is Resource.Error) {
-                return Resource.Error(lastMsgResp.message!!)
+                lastMsgResp.castTo<Unit>()
             }
             val settingsResp =
                 withContext(Dispatchers.IO) { settingsRepo.getSettings() }
             if (settingsResp is Resource.Error) {
-                return Resource.Error(settingsResp.message!!)
+                settingsResp.castTo<Unit>()
             }
 
             val lastMsg = lastMsgResp.data
@@ -42,12 +44,12 @@ class SendMessageUC @Inject constructor(
                 settingsResp.data!!.buddysCooldown[buddy.uuid] ?: Date().time
             )
             if (onCooldown) {
-                return Resource.Error(R.string.send_on_cooldown)
+                R.string.send_on_cooldown.asResourceError<Unit>()
             }
 
-            val userResp = userRepo.getUser()
+            val userResp = userRepo.getLocalUser()
             if (userResp is Resource.Error) {
-                return Resource.Error(userResp.message!!)
+                userResp.castTo<Unit>()
             }
             val user = userResp.data!!
             val msg = Message(
@@ -60,8 +62,6 @@ class SendMessageUC @Inject constructor(
             )
             localDB.insert(msg)
             remoteService.sendMessage(msg)
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
 }

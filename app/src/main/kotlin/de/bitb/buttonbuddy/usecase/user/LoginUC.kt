@@ -20,6 +20,10 @@ sealed class LoginResponse(val message: ResString) {
         get() = Resource.Error(message, this)
 }
 
+fun <T> Resource.Error<T>.asError(): Resource<LoginResponse> {
+    return Resource.Error(message!!, LoginResponse.ErrorThrown(this))
+}
+
 class LoginUC(
     private val settingsRepo: SettingsRepository,
     private val userRepo: UserRepository,
@@ -36,7 +40,7 @@ class LoginUC(
 
         val loginUserResp = userRepo.loginUser(email, pw)
         if (loginUserResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(loginUserResp).asError
+            return loginUserResp.asError()
         }
 
         if (!loginUserResp.hasData) {
@@ -47,18 +51,18 @@ class LoginUC(
         if (buddies.isNotEmpty()) {
             val loadBuddiesResp = buddyRepo.loadBuddies(user.uuid, buddies)
             if (loadBuddiesResp is Resource.Error) {
-                return LoginResponse.ErrorThrown(loadBuddiesResp).asError
+                return loadBuddiesResp.asError()
             }
         }
 
         val saveUserResp = userRepo.saveUser(user)
         if (saveUserResp is Resource.Error) {
-            return LoginResponse.ErrorThrown(saveUserResp).asError
+            return saveUserResp.asError()
         }
 
         val loadSettingsResp = settingsRepo.loadSettings(user.uuid)
         if (loadSettingsResp is Resource.Error) {
-            return Resource.Error(loadSettingsResp.message!!)
+            return loadSettingsResp.castTo()
         }
 
         return Resource.Success(LoginResponse.LoggedIn())

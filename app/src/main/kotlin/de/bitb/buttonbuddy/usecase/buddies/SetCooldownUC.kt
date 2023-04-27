@@ -11,9 +11,9 @@ class SetCooldownUC(
     private val buddyRepo: BuddyRepository,
 ) {
     suspend operator fun invoke(buddy: Buddy, hour: Int, min: Int): Resource<Unit> {
-        val userResp = userRepo.getUser()
+        val userResp = userRepo.getLocalUser()
         if (userResp is Resource.Error) {
-            return Resource.Error(userResp.message!!)
+            return userResp.castTo()
         }
 
         val cooldown = calculateMilliseconds(hour, min)

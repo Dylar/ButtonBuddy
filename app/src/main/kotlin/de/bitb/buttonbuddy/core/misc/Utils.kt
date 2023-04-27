@@ -1,16 +1,19 @@
 package de.bitb.buttonbuddy.core.misc
 
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-suspend fun atLeast(duration: Long, func: suspend () -> Unit) {
-    val runTime = measureTimeMillis { func() } // TODO not working xD
+suspend fun <T> atLeast(duration: Long, func: suspend () -> T): T {
+    var result: T
+    val runTime = measureTimeMillis { result = func() }
     val remainingTime = duration - runTime
     if (remainingTime > 0) {
         delay(remainingTime)
     }
+    return result
 }
 
 fun timeExceeded(date1: Date, date2: Date, diff: Long): Boolean =
@@ -26,6 +29,7 @@ fun getPercentageDiff(milliseconds: Long, targetValue: Long): Float {
 fun getHours(duration: Long): Int {
     return TimeUnit.MILLISECONDS.toHours(duration).toInt()
 }
+
 fun getMins(duration: Long): Int {
     return TimeUnit.MILLISECONDS.toMinutes(duration).toInt() % 60
 }

@@ -1,10 +1,10 @@
 package de.bitb.buttonbuddy.data
 
 import androidx.lifecycle.LiveData
-import com.google.common.escape.Escaper
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.tryIt
 
 interface MessageRepository {
     fun getLiveMessages(uuid: String): LiveData<List<Message>>
@@ -25,20 +25,14 @@ class MessageRepositoryImpl constructor(
         localDB.getLiveLastMessage(uuid)
 
     override suspend fun getLastMessage(uuid: String): Resource<Message> {
-        return try {
-            return Resource.Success(localDB.getLastMessage(uuid))
-        } catch (e: Exception) {
-            Resource.Error(e)
-        }
+        return tryIt { Resource.Success(localDB.getLastMessage(uuid)) }
     }
 
     override suspend fun saveMessage(msg: Message): Resource<Unit> {
-        return try {
+        return tryIt {
             localDB.insert(msg)
 //                remoteDB.saveMessage(saveInfo) TODO save online
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Resource.Error(e)
+            Resource.Success()
         }
     }
 }

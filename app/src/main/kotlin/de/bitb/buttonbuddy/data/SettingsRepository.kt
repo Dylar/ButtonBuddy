@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.core.misc.tryIt
 import de.bitb.buttonbuddy.data.model.Settings
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,35 +34,29 @@ class SettingsRepositoryImpl constructor(
     }
 
     override suspend fun getSettings(): Resource<Settings> {
-        return try {
+        return tryIt {
             val cooldowns = localDB.getCoolDowns()
             Resource.Success(Settings(buddysCooldown = cooldowns))
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
 
     override suspend fun saveSettings(settings: Settings): Resource<Unit> {
-        return try {
+        return tryIt {
             localDB.setCoolDowns(settings.buddysCooldown) //TODO save all shit
             localDB.setDarkMode(settings.isDarkMode)
             settingsData.postValue(settings)
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Resource.Error(e)
+            Resource.Success()
         }
     }
 
     override suspend fun loadSettings(uuid: String): Resource<Map<String, Long>> {
-        return try {
+        return tryIt {
             val response = remoteDB.loadCooldowns(uuid)
             //TODO load all shit
             if (response is Resource.Success) {
                 localDB.setCoolDowns(response.data!!)
             }
             response
-        } catch (e: Exception) {
-            Resource.Error(e)
         }
     }
 }

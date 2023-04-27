@@ -11,11 +11,10 @@ import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
-import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +23,7 @@ import javax.inject.Inject
 class BuddiesViewModel @Inject constructor(
     override val messageUC: MessageUseCases,
     override val settingsRepo: SettingsRepository,
-    private val buddyUC: BuddyUseCases,
+    private val userUC: UserUseCases,
     private val msgRepo: MessageRepository,
     buddyRepo: BuddyRepository,
 ) : BaseViewModel(), SendMessageDelegate {
@@ -36,7 +35,7 @@ class BuddiesViewModel @Inject constructor(
     fun refreshData() {
         isRefreshing.value = true
         viewModelScope.launch {
-            when (val resp = buddyUC.loadBuddiesUC()) {
+            when (val resp = userUC.loadDataUC()) {
                 is Resource.Error -> showSnackbar(resp.message!!)
                 is Resource.Success -> showSnackbar(ResString.ResourceString(R.string.buddies_loaded))
             }

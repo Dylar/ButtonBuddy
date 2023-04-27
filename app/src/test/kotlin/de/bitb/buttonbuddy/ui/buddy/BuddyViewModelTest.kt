@@ -16,6 +16,7 @@ import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.asResString
+import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,7 @@ class BuddyViewModelTest {
     private lateinit var msgRepo: MessageRepository
 
     private lateinit var messageUC: MessageUseCases
+    private lateinit var buddyUC: BuddyUseCases
 
     @After
     fun cleanup() {
@@ -62,7 +64,8 @@ class BuddyViewModelTest {
         every { settingsRepo.getLiveSettings() }.returns(settingLiveData)
 
         messageUC = mockk()
-        viewModel = BuddyViewModel(messageUC, buddyRepo, msgRepo, settingsRepo, userRepo)
+        buddyUC = mockk()
+        viewModel = BuddyViewModel(messageUC, settingsRepo, msgRepo, buddyRepo, buddyUC)
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar(any()) }
     }
@@ -99,7 +102,7 @@ class BuddyViewModelTest {
     fun `sendMessage shows success if sending message succeeds`() = runTest {
         // Given
         val buddy = buildBuddy()
-        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success(Unit)
+        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success()
 
         // When
         viewModel.sendMessageToBuddy(buddy)

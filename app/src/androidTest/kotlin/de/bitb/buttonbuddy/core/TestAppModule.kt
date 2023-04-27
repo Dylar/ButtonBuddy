@@ -12,12 +12,13 @@ import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
-import de.bitb.buttonbuddy.usecase.buddies.LoadBuddiesUC
 import de.bitb.buttonbuddy.usecase.buddies.ScanBuddyUC
+import de.bitb.buttonbuddy.usecase.buddies.SetCooldownUC
 import de.bitb.buttonbuddy.usecase.user.LoginUC
 import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
+import de.bitb.buttonbuddy.usecase.user.LoadDataUC
 import de.bitb.buttonbuddy.usecase.user.RegisterUC
 import io.mockk.mockk
 import javax.inject.Singleton
@@ -72,10 +73,12 @@ object TestAppModule {
     @Provides
     @Singleton
     fun provideUserUseCases(
+        settingsRepo: SettingsRepository,
         userRepo: UserRepository,
         buddyRepo: BuddyRepository,
     ): UserUseCases = UserUseCases(
-        loginUC = LoginUC(userRepo, buddyRepo),
+        loadDataUC = LoadDataUC(settingsRepo, userRepo, buddyRepo),
+        loginUC = LoginUC(settingsRepo, userRepo, buddyRepo),
         registerUC = RegisterUC(userRepo),
     )
 
@@ -87,7 +90,7 @@ object TestAppModule {
     ): BuddyUseCases {
         return BuddyUseCases(
             scanBuddyUC = ScanBuddyUC(userRepo, buddyRepo),
-            loadBuddiesUC = LoadBuddiesUC(userRepo, buddyRepo),
+            setCooldownUC = SetCooldownUC(userRepo, buddyRepo),
         )
     }
 
