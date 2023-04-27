@@ -3,7 +3,10 @@ package de.bitb.buttonbuddy.shared
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.Settings
 import java.util.*
+
+fun buildSettings(): Settings = Settings()
 
 fun buildUser(buddies: MutableList<String> = mutableListOf()): User =
     User(

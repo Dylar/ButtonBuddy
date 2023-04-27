@@ -1,5 +1,6 @@
 package de.bitb.buttonbuddy.usecase.user
 
+import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.core.misc.Resource
@@ -20,30 +21,30 @@ class LoadDataUC(
             }
             val userResp = userRepo.getLocalUser()
             if (userResp is Resource.Error) {
-                userResp.castTo<Boolean>()
+                return@tryIt userResp.castTo<Boolean>()
             }
 
             if (!userResp.hasData) {
-                "No user found".asResourceError<Boolean>()
+                return@tryIt R.string.user_not_found.asResourceError<Boolean>()
             }
 
             val user = userResp.data!!
             val loadUserResp = userRepo.loadUser(user.email)
             if (loadUserResp is Resource.Error) {
-                loadUserResp.castTo<Boolean>()
+                return@tryIt loadUserResp.castTo<Boolean>()
             }
 
             val buddies = user.buddies
-            if (buddies.isNotEmpty()) {
+            if (buddies.isNotEmpty()) { //TODO load no user when no buddys there (test at last)
                 val loadBuddiesResp = buddyRepo.loadBuddies(user.uuid, buddies)
                 if (loadBuddiesResp is Resource.Error) {
-                    loadBuddiesResp.castTo<Boolean>()
+                    return@tryIt loadBuddiesResp.castTo<Boolean>()
                 }
             }
 
             val loadSettingsResp = settingsRepo.loadSettings(user.uuid)
             if (loadSettingsResp is Resource.Error) {
-                loadSettingsResp.castTo<Boolean>()
+                return@tryIt loadSettingsResp.castTo<Boolean>()
             }
             return@tryIt Resource.Success(true)
         }

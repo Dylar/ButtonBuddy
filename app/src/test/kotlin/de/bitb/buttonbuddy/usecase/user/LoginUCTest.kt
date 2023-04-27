@@ -11,6 +11,7 @@ import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.shared.buildSettings
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -45,6 +46,8 @@ class LoginUCTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         mockSettingsRepo = mockk()
+        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success(mapOf())
+
         mockUserRepo = mockk()
         mockBuddyRepo = mockk()
         loginUC = LoginUC(mockSettingsRepo, mockUserRepo, mockBuddyRepo)
