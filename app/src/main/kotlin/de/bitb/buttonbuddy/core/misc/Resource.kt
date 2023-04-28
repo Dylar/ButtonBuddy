@@ -9,7 +9,7 @@ sealed class Resource<T>(val data: T? = null, val message: ResString? = null) {
     }
 
     class Error<T> constructor(message: ResString, data: T? = null) : Resource<T>(data, message) {
-        constructor(e: Throwable, data: T? = null) : this(e.toString(), data)
+        constructor(e: Throwable, data: T? = null) : this(e.message ?: e.toString(), data)
         constructor(message: String, data: T? = null)
                 : this(ResString.DynamicString(message), data)
 

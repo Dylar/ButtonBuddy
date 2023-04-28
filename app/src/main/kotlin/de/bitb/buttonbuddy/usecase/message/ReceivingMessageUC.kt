@@ -1,6 +1,5 @@
 package de.bitb.buttonbuddy.usecase.message
 
-import android.util.Log
 import de.bitb.buttonbuddy.core.Notifier
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.model.Message
@@ -13,12 +12,15 @@ class ReceivingMessageUC(
 ) {
     suspend operator fun invoke(data: Map<String, String>): Resource<Unit> {
         return tryIt {
-            Log.d(toString(), "Message data payload: $data")
             val msg = Message().fromMap(data)
             //TODO wenn ich die id nicht kenne ignorieren? -> trotzdem speichern bzw tracken
+
+            val saveMsgResp = msgRepo.saveMessage(msg)
+            if(saveMsgResp is Resource.Error){
+                return@tryIt saveMsgResp
+            }
             notifier.showNotification(msg)
-            msgRepo.saveMessage(msg)
-            Resource.Success()
+            return@tryIt Resource.Success()
         }
     }
 }
