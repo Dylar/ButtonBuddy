@@ -35,7 +35,7 @@ class LoadDataUC(
             }
 
             val buddies = user.buddies
-            if (buddies.isNotEmpty()) { //TODO load no user when no buddys there (test at last)
+            if (buddies.isNotEmpty()) {
                 val loadBuddiesResp = buddyRepo.loadBuddies(user.uuid, buddies)
                 if (loadBuddiesResp is Resource.Error) {
                     return@tryIt loadBuddiesResp.castTo<Boolean>()

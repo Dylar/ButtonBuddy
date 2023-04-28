@@ -32,9 +32,9 @@ class RegisterUC(
         pw1: String,
         pw2: String,
     ): Resource<RegisterResponse> {
-        val response = isValid(firstName, lastName, email, pw1, pw2)
-        if (response != null) {
-            return response.asError
+        val isValid = isValid(firstName, lastName, email, pw1, pw2)
+        if (isValid != null) {
+            return isValid.asError
         }
 
         val registerResp = userRepo.registerUser(email, pw1)

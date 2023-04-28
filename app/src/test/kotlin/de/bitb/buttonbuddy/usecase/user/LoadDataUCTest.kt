@@ -36,6 +36,8 @@ class LoadDataUCTest {
     private lateinit var mockBuddyRepo: BuddyRepository
     private lateinit var loadDataUC: LoadDataUC
 
+    private lateinit var testUser: User
+
     @After
     fun cleanup() {
         Dispatchers.resetMain()
@@ -44,12 +46,19 @@ class LoadDataUCTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        mockSettingsRepo = mockk()
-        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success(mapOf())
-
         mockUserRepo = mockk()
         mockBuddyRepo = mockk()
+        mockSettingsRepo = mockk()
         loadDataUC = LoadDataUC(mockSettingsRepo, mockUserRepo, mockBuddyRepo)
+
+        testUser = buildUser()
+        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success(mapOf())
+        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
+        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(testUser)
+        coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(testUser)
+        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns
+                Resource.Success(listOf(buildBuddy()))
+        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success()
     }
 
     @Test
@@ -60,51 +69,46 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `get user error, should return error`() = runTest {
         val expectedError = "Database Error".asResourceError<User?>()
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns expectedError
 
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `no user found, should return error`() = runTest {
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(null)
 
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            R.string.user_not_found.asResourceError<User?>().message!!.asString(::getString)
+            R.string.user_not_found.asResourceError<User?>().message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `load user error, should return error`() = runTest {
         val expectedError = "Load User Error".asResourceError<User?>()
-        val user = buildUser()
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
         coEvery { mockUserRepo.loadUser(any()) } returns expectedError
 
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
@@ -112,7 +116,6 @@ class LoadDataUCTest {
     fun `load buddys error, should return error`() = runTest {
         val expectedError = "Load Buddys Error".asResourceError<List<Buddy>>()
         val user = buildUser(mutableListOf("uuidX"))
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
         coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
         coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns expectedError
@@ -120,39 +123,27 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `User has no buddys and load settings error, should return error`() = runTest {
         val expectedError = "Load Settings Error".asResourceError<Map<String, Long>>()
-        val user = buildUser()
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
-        coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
         coEvery { mockSettingsRepo.loadSettings(any()) } returns expectedError
 
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
         coVerify(exactly = 0) { mockBuddyRepo.loadBuddies(any(), any()) }
     }
 
     @Test
     fun `Load data complete, should return success`() = runTest {
-        val user = buildUser(mutableListOf("uuidX"))
-        coEvery { mockUserRepo.isUserLoggedIn() } returns Resource.Success(true)
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
-        coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
-        coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns
-                Resource.Success(listOf(buildBuddy()))
-        coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success()
-
         val successResp = loadDataUC()
         assert(successResp is Resource.Success)
         assert(successResp.hasData)

@@ -10,7 +10,7 @@ import de.bitb.buttonbuddy.ui.base.composable.ResString.*
 
 sealed class LoginResponse(val message: ResString) {
     class LoggedIn : LoginResponse(ResourceString(R.string.ok))
-    class UserEmpty : LoginResponse(ResourceString(R.string.email_is_empty))
+    class EmailEmpty : LoginResponse(ResourceString(R.string.email_is_empty))
     class PwEmpty : LoginResponse(ResourceString(R.string.pw_is_empty))
     class UserNotFound : LoginResponse(ResourceString(R.string.user_not_found))
     class ErrorThrown<T>(error: Resource.Error<T>) :
@@ -70,7 +70,7 @@ class LoginUC(
 
     private fun isValid(email: String, pw: String): LoginResponse? {
         if (email.isBlank()) {
-            return LoginResponse.UserEmpty()
+            return LoginResponse.EmailEmpty()
         }
         if (pw.isBlank()) {
             return LoginResponse.PwEmpty()

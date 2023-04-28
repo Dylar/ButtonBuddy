@@ -25,7 +25,7 @@ fun buildMessage(
     uuid: String = "msgUuid",
     fromUuid: String = "uuid1",
     toUuid: String = "uuid2",
-    date: Date = Date(System.currentTimeMillis()),
+    date: Date = Date(),
 ): Message =
     Message(
         uuid = uuid,

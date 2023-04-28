@@ -42,6 +42,8 @@ class SetCooldownUCTest {
     private lateinit var mockBuddyRepo: BuddyRepository
     private lateinit var setCooldownUC: SetCooldownUC
 
+    private lateinit var testBuddy: Buddy
+
     private val testHours: Int = 4
     private val testMins: Int = 2
 
@@ -56,65 +58,56 @@ class SetCooldownUCTest {
         mockUserRepo = mockk()
         mockBuddyRepo = mockk()
         setCooldownUC = SetCooldownUC(mockUserRepo, mockBuddyRepo)
+
+        testBuddy = buildBuddy()
+        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(buildUser())
+        coEvery { mockBuddyRepo.saveCooldown(any(), any(), any()) } returns Resource.Success()
     }
 
-    //       verify { match {
-//            it.asString(::getString) == ResString.ResourceString(
-//                R.string.message_sent_toast,
-//                arrayOf(buddy.fullName),
-//            ).asString(::getString)
-//        }}
     @Test
     fun `get user error, should return error`() = runTest {
-        val buddy = buildBuddy()
         val expectedError = "Database Error".asResourceError<User?>()
         coEvery { mockUserRepo.getLocalUser() } returns expectedError
 
-        val errorResp = setCooldownUC(buddy, testHours, testMins)
+        val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `No user found, should return error`() = runTest {
-        val buddy = buildBuddy()
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(null)
 
-        val errorResp = setCooldownUC(buddy, testHours, testMins)
+        val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            R.string.user_not_found.asResourceError<User>().message!!.asString(::getString)
+            R.string.user_not_found.asResourceError<User>().message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `save cooldown failed, should return error`() = runTest {
-        val buddy = buildBuddy()
         val expectedError = "Save Cooldown Error".asResourceError<Unit>()
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(buildUser())
         coEvery { mockBuddyRepo.saveCooldown(any(), any(), any()) } returns expectedError
 
-        val errorResp = setCooldownUC(buddy, testHours, testMins)
+        val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
         assertEquals(
-            errorResp.message!!.asString(::getString),
-            expectedError.message!!.asString(::getString)
+            expectedError.message!!.asString(::getString),
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
     fun `cooldown saved, should return success`() = runTest {
-        val buddy = buildBuddy()
         val resultCooldown = calculateMilliseconds(testHours, testMins)
-        coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(buildUser())
-        coEvery { mockBuddyRepo.saveCooldown(any(), any(), any()) } returns Resource.Success()
+        assert(testBuddy.cooldown == DEFAULT_COOLDOWN)
 
-        assert(buddy.cooldown == DEFAULT_COOLDOWN)
-        val successResp = setCooldownUC(buddy, testHours, testMins)
+        val successResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(successResp is Resource.Success)
         coVerify {
             mockBuddyRepo.saveCooldown(

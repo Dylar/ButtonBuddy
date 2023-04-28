@@ -9,7 +9,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildUser
@@ -90,7 +89,7 @@ class LoginFragmentTest {
             waitForIdle()
             onNodeWithTag(LoginFragment.ERROR_TAG)
                 .onChildren()
-                .assertAny(hasText(LoginResponse.UserEmpty().asString()))
+                .assertAny(hasText(LoginResponse.EmailEmpty().asString()))
 
             onNodeWithTag(LoginFragment.EMAIL_TAG).performTextInput("email@gmx.de")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()

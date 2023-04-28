@@ -30,6 +30,8 @@ class RegisterUCTest {
     private lateinit var mockUserRepo: UserRepository
     private lateinit var registerUC: RegisterUC
 
+    private lateinit var testUser: User
+
     private val pw1 = "password"
     private val pw2 = "password"
 
@@ -43,124 +45,98 @@ class RegisterUCTest {
         Dispatchers.setMain(testDispatcher)
         mockUserRepo = mockk()
         registerUC = RegisterUC(mockUserRepo)
+
+        testUser = buildUser()
+        coEvery { mockUserRepo.registerUser(testUser.email, pw1) } returns Resource.Success()
+        coEvery { mockUserRepo.saveUser(any()) } returns Resource.Success(testUser)
     }
 
     @Test
     fun `given valid input, when invoke registerUser, then return Registered response`() = runTest {
-        // Given
-        val user = buildUser()
+        val successResp =
+            registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
 
-        coEvery { mockUserRepo.registerUser(user.email, pw1) } returns Resource.Success()
-        coEvery { mockUserRepo.saveUser(any()) } returns Resource.Success(user)
-
-        // When
-        val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
-
-        // Then
-        assert(actualResp is Resource.Success)
-        assert(actualResp.data is RegisterResponse.Registered)
+        assert(successResp is Resource.Success)
+        assert(successResp.data is RegisterResponse.Registered)
     }
 
     @Test
     fun `given invalid first name, when invoke registerUser, then return FirstNameEmpty response`() =
         runTest {
-            // Given
-            val user = buildUser().copy(firstName = "")
-            val expectedResp = RegisterResponse.FirstNameEmpty().asError
-
-            // When
-            val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
-
-            // Then
-            assert(actualResp is Resource.Error)
+            val user = testUser.copy(firstName = "")
+            val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
+            assert(errorResp is Resource.Error)
             assertEquals(
-                expectedResp.message!!.asString(::getString),
-                actualResp.message!!.asString(::getString)
+                RegisterResponse.FirstNameEmpty().asError.message!!.asString(::getString),
+                errorResp.message!!.asString(::getString)
             )
         }
 
     @Test
     fun `given invalid last name, when invoke registerUser, then return LastNameEmpty response`() =
         runTest {
-            // Given
-            val user = buildUser().copy(lastName = "")
+            val user = testUser.copy(lastName = "")
             val expectedResp = RegisterResponse.LastNameEmpty().asError
 
-            // When
-            val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
-
-            // Then
-            assert(actualResp is Resource.Error)
+            val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
+            assert(errorResp is Resource.Error)
             assertEquals(
                 expectedResp.message!!.asString(::getString),
-                actualResp.message!!.asString(::getString)
+                errorResp.message!!.asString(::getString)
             )
         }
 
     @Test
     fun `given invalid email, when invoke registerUser, then return EmailEmpty response`() =
         runTest {
-            // Given
-            val user = buildUser().copy(email = "")
+            val user = testUser.copy(email = "")
             val expectedResp = RegisterResponse.EmailEmpty().asError
 
-            // When
-            val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
-
-            // Then
-            assert(actualResp is Resource.Error)
+            val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
+            assert(errorResp is Resource.Error)
             assertEquals(
                 expectedResp.message!!.asString(::getString),
-                actualResp.message!!.asString(::getString)
+                errorResp.message!!.asString(::getString)
             )
         }
 
     @Test
     fun `when password is not the same, then returns error`() = runTest {
-        val user = buildUser()
-
         val expectedError = RegisterResponse.PWNotSame().asError
-        val actualResp = registerUC(user.firstName, user.lastName, user.email, "pw1", "pw2")
+        val errorResp =
+            registerUC(testUser.firstName, testUser.lastName, testUser.email, "pw1", "pw2")
 
-        assert(actualResp is Resource.Error)
+        assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message!!.asString(::getString),
-            actualResp.message!!.asString(::getString)
+            errorResp.message!!.asString(::getString)
         )
     }
 
     @Test
-    fun `when UserRepository returns error while registering user, then returns error`() =
-        runTest {
-            val user = buildUser()
+    fun `when UserRepository returns error while registering user, then returns error`() = runTest {
+        val expectedError = "DATABASE_ERROR".asResourceError<Unit>()
+        coEvery { mockUserRepo.registerUser(testUser.email, pw1) } returns expectedError
 
-            val expectedError = "DATABASE_ERROR".asResourceError<Unit>()
-            coEvery { mockUserRepo.registerUser(user.email, pw1) } returns expectedError
+        val errorResp = registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
 
-            val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
-
-            assert(actualResp is Resource.Error)
-            assertEquals(expectedError.message, actualResp.message)
-            coVerify { mockUserRepo.registerUser(user.email, pw1) }
-        }
+        assert(errorResp is Resource.Error)
+        assertEquals(expectedError.message, errorResp.message)
+        coVerify { mockUserRepo.registerUser(testUser.email, pw1) }
+    }
 
     @Test
-    fun `when UserRepository returns error while saving user, then returns error`() =
-        runTest {
-            val user = buildUser()
+    fun `when UserRepository returns error while saving user, then returns error`() = runTest {
+        val expectedError = "DATABASE_ERROR".asResourceError<User>()
+        coEvery { mockUserRepo.saveUser(any()) } returns expectedError
 
-            val expectedError = "DATABASE_ERROR".asResourceError<User>()
-            coEvery { mockUserRepo.registerUser(user.email, pw1) } returns Resource.Success()
-            coEvery { mockUserRepo.saveUser(any()) } returns expectedError
+        val successResp = registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
 
-            val actualResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
-
-            assert(actualResp is Resource.Error)
-            assertEquals(expectedError.message, actualResp.message)
-            coVerifyOrder {
-                mockUserRepo.registerUser(user.email, pw1)
-                mockUserRepo.saveUser(any())
-            }
+        assert(successResp is Resource.Error)
+        assertEquals(expectedError.message, successResp.message)
+        coVerifyOrder {
+            mockUserRepo.registerUser(testUser.email, pw1)
+            mockUserRepo.saveUser(any())
         }
-
+    }
 }
