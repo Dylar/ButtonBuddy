@@ -4,20 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.core.misc.Resource
-import de.bitb.buttonbuddy.core.misc.formatDuration
 import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
-import de.bitb.buttonbuddy.usecase.UserUseCases
-import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
+import de.bitb.buttonbuddy.ui.base.SendMessageDelegate
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

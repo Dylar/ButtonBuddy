@@ -38,6 +38,8 @@ class BuddiesViewModelTest {
     private lateinit var userUC: UserUseCases
     private lateinit var messageUC: MessageUseCases
 
+    private lateinit var testBuddy: Buddy
+
     @After
     fun cleanup() {
         Dispatchers.resetMain()
@@ -46,10 +48,6 @@ class BuddiesViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-
-        val infoRepo = mockk<UserRepository>()
-        val userLiveData = mockk<LiveData<User>>()
-        every { infoRepo.getLiveUser() }.returns(userLiveData)
 
         val buddyRepo = mockk<BuddyRepository>()
         val buddiesLiveData = mockk<LiveData<List<Buddy>>>()
@@ -60,23 +58,23 @@ class BuddiesViewModelTest {
         every { settingsRepo.getLiveSettings() }.returns(settingLiveData)
 
         messageUC = mockk()
-        viewModel = BuddiesViewModel(messageUC, settingsRepo, userUC, mockk(), mockk())
+        userUC = mockk()
+        viewModel = BuddiesViewModel(messageUC, settingsRepo, userUC, mockk(), buddyRepo)
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar.invoke(any()) }
+
+        testBuddy = buildBuddy()
     }
 
     @Test
     fun `refreshData sets isRefreshing to true then false - show success message`() = runTest {
-        // Given
         coEvery { userUC.loadDataUC() } coAnswers {
             delay(1L)
             Resource.Success()
         }
 
-        // When
         viewModel.refreshData()
 
-        // Then
         assertEquals(true, viewModel.isRefreshing.value)
         advanceTimeBy(2L)
         assertEquals(false, viewModel.isRefreshing.value)
@@ -93,50 +91,39 @@ class BuddiesViewModelTest {
 
     @Test
     fun `refreshData shows error if loading buddies fails`() = runTest {
-        // Given
         val errorMessage = "Error message".asResString()
-        coEvery {userUC.loadDataUC() } returns Resource.Error(errorMessage)
+        coEvery { userUC.loadDataUC() } returns Resource.Error(errorMessage)
 
-        // When
         viewModel.refreshData()
         advanceTimeBy(1L)
 
-        // Then
         verify { viewModel.showSnackbar(errorMessage) }
     }
 
     @Test
     fun `sendMessage shows error if sending message fails`() = runTest {
-        // Given
-        val buddy = buildBuddy()
         val errorMessage = "Error message".asResString()
-        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Error(errorMessage)
+        coEvery { messageUC.sendMessageUC(testBuddy) } returns Resource.Error(errorMessage)
 
-        // When
-        viewModel.sendMessageToBuddy(buddy)
+        viewModel.sendMessageToBuddy(testBuddy)
         advanceTimeBy(1L)
 
-        // Then
         verify { viewModel.showSnackbar(errorMessage) }
     }
 
     @Test
     fun `sendMessage shows success if sending message succeeds`() = runTest {
-        // Given
-        val buddy = buildBuddy()
-        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success()
+        coEvery { messageUC.sendMessageUC(testBuddy) } returns Resource.Success()
 
-        // When
-        viewModel.sendMessageToBuddy(buddy)
+        viewModel.sendMessageToBuddy(testBuddy)
         advanceTimeBy(1L)
 
-        // Then
         verify {
             viewModel.showSnackbar(
                 match {
                     it.asString(::getString) == ResString.ResourceString(
                         R.string.message_sent_toast,
-                        arrayOf(buddy.fullName),
+                        arrayOf(testBuddy.fullName),
                     ).asString(::getString)
                 },
             )

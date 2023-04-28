@@ -38,6 +38,10 @@ class BuddyViewModelTest {
     private lateinit var messageUC: MessageUseCases
     private lateinit var buddyUC: BuddyUseCases
 
+    private lateinit var testBuddy: Buddy
+
+    private val uuid = "uuid1"
+
     @After
     fun cleanup() {
         Dispatchers.resetMain()
@@ -68,53 +72,42 @@ class BuddyViewModelTest {
         viewModel = BuddyViewModel(messageUC, settingsRepo, msgRepo, buddyRepo, buddyUC)
         viewModel.showSnackbar = mockk()
         justRun { viewModel.showSnackbar(any()) }
+
+        testBuddy = buildBuddy()
     }
 
     @Test
     fun `on initLiveState load buddy and messages for uuid`() = runTest {
-        // Given
-        val uuid = "uuid1"
-
-        // When
         viewModel.initLiveState(uuid)
 
-        // Then
         verify { buddyRepo.getLiveBuddy(uuid) }
         verify { msgRepo.getLiveMessages(uuid) }
     }
 
     @Test
     fun `sendMessage shows error if sending message fails`() = runTest {
-        // Given
-        val buddy = buildBuddy()
         val errorMessage = "Error message".asResString()
-        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Error(errorMessage)
+        coEvery { messageUC.sendMessageUC(testBuddy) } returns Resource.Error(errorMessage)
 
-        // When
-        viewModel.sendMessageToBuddy(buddy)
+        viewModel.sendMessageToBuddy(testBuddy)
         advanceTimeBy(1L)
 
-        // Then
         verify { viewModel.showSnackbar(errorMessage) }
     }
 
     @Test
     fun `sendMessage shows success if sending message succeeds`() = runTest {
-        // Given
-        val buddy = buildBuddy()
-        coEvery { messageUC.sendMessageUC(buddy) } returns Resource.Success()
+        coEvery { messageUC.sendMessageUC(testBuddy) } returns Resource.Success()
 
-        // When
-        viewModel.sendMessageToBuddy(buddy)
+        viewModel.sendMessageToBuddy(testBuddy)
         advanceTimeBy(1L)
 
-        // Then
         verify {
             viewModel.showSnackbar(
                 match {
                     it.asString(::getString) == ResString.ResourceString(
                         R.string.message_sent_toast,
-                        arrayOf(buddy.fullName),
+                        arrayOf(testBuddy.fullName),
                     ).asString(::getString)
                 },
             )

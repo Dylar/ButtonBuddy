@@ -1,10 +1,9 @@
-package de.bitb.buttonbuddy.usecase.message
+package de.bitb.buttonbuddy.ui.base
 
 import androidx.lifecycle.viewModelScope
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import kotlinx.coroutines.launch

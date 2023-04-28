@@ -15,7 +15,7 @@ import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.UserUseCases
-import de.bitb.buttonbuddy.usecase.message.SendMessageDelegate
+import de.bitb.buttonbuddy.ui.base.SendMessageDelegate
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
