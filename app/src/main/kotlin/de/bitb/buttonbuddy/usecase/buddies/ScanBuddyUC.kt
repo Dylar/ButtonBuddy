@@ -1,11 +1,11 @@
 package de.bitb.buttonbuddy.usecase.buddies
 
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.core.misc.tryIt
+import de.bitb.buttonbuddy.data.BuddyRepository
+import de.bitb.buttonbuddy.data.UserRepository
 
 class ScanBuddyUC(
     private val userRepo: UserRepository,

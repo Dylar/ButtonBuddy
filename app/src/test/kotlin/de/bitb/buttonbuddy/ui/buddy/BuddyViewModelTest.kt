@@ -6,13 +6,13 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.getString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.model.Settings
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.asResString
@@ -22,7 +22,10 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BuddyViewModelTest {

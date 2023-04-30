@@ -8,10 +8,10 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.shared.buildBuddy
-import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.source.RemoteService
+import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.ui.buddy.BuddyFragment
 import de.bitb.buttonbuddy.ui.profile.ProfileFragment
 import de.bitb.buttonbuddy.ui.scan.ScanFragment

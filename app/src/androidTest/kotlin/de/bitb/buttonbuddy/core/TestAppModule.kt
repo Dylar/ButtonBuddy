@@ -10,16 +10,16 @@ import dagger.hilt.components.SingletonComponent
 import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
-import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
+import de.bitb.buttonbuddy.usecase.UserUseCases
 import de.bitb.buttonbuddy.usecase.buddies.ScanBuddyUC
 import de.bitb.buttonbuddy.usecase.buddies.SetCooldownUC
-import de.bitb.buttonbuddy.usecase.user.LoginUC
-import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
 import de.bitb.buttonbuddy.usecase.user.LoadDataUC
+import de.bitb.buttonbuddy.usecase.user.LoginUC
 import de.bitb.buttonbuddy.usecase.user.RegisterUC
+import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
 import io.mockk.mockk
 import javax.inject.Singleton
 

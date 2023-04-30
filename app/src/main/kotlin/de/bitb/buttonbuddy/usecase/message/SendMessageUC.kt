@@ -2,11 +2,11 @@ package de.bitb.buttonbuddy.usecase.message
 
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.*
+import de.bitb.buttonbuddy.data.MessageRepository
+import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.data.MessageRepository
-import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.source.MessageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

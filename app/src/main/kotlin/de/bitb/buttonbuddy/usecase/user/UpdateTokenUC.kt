@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.usecase.user
 
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.data.UserRepository
 
 class UpdateTokenUC(
     private val userRepo: UserRepository,

@@ -3,11 +3,11 @@ package de.bitb.buttonbuddy.ui.base
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import de.bitb.buttonbuddy.R
-import android.provider.Settings
 import de.bitb.buttonbuddy.core.KEY_BUDDY_UUID
 
 fun Activity.openAppSettings() {

@@ -1,11 +1,12 @@
 package de.bitb.buttonbuddy.usecase.user
 
 import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.User
-import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.ui.base.composable.ResString
-import de.bitb.buttonbuddy.ui.base.composable.ResString.*
+import de.bitb.buttonbuddy.ui.base.composable.ResString.DynamicString
+import de.bitb.buttonbuddy.ui.base.composable.ResString.ResourceString
 import java.util.*
 
 sealed class RegisterResponse(val message: ResString) {

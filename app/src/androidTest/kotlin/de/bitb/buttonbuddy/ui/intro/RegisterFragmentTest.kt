@@ -9,7 +9,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment

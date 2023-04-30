@@ -1,12 +1,12 @@
 package de.bitb.buttonbuddy.usecase.user
 
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.core.misc.tryIt
+import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
+import de.bitb.buttonbuddy.data.UserRepository
 
 class LoadDataUC(
     private val settingsRepo: SettingsRepository,

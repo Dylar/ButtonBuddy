@@ -3,7 +3,6 @@ package de.bitb.buttonbuddy.core
 import android.app.Application
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint

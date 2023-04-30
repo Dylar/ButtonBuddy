@@ -3,9 +3,8 @@ package de.bitb.buttonbuddy.data.source
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
-import de.bitb.buttonbuddy.data.model.Settings
+import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.converter.DateConverter
 import de.bitb.buttonbuddy.data.model.converter.StringListConverter
 

@@ -1,10 +1,10 @@
 package de.bitb.buttonbuddy.usecase.message
 
 import de.bitb.buttonbuddy.core.Notifier
-import de.bitb.buttonbuddy.data.MessageRepository
-import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.tryIt
+import de.bitb.buttonbuddy.data.MessageRepository
+import de.bitb.buttonbuddy.data.model.Message
 
 class ReceivingMessageUC(
     private val msgRepo: MessageRepository,

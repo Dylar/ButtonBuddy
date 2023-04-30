@@ -1,6 +1,7 @@
 package de.bitb.buttonbuddy.data.model
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 
 @Entity(tableName = "buddy")

@@ -1,9 +1,9 @@
 package de.bitb.buttonbuddy.data.source
 
-import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.core.misc.tryIt
+import de.bitb.buttonbuddy.data.model.Message
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import retrofit2.Call

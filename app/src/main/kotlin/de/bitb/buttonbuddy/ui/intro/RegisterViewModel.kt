@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.SettingsRepository
-import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.usecase.UserUseCases

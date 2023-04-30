@@ -1,10 +1,11 @@
 package de.bitb.buttonbuddy.data
 
 import androidx.lifecycle.LiveData
-import de.bitb.buttonbuddy.data.model.User
-import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.tryIt
+import de.bitb.buttonbuddy.data.model.User
+import de.bitb.buttonbuddy.data.source.LocalDatabase
+import de.bitb.buttonbuddy.data.source.RemoteService
 
 interface UserRepository {
     suspend fun isUserLoggedIn(): Resource<Boolean>

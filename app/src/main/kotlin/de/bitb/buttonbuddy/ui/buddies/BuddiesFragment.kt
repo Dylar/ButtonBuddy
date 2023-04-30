@@ -5,12 +5,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -20,9 +26,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.ui.base.*
+import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
+import de.bitb.buttonbuddy.ui.base.naviToBuddy
+import de.bitb.buttonbuddy.ui.base.naviToProfile
+import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.info.InfoDialog
 import java.util.*
 

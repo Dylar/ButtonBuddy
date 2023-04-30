@@ -4,10 +4,10 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import de.bitb.buttonbuddy.R
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.*
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService

@@ -1,12 +1,13 @@
 package de.bitb.buttonbuddy.usecase.user
 
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.data.BuddyRepository
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
+import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.ui.base.composable.ResString
-import de.bitb.buttonbuddy.ui.base.composable.ResString.*
+import de.bitb.buttonbuddy.ui.base.composable.ResString.DynamicString
+import de.bitb.buttonbuddy.ui.base.composable.ResString.ResourceString
 
 sealed class LoginResponse(val message: ResString) {
     class LoggedIn : LoginResponse(ResourceString(R.string.ok))

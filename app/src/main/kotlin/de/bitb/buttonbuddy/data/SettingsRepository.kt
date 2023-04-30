@@ -2,10 +2,11 @@ package de.bitb.buttonbuddy.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.bitb.buttonbuddy.data.source.*
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.tryIt
 import de.bitb.buttonbuddy.data.model.Settings
+import de.bitb.buttonbuddy.data.source.LocalDatabase
+import de.bitb.buttonbuddy.data.source.RemoteService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

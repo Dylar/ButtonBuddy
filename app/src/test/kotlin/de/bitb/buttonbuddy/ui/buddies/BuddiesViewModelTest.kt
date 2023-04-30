@@ -7,10 +7,8 @@ import de.bitb.buttonbuddy.core.getString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
-import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Settings
-import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.asResString

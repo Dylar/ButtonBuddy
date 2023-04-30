@@ -1,9 +1,9 @@
 package de.bitb.buttonbuddy.data.source
 
-import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.data.model.User
-import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.core.misc.Resource
+import de.bitb.buttonbuddy.data.model.Buddy
+import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.User
 
 // LOCAL
 interface LocalDatabase : UserDao, BuddyDao, MessageDao, TokenDao, SettingsDao

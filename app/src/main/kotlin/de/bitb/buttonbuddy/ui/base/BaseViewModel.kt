@@ -3,7 +3,6 @@ package de.bitb.buttonbuddy.ui.base
 import androidx.lifecycle.ViewModel
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.ui.base.composable.ResString
-import javax.inject.Inject
 
 abstract class BaseViewModel : ViewModel() {
     abstract val settingsRepo: SettingsRepository
