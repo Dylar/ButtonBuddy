@@ -32,7 +32,6 @@ class UserRepoTest {
     private lateinit var userRepo: UserRepository
 
     private lateinit var testUser: User
-    private lateinit var testBuddy: Buddy
 
     @After
     fun cleanup() {
@@ -47,7 +46,6 @@ class UserRepoTest {
         userRepo = UserRepositoryImpl(mockRemoteService, mockLocalDBMock)
 
         testUser = buildUser()
-        testBuddy = buildBuddy()
     }
 
     @Test

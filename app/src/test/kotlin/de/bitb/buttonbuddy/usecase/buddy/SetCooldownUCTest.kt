@@ -61,7 +61,7 @@ class SetCooldownUCTest {
 
         testBuddy = buildBuddy()
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(buildUser())
-        coEvery { mockBuddyRepo.saveCooldown(any(), any(), any()) } returns Resource.Success()
+        coEvery { mockBuddyRepo.saveCooldown(any(), any()) } returns Resource.Success()
     }
 
     @Test
@@ -92,7 +92,7 @@ class SetCooldownUCTest {
     @Test
     fun `save cooldown failed, should return error`() = runTest {
         val expectedError = "Save Cooldown Error".asResourceError<Unit>()
-        coEvery { mockBuddyRepo.saveCooldown(any(), any(), any()) } returns expectedError
+        coEvery { mockBuddyRepo.saveCooldown(any(), any()) } returns expectedError
 
         val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
@@ -113,7 +113,6 @@ class SetCooldownUCTest {
             mockBuddyRepo.saveCooldown(
                 any(),
                 match { it.cooldown == resultCooldown },
-                match { it == resultCooldown },
             )
         }
     }

@@ -14,7 +14,6 @@ interface BuddyRepository {
     suspend fun saveCooldown(
         userUuid: String,
         buddy: Buddy,
-        cooldown: Long,
     ): Resource<Unit>
 }
 
@@ -31,25 +30,24 @@ class BuddyRepositoryImpl(
         buddyIds: List<String>
     ): Resource<List<Buddy>> {
         return tryIt {
-            val response = remoteDB.loadBuddies(userUuid, buddyIds)
-            if (response is Resource.Success) {
-                localDB.insertAll(response.data!!)
+            val loadBuddiesResp = remoteDB.loadBuddies(userUuid, buddyIds)
+            if (loadBuddiesResp is Resource.Success) {
+                localDB.insertAll(loadBuddiesResp.data!!)
             }
-            response
+            loadBuddiesResp
         }
     }
 
     override suspend fun saveCooldown(
         userUuid: String,
         buddy: Buddy,
-        cooldown: Long,
     ): Resource<Unit> {
         return tryIt {
-            val response = remoteDB.updateCooldown(userUuid, buddy.uuid, cooldown)
-            if (response is Resource.Success) {
+            val updateCDResp = remoteDB.updateCooldown(userUuid, buddy.uuid, buddy.cooldown)
+            if (updateCDResp is Resource.Success) {
                 localDB.insertAll(listOf(buddy))
             }
-            response
+            updateCDResp
         }
     }
 
