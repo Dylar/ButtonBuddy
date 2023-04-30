@@ -15,7 +15,7 @@ interface SettingsRepository {
     suspend fun saveSettings(settings: Settings): Resource<Unit>
     suspend fun loadSettings(uuid: String): Resource<Map<String, Long>>
 }
-
+// TODO write tests
 class SettingsRepositoryImpl constructor(
     private val remoteDB: RemoteService,
     private val localDB: LocalDatabase,

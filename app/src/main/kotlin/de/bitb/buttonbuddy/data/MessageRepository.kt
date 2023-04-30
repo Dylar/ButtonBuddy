@@ -31,7 +31,7 @@ class MessageRepositoryImpl constructor(
     override suspend fun saveMessage(msg: Message): Resource<Unit> {
         return tryIt {
             localDB.insert(msg)
-//                remoteDB.saveMessage(saveInfo) TODO save online
+//                remoteDB.saveMessage(saveInfo) TODO save online + test
             Resource.Success()
         }
     }
