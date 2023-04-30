@@ -3,13 +3,16 @@ package de.bitb.buttonbuddy.shared
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.data.model.Message
+import de.bitb.buttonbuddy.data.model.Settings
 import java.util.*
+
+fun buildSettings(): Settings = Settings()
 
 fun buildUser(buddies: MutableList<String> = mutableListOf()): User =
     User(
         uuid = "uuid1",
         token = "token1",
-        firstName = "name1",
+        firstName = "firstName1",
         lastName = "lastName1",
         email = "email1",
         buddies = buddies,
@@ -22,7 +25,7 @@ fun buildMessage(
     uuid: String = "msgUuid",
     fromUuid: String = "uuid1",
     toUuid: String = "uuid2",
-    date: Date = Date(System.currentTimeMillis()),
+    date: Date = Date(),
 ): Message =
     Message(
         uuid = uuid,

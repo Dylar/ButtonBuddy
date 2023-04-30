@@ -99,13 +99,12 @@ object TestAppModule {
     fun provideMessageUseCases(
         app: Application,
         remoteService: RemoteService,
-        localDB: LocalDatabase,
         settingsRepo: SettingsRepository,
         userRepo: UserRepository,
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
         updateTokenUC = UpdateTokenUC(userRepo),
-        sendMessageUC = SendMessageUC(remoteService, localDB, settingsRepo, userRepo, msgRepo ),
+        sendMessageUC = SendMessageUC(remoteService, settingsRepo, userRepo, msgRepo ),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }

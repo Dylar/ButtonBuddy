@@ -27,22 +27,18 @@ class UserRepositoryImpl constructor(
     override fun getLiveUser(): LiveData<User> = localDB.getLiveUser()
 
     override suspend fun getLocalUser(): Resource<User?> {
-        return tryIt {
-            Resource.Success(localDB.getUser())
-        }
+        return tryIt { Resource.Success(localDB.getUser()) }
     }
 
     override suspend fun registerUser(email: String, pw: String): Resource<Unit> {
-        return tryIt {
-            remoteDB.registerUser(email, pw)
-        }
+        return tryIt { remoteDB.registerUser(email, pw) }
     }
 
     override suspend fun loginUser(email: String, pw: String): Resource<User?> {
         return tryIt {
             val loginResp = remoteDB.loginUser(email, pw)
             if (loginResp is Resource.Error) {
-                loginResp.castTo<User?>()
+                return@tryIt loginResp.castTo<User?>()
             }
             loadUser(email)
         }
@@ -54,9 +50,13 @@ class UserRepositoryImpl constructor(
                 is Resource.Success -> {
                     val data = userRes.data
                     if (userRes.hasData) {
-                        saveUser(data!!)
+                        val saveUserResp = saveUser(data!!)
+                        if (saveUserResp is Resource.Error) {
+                            return@tryIt saveUserResp.castTo()
+                        }
+                        return@tryIt Resource.Success(saveUserResp.data)
                     }
-                    Resource.Success(data)
+                    Resource.Success()
                 }
                 is Resource.Error -> {
                     Resource.Error(userRes.message!!, userRes.data)
@@ -71,7 +71,10 @@ class UserRepositoryImpl constructor(
             val saveUser = user.copy(token = token)
             localDB.insert(saveUser)
             if (user.uuid.isNotBlank()) {
-                remoteDB.saveUser(saveUser)
+                val saveUserResp = remoteDB.saveUser(saveUser)
+                if (saveUserResp is Resource.Error) {
+                    return@tryIt saveUserResp.castTo()
+                }
             }
             Resource.Success(saveUser)
         }
@@ -82,7 +85,10 @@ class UserRepositoryImpl constructor(
             localDB.setToken(token)
             val user = localDB.getUser()
             if (user != null) {
-                saveUser(user)
+                val saveUserResp = remoteDB.saveUser(user)
+                if (saveUserResp is Resource.Error) {
+                    return@tryIt saveUserResp.castTo()
+                }
             }
             Resource.Success()
         }
