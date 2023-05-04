@@ -73,7 +73,7 @@ class RegisterFragmentTest {
     @Test
     fun test_register_errors() = runTest {
         composeRule.apply {
-            remoteService.mockUserService(buildUser())
+            remoteService.mockWholeService(buildUser(), isLoggedIn = false)
 
             launchActivity(TestNavigation.Register)
             waitForIdle()
@@ -119,7 +119,10 @@ class RegisterFragmentTest {
                 .onChildren()
                 .assertAny(hasText(RegisterResponse.PWNotSame().asString()))
 
-            onNodeWithTag(RegisterFragment.PW2_TAG).performTextInput("PW1")
+            onNodeWithTag(RegisterFragment.PW2_TAG).apply {
+                performTextClearance()
+                performTextInput("PW1")
+            }
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
 

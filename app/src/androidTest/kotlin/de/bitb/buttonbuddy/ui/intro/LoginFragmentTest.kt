@@ -15,8 +15,6 @@ import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 import de.bitb.buttonbuddy.usecase.user.LoginResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -38,7 +36,7 @@ class LoginFragmentTest {
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var infoRepository: UserRepository
+    lateinit var userRepository: UserRepository
 
     @Inject
     lateinit var remoteService: RemoteService
@@ -80,7 +78,7 @@ class LoginFragmentTest {
     @Test
     fun test_login_errors() = runTest {
         composeRule.apply {
-            remoteService.mockUserService(buildUser())
+            remoteService.mockWholeService(buildUser(), isLoggedIn = false)
 
             launchActivity(TestNavigation.Login)
             waitForIdle()
@@ -101,7 +99,6 @@ class LoginFragmentTest {
             onNodeWithTag(LoginFragment.PW_TAG).performTextInput("password")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
             waitForIdle()
-            runBlocking { delay(10000) }
             onNodeWithTag(BuddiesFragment.APPBAR_TAG)
                 .assertIsDisplayed()
         }

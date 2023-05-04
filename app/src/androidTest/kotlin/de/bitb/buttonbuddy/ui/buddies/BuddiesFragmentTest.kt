@@ -49,7 +49,7 @@ class BuddiesFragmentTest {
     fun render_buddiesFragment() = runTest {
         composeRule.apply {
             val user = buildUser()
-            remoteService.mockUserService(user)
+            remoteService.mockWholeService(user)
 
             launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
@@ -80,7 +80,7 @@ class BuddiesFragmentTest {
                 )
 
             val user = buildUser(mutableListOf(buddies.first().uuid, buddies.last().uuid))
-            remoteService.mockUserService(user, buddies)
+            remoteService.mockWholeService(user, buddies = buddies)
 
             launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
@@ -93,7 +93,7 @@ class BuddiesFragmentTest {
                 }
 
             buddies.add(buddy.copy(uuid = "uuid3", firstName = "first3"))
-            remoteService.mockUserService(user, buddies)
+            remoteService.mockWholeService(user, buddies =buddies)
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .assertExists()
@@ -114,10 +114,10 @@ class BuddiesFragmentTest {
     fun clickSendButton_success() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockUserService(info, listOf(buddy))
+            val user = buildUser(mutableListOf(buddy.uuid))
+            remoteService.mockWholeService(user, buddies =listOf(buddy))
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             val snackMsg = getString(R.string.message_sent_toast, buddy.fullName)
@@ -134,12 +134,12 @@ class BuddiesFragmentTest {
     fun clickSendButton_error() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildUser(mutableListOf(buddy.uuid))
+            val user = buildUser(mutableListOf(buddy.uuid))
             val error = "ERROR"
-            remoteService.mockUserService(info, listOf(buddy))
+            remoteService.mockWholeService(user, buddies =listOf(buddy))
             remoteService.mockMessageService(sendMessageError = error)
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithText(error)
@@ -155,10 +155,10 @@ class BuddiesFragmentTest {
     fun clickBuddy_navigateToBuddy() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockUserService(info, listOf(buddy))
+            val user = buildUser(mutableListOf(buddy.uuid))
+            remoteService.mockWholeService(user, buddies =listOf(buddy))
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -175,10 +175,10 @@ class BuddiesFragmentTest {
     @Test
     fun clickProfileButton_navigateToProfile() = runTest {
         composeRule.apply {
-            val info = buildUser()
-            remoteService.mockUserService(info)
+            val user = buildUser()
+            remoteService.mockWholeService(user)
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
@@ -195,10 +195,10 @@ class BuddiesFragmentTest {
     @Test
     fun clickScanButton_navigateToScan() = runTest {
         composeRule.apply {
-            val info = buildUser()
-            remoteService.mockUserService(info)
+            val user = buildUser()
+            remoteService.mockWholeService(user)
 
-            launchActivity(TestNavigation.Buddies(info))
+            launchActivity(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)

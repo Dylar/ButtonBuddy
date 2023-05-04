@@ -9,6 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.bitb.buttonbuddy.data.*
 import de.bitb.buttonbuddy.data.source.*
+import de.bitb.buttonbuddy.shared.buildUser
 import de.bitb.buttonbuddy.usecase.BuddyUseCases
 import de.bitb.buttonbuddy.usecase.MessageUseCases
 import de.bitb.buttonbuddy.usecase.UserUseCases
@@ -38,7 +39,8 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideRemoteDatabase(): RemoteService = mockk(relaxed = true)
+    fun provideRemoteDatabase(): RemoteService = mockk<RemoteService>()
+        .apply { mockUserDao(buildUser(), isLoggedIn = true) }
 
     // REPO
     @Provides
@@ -104,7 +106,7 @@ object TestAppModule {
         msgRepo: MessageRepository,
     ): MessageUseCases = MessageUseCases(
         updateTokenUC = UpdateTokenUC(userRepo),
-        sendMessageUC = SendMessageUC(remoteService, settingsRepo, userRepo, msgRepo ),
+        sendMessageUC = SendMessageUC(remoteService, settingsRepo, userRepo, msgRepo),
         receivingMessageUC = ReceivingMessageUC(msgRepo, NotifyManager(app)),
     )
 }

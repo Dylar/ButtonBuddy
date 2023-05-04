@@ -51,10 +51,10 @@ class BuddyFragmentTest {
     fun render_buddyFragment() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockUserService(info, listOf(buddy))
+            val user = buildUser(mutableListOf(buddy.uuid))
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
 
-            launchActivity(TestNavigation.BuddyDetail(info, buddy = buddy))
+            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
             waitForIdle()
             onNodeWithTag(BuddyFragment.APPBAR_TAG)
                 .assertIsDisplayed()
@@ -72,14 +72,14 @@ class BuddyFragmentTest {
     fun renderMessages() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
-            val info = buildUser(mutableListOf(buddy.uuid))
+            val user = buildUser(mutableListOf(buddy.uuid))
             val message1 = buildMessage(uuid = "msgUuid1", date = Date(200000000))
             val message2 = buildMessage(uuid = "msgUuid2", "uuid2", "uuid1", Date(100000000))
             val messages = listOf(message1, message2)
-            remoteService.mockUserService(info, listOf(buddy))
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
             localDatabase.mockLocalDatabase(messages)
 
-            launchActivity(TestNavigation.BuddyDetail(info, buddy = buddy))
+            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
             waitForIdle()
 
             onNodeWithTag(BuddyFragment.LIST_TAG)
