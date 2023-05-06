@@ -21,6 +21,7 @@
     <string name="pw_not_same">Passwort stimmt nicht überein</string>
 
     <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
 
     <string name="info_title">Information</string>
     <string name="settings_title">Einstellungen</string>
@@ -44,6 +45,8 @@
     <string name="buddies_title">Buddys</string>
     <string name="no_buddies">Du hast keine Freunde</string>
     <string name="no_buddy_found">Kein Buddy gefunden</string>
+    <string name="select_time">Cooldown wählen</string>
+
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

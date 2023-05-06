@@ -17,11 +17,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import de.bitb.buttonbuddy.R
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -31,8 +34,43 @@ private val primaryColor = Color(68, 71, 70)
 private val secondaryColor = Color(68, 71, 70)
 private val selectedColor = Color(104, 220, 255, 255)
 
+object TimePickerTags {
+
+    const val TIME_PICKER_DIALOG = "CooldownPickerDialog"
+    const val TIME_PICKER_CANCEL = "CooldownPickerCancel"
+    const val TIME_PICKER_OK = "CooldownPickerOK"
+
+    const val TIME_PICKER_HOUR = "CooldownPickerHour"
+    const val TIME_PICKER_MIN = "CooldownPickerMin"
+
+    fun timePickerMark(text: String): String = "CooldownPickerMark_$text"
+}
+
+enum class TimePart { Hour, Minute }
+
+private const val step = PI * 2 / 12
+private fun angleForIndex(hour: Int) = -PI / 2 + step * hour
+
+@Preview(device = Devices.PIXEL_4, showSystemUi = true)
 @Composable
-fun TimerPicker(hour: Int, min: Int, onCancel: () -> Unit, onSelected: (Int, Int) -> Unit) {
+fun TimerPickerPreview() {
+    Box(contentAlignment = Alignment.Center) {
+        TimerPicker(
+            hour = 0,
+            min = 0,
+            onCancel = {},
+            onSelected = { _, _ -> },
+        )
+    }
+}
+
+@Composable
+fun TimerPicker(
+    hour: Int,
+    min: Int,
+    onCancel: () -> Unit,
+    onSelected: (Int, Int) -> Unit,
+) {
     var selectedPart by remember { mutableStateOf(TimePart.Hour) }
     var selectedHour by remember { mutableStateOf(hour) }
     var selectedMinute by remember { mutableStateOf(min) }
@@ -47,6 +85,7 @@ fun TimerPicker(hour: Int, min: Int, onCancel: () -> Unit, onSelected: (Int, Int
     Dialog(onDismissRequest = onCancel) {
         Box(
             Modifier
+                .testTag(TimePickerTags.TIME_PICKER_DIALOG)
                 .padding(16.dp)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -62,42 +101,36 @@ fun TimerPicker(hour: Int, min: Int, onCancel: () -> Unit, onSelected: (Int, Int
                     .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Select time")
+                Text(stringResource(R.string.select_time))
                 Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
+                Row(modifier = Modifier.align(Alignment.CenterHorizontally))
+                {
                     TimeCard(
+                        tag = TimePickerTags.TIME_PICKER_HOUR,
                         time = selectedHour,
                         isSelected = selectedPart == TimePart.Hour,
                         onClick = { selectedPart = TimePart.Hour }
                     )
-
                     Text(
                         text = ":",
                         fontSize = 26.sp,
                         color = Color.White,
                         modifier = Modifier.padding(horizontal = 2.dp)
                     )
-
                     TimeCard(
+                        tag = TimePickerTags.TIME_PICKER_MIN,
                         time = selectedMinute,
                         isSelected = selectedPart == TimePart.Minute,
                         onClick = { selectedPart = TimePart.Minute }
                     )
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Clock(
                     time = selectedTime,
                     modifier = Modifier
                         .size(190.dp)
                         .align(Alignment.CenterHorizontally)
-                ) {
-                    ClockMarks24h(selectedPart, selectedTime, onTime)
-                }
-
+                ) { ClockMarks24h(selectedPart, selectedTime, onTime) }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -105,28 +138,12 @@ fun TimerPicker(hour: Int, min: Int, onCancel: () -> Unit, onSelected: (Int, Int
                 ) {
                     TextButton(
                         onClick = onCancel,
-//                        modifier = Modifier
-//                            .width(56.dp)
-//                            .height(32.dp)
-                    ) {
-                        Text(
-                            text = "Cancel",
-//                            fontSize = 10.sp,
-                            color = selectedColor,
-                        )
-                    }
+                        modifier = Modifier.testTag(TimePickerTags.TIME_PICKER_CANCEL)
+                    ) { Text(text = stringResource(R.string.cancel), color = selectedColor) }
                     TextButton(
                         onClick = { onSelected(selectedHour, selectedMinute) },
-//                        modifier = Modifier
-//                            .width(36.dp)
-//                            .height(32.dp)
-                    ) {
-                        Text(
-                            text = "OK",
-//                            fontSize = 10.sp,
-                            color = selectedColor
-                        )
-                    }
+                        modifier = Modifier.testTag(TimePickerTags.TIME_PICKER_OK)
+                    ) { Text(text = stringResource(R.string.ok), color = selectedColor) }
                 }
             }
         }
@@ -135,8 +152,8 @@ fun TimerPicker(hour: Int, min: Int, onCancel: () -> Unit, onSelected: (Int, Int
 
 @Composable
 fun Clock(
-    time: Int,
     modifier: Modifier = Modifier,
+    time: Int,
     content: @Composable () -> Unit
 ) {
     var radiusPx by remember { mutableStateOf(0) }
@@ -154,34 +171,24 @@ fun Clock(
             shape = CircleShape,
             modifier = Modifier.fillMaxSize()
         ) {}
-
-        val padding = 4.dp
-        val hourCirclePx = 36f
-
         Layout(
             content = content,
             modifier = Modifier
-                .padding(padding)
+                .padding(4.dp)
                 .drawBehind {
                     val end = Offset(
                         x = size.width / 2 + posX(time),
                         y = size.height / 2 + posY(time)
                     )
-
-                    drawCircle(
-                        radius = 9f,
-                        color = selectedColor,
-                    )
-
+                    drawCircle(radius = 9f, color = selectedColor)
                     drawLine(
                         start = center,
                         end = end,
                         color = selectedColor,
                         strokeWidth = 4f
                     )
-
                     drawCircle(
-                        radius = hourCirclePx,
+                        radius = 36f,
                         center = end,
                         color = selectedColor,
                     )
@@ -218,7 +225,7 @@ fun Mark(
     Text(
         text = text,
         color = if (isSelected) secondaryColor else Color.White,
-        modifier = Modifier.clickable(
+        modifier = Modifier.testTag(TimePickerTags.timePickerMark(text)).clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
             onClick = { onIndex(index) }
@@ -228,6 +235,7 @@ fun Mark(
 
 @Composable
 fun TimeCard(
+    tag: String,
     time: Int,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -235,27 +243,14 @@ fun TimeCard(
     Card(
         shape = RoundedCornerShape(6.dp),
         backgroundColor = if (isSelected) selectedColor else secondaryColor,
-        modifier = Modifier.clickable { onClick() }
+        modifier = Modifier.testTag(tag).clickable { onClick() }
     ) {
         Text(
-            text = if (time == 0) "00" else time.toString(),
+            text = time.toString().padStart(2,'0'),
             fontSize = 26.sp,
             color = if (isSelected) secondaryColor else Color.White,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
         )
-    }
-}
-
-enum class TimePart { Hour, Minute }
-
-private const val step = PI * 2 / 12
-private fun angleForIndex(hour: Int) = -PI / 2 + step * hour
-
-@Preview(device = Devices.PIXEL_4, showSystemUi = true)
-@Composable
-fun TimerPickerPreview() {
-    Box(contentAlignment = Alignment.Center) {
-        TimerPicker(0, 0, onSelected = { _, _ -> }, onCancel = {})
     }
 }
 

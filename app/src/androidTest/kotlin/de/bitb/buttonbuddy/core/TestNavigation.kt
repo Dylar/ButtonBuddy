@@ -20,7 +20,9 @@ sealed class TestNavigation {
     object Login : TestNavigation()
     object Register : TestNavigation()
     data class Buddies(val user: User, val pw: String = "pw") : TestNavigation()
-    data class BuddyDetail(val user: User, val pw: String = "pw", val buddy: Buddy) : TestNavigation()
+    data class BuddyDetail(val user: User, val pw: String = "pw", val buddy: Buddy) :
+        TestNavigation()
+
     data class Profile(val user: User, val pw: String = "pw") : TestNavigation()
     object Scan : TestNavigation()
     object Settings : TestNavigation()
@@ -51,7 +53,10 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
             doLogin(naviTo.user, naviTo.pw)
             tapBuddy(naviTo.buddy)
         }
-        is TestNavigation.Profile -> doLogin(naviTo.user, naviTo.pw).also { tapProfile() }
+        is TestNavigation.Profile -> {
+            doLogin(naviTo.user, naviTo.pw)
+            tapProfile()
+        }
         TestNavigation.Scan -> TODO()
         TestNavigation.Settings -> TODO()
     }

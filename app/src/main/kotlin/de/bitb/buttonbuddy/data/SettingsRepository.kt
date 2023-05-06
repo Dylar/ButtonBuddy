@@ -7,7 +7,8 @@ import de.bitb.buttonbuddy.core.misc.tryIt
 import de.bitb.buttonbuddy.data.model.Settings
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 interface SettingsRepository {
@@ -16,6 +17,7 @@ interface SettingsRepository {
     suspend fun saveSettings(settings: Settings): Resource<Unit>
     suspend fun loadSettings(uuid: String): Resource<Map<String, Long>>
 }
+
 // TODO write tests
 class SettingsRepositoryImpl constructor(
     private val remoteDB: RemoteService,
@@ -25,8 +27,7 @@ class SettingsRepositoryImpl constructor(
 
     override fun getLiveSettings(): LiveData<Settings> {
         if (settingsData.value == null) {
-            //TODO make anders
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val settings = getSettings()
                 settingsData.postValue(settings.data!!)
             }

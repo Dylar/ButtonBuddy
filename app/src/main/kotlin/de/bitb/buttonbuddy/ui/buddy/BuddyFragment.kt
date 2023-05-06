@@ -37,9 +37,10 @@ import java.util.*
 class BuddyFragment : BaseFragment<BuddyViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddyAppbar"
-        const val TIMER_BUTTON_TAG = "BuddyTimerButton"
         const val SEND_BUTTON_TAG = "BuddySendButton"
         const val LIST_TAG = "BuddyList"
+
+        const val COOLDOWN_BUTTON_TAG = "BuddyCooldownButton"
     }
 
     override val viewModel: BuddyViewModel by viewModels()
@@ -105,7 +106,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             Button(
                 modifier = Modifier
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                    .testTag(TIMER_BUTTON_TAG),
+                    .testTag(COOLDOWN_BUTTON_TAG),
                 onClick = { showDialog.value = true },
                 content = {
                     Text(
@@ -123,14 +124,14 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
         if (showDialog.value) {
             val value = timePicked.value
             TimerPicker(
-                getHours(value),
-                getMins(value),
-                { showDialog.value = false })
-            { h, m ->
-//                timePicked.value = "${h}h:${m}m"
-                showDialog.value = false
-                viewModel.setCooldown(buddy, h, m)
-            }
+                hour = getHours(value),
+                min = getMins(value),
+                onCancel = { showDialog.value = false },
+                onSelected = { h, m ->
+                    showDialog.value = false
+                    viewModel.setCooldown(buddy, h, m)
+                },
+            )
         }
     }
 
