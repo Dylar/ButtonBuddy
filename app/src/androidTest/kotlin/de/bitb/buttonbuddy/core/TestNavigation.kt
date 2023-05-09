@@ -24,7 +24,7 @@ sealed class TestNavigation {
         TestNavigation()
 
     data class Profile(val user: User, val pw: String = "pw") : TestNavigation()
-    object Scan : TestNavigation()
+    data class Scan(val user: User, val pw: String = "pw") : TestNavigation()
     object Settings : TestNavigation()
 }
 
@@ -57,7 +57,10 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
             doLogin(naviTo.user, naviTo.pw)
             tapProfile()
         }
-        TestNavigation.Scan -> TODO()
+        is TestNavigation.Scan -> {
+            doLogin(naviTo.user, naviTo.pw)
+            tapScan()
+        }
         TestNavigation.Settings -> TODO()
     }
 }
@@ -90,5 +93,10 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tap
 
 fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapProfile() {
     onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG).performClick()
+    waitForIdle()
+}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapScan() {
+    onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG).performClick()
     waitForIdle()
 }

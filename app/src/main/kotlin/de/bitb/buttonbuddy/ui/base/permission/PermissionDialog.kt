@@ -9,9 +9,18 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.ui.base.composable.ResString
+import de.bitb.buttonbuddy.ui.base.permission.PermissionDialogTags.PERMISSION_DIALOG
+
+object PermissionDialogTags {
+    const val PERMISSION_DIALOG = "PermissionDialog"
+}
 
 @Composable
 fun PermissionDialog(
@@ -25,12 +34,10 @@ fun PermissionDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         buttons = {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Divider()
                 Text(
-                    text = if (isPermanentlyDeclined) "Grant permission" else "OK",
+                    text = buttonText(isPermanentlyDeclined).asString(),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -40,29 +47,31 @@ fun PermissionDialog(
                 )
             }
         },
-        title = { Text(text = "Berechtigung benötigt") },
+        title = { Text(text = stringResource(R.string.permission_needed)) },
         text = {
             Text(
-                text = permissionTextProvider.getDescription(
-                    isPermanentlyDeclined = isPermanentlyDeclined
-                )
+                text = permissionTextProvider
+                    .getDescription(isPermanentlyDeclined = isPermanentlyDeclined)
+                    .asString()
             )
         },
-        modifier = modifier
+        modifier = modifier.testTag(PERMISSION_DIALOG)
     )
 }
 
+private fun buttonText(isPermanentlyDeclined: Boolean): ResString = ResString.ResourceString(
+    if (isPermanentlyDeclined) R.string.grant_permission
+    else R.string.ok
+)
+
 interface PermissionTextProvider {
-    fun getDescription(isPermanentlyDeclined: Boolean): String
+    fun getDescription(isPermanentlyDeclined: Boolean): ResString
 }
 
 class CameraPermissionTextProvider : PermissionTextProvider {
-    override fun getDescription(isPermanentlyDeclined: Boolean): String {
-        return if (isPermanentlyDeclined) {
-            "Sie haben die Berechtigung für die Kamera permanent abgelehnt. " +
-                    "Sie können in die Appeinstellungen gehen um Berechtigung zu geben."
-        } else {
-            "Um einen QR Code zu scannen, wird die Berechtigung die Kamera zu nutzen benötigt"
-        }
-    }
+    override fun getDescription(isPermanentlyDeclined: Boolean): ResString =
+        ResString.ResourceString(
+            if (isPermanentlyDeclined) R.string.camera_permission_declined
+            else R.string.camera_permission_asking
+        )
 }

@@ -9,7 +9,7 @@ class PermissionHandlerImpl(
 interface PermissionHandler {
     val visiblePermissionDialogQueue: MutableList<String>
 
-    fun dismissDialog() {
+    fun dismissPermissionDialog() {
         visiblePermissionDialogQueue.removeFirst()
     }
 

@@ -47,6 +47,11 @@
     <string name="no_buddy_found">Kein Buddy gefunden</string>
     <string name="select_time">Cooldown wählen</string>
 
+    <string name="scan_title">Scan</string>
+    <string name="grant_permission">Berechtigung erteilen</string>
+    <string name="camera_permission_declined">Sie haben die Berechtigung für die Kamera permanent abgelehnt./nSie können in die Appeinstellungen gehen um Berechtigung zu geben.</string>
+    <string name="camera_permission_asking">Um einen QR Code zu scannen, wird die Berechtigung die Kamera zu nutzen benötigt.</string>
+    <string name="permission_needed">Berechtigung benötigt</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

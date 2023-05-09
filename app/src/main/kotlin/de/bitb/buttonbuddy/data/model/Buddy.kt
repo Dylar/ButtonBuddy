@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 
+@Suppress("UNCHECKED_CAST")
 @Entity(tableName = "buddy")
 data class Buddy(
     @PrimaryKey val uuid: String = "",
@@ -17,8 +18,8 @@ data class Buddy(
         token = map["token"] as String,
         firstName = map["firstName"] as String,
         lastName = map["lastName"] as String,
-        cooldown = (map["cooldowns"] as? Map<String, String>
-            ?: mapOf<String, String>())[userUuid]?.toLong() ?: 0,
+        cooldown = (map["cooldowns"] as? Map<String, Long>
+            ?: mapOf<String, Long>())[userUuid] ?: 0,
     )
 
     val fullName: String

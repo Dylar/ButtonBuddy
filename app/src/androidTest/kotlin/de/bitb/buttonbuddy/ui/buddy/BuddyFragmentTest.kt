@@ -28,8 +28,6 @@ import org.junit.runner.RunWith
 import java.util.*
 import javax.inject.Inject
 
-private fun String.pad() = this.padStart(2, '0')
-
 @MediumTest
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -105,14 +103,10 @@ class BuddyFragmentTest {
     }
 
     @Test
-    fun tap_cooldownButton_opens_timePicker_selectTime_updateCooldown() = runTest {
+    fun tapCooldownButton_opensTimePicker_selectTime_updateCooldown() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockWholeService(user, buddies = listOf(buddy))
-
-            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
-            waitForIdle()
 
             val oldHour = getHours(buddy.cooldown)
             val oldMin = getMins(buddy.cooldown)
@@ -120,6 +114,12 @@ class BuddyFragmentTest {
             val newHour = 10
             val newMin = 5
             val newCooldown = calculateMilliseconds(newHour, newMin)
+
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
+
+            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
+            waitForIdle()
+
             onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG).assertTextEquals(oldCooldown)
             onNodeWithTag(TimePickerTags.TIME_PICKER_DIALOG).assertDoesNotExist()
             onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG).performClick()
@@ -131,15 +131,16 @@ class BuddyFragmentTest {
                 onNodeWithTag(TimePickerTags.timePickerMark(i.toString())).assertIsDisplayed()
             }
 
-            onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals("$oldHour".pad())
-            onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals("$oldMin".pad())
-            onNodeWithTag(TimePickerTags.timePickerMark("$newHour".pad())).performClick()
-            onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals("$newHour".pad())
-            onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals("$oldMin".pad())
+            fun Int.pad() = this.toString().padStart(2, '0')
+            onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals(oldHour.pad())
+            onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals(oldMin.pad())
+            onNodeWithTag(TimePickerTags.timePickerMark(newHour.pad())).performClick()
+            onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals(newHour.pad())
+            onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals(oldMin.pad())
             onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).performClick()
-            onNodeWithTag(TimePickerTags.timePickerMark("$newMin").pad()).performClick()
-            onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals("$newHour".pad())
-            onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals("$newMin".pad())
+            onNodeWithTag(TimePickerTags.timePickerMark(newMin.pad())).performClick()
+            onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals(newHour.pad())
+            onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals(newMin.pad())
 
             onNodeWithTag(TimePickerTags.TIME_PICKER_OK).performClick()
 

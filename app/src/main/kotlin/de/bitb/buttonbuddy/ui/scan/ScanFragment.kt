@@ -11,11 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.budiyev.android.codescanner.*
 import dagger.hilt.android.AndroidEntryPoint
+import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LifecycleComp
 import de.bitb.buttonbuddy.ui.base.openAppSettings
@@ -32,8 +34,6 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
 
     @Composable
     override fun ScreenContent() {
-        scaffoldState = rememberScaffoldState()
-
         val dialogQueue = viewModel.visiblePermissionDialogQueue
         val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
@@ -49,14 +49,12 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),
-                    title = { Text("Scan") }
+                    title = { Text(stringResource(R.string.scan_title)) }
                 )
             },
         ) { innerPadding ->
             ScannerPreview(innerPadding)
-            cameraPermissionResultLauncher.launch(
-                Manifest.permission.CAMERA
-            )
+            cameraPermissionResultLauncher.launch(Manifest.permission.CAMERA)
         }
 
         dialogQueue
@@ -64,21 +62,12 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
             .forEach { permission ->
                 PermissionDialog(
                     permissionTextProvider = when (permission) {
-                        Manifest.permission.CAMERA -> {
-                            CameraPermissionTextProvider()
-                        }
+                        Manifest.permission.CAMERA -> CameraPermissionTextProvider()
                         else -> return@forEach
                     },
-                    isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
-                        permission,
-                    ),
-                    onDismiss = viewModel::dismissDialog,
-                    onOkClick = {
-                        viewModel.dismissDialog()
-//                        multiplePermissionResultLauncher.launch(
-//                            arrayOf(permission),
-//                        )
-                    },
+                    isPermanentlyDeclined = !shouldShowRequestPermissionRationale(permission),
+                    onDismiss = viewModel::dismissPermissionDialog,
+                    onOkClick = viewModel::dismissPermissionDialog,
                     onGoToAppSettingsClick = { activity?.openAppSettings() },
                 )
             }
@@ -97,24 +86,20 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
                         camera =
                             CodeScanner.CAMERA_BACK
                         formats = CodeScanner.ALL_FORMATS
-                        autoFocusMode = AutoFocusMode.SAFE // or CONTINUOUS
-                        scanMode = ScanMode.SINGLE // or CONTINUOUS or PREVIEW
-                        isAutoFocusEnabled = true // Whether to enable auto focus or not
-                        isFlashEnabled = false // Whether to enable flash or not
-                        errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
-                            Log.e(this@ScanFragment.tag, it.toString())
-                        }
-
-                        decodeCallback = DecodeCallback {
-                            viewModel.onScan(it.text)
-                        }
+                        autoFocusMode = AutoFocusMode.SAFE
+                        scanMode = ScanMode.SINGLE
+                        isAutoFocusEnabled = true
+                        isFlashEnabled = false
+                        errorCallback =
+                            ErrorCallback { Log.e(this@ScanFragment.tag, it.toString()) }
+                        decodeCallback = DecodeCallback { viewModel.onScan(it.text) }
                         setOnClickListener { startPreview() }
                         startPreview()
                     }
                 }
             },
         )
-        LifecycleComp { _, event ->
+        LifecycleComp { _, event -> //TODO twice?
             when (event) {
                 Lifecycle.Event.ON_RESUME -> codeScanner?.startPreview()
                 Lifecycle.Event.ON_PAUSE -> codeScanner?.releaseResources()
@@ -122,23 +107,13 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
             }
         }
 
-
         val error = viewModel.error
-        val scaffoldState: ScaffoldState = rememberScaffoldState()
+//        val scaffoldState: ScaffoldState = rememberScaffoldState()
         LaunchedEffect(key1 = error) {
-//            codeScanner?.startPreview()
             if (error != null) {
-//                val snackbarResult =
                 scaffoldState.snackbarHostState.showSnackbar(
-                    message = error.asString { id, args -> //TODO make anders
-                        activity?.resources?.getString(id, *args) ?: ""
-                    },
-//                    actionLabel = "Do something"
+                    message = error.asString(requireActivity()),
                 )
-//                when (snackbarResult) {
-//                    SnackbarResult.Dismissed -> TODO()
-//                    SnackbarResult.ActionPerformed -> TODO()
-//                }
             }
         }
         LifecycleComp { _, event ->
