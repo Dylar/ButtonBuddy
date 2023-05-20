@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.model.Buddy
@@ -64,8 +64,8 @@ class BuddyRepoTest {
         val errorResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString()
         )
         coVerify(exactly = 0) { mockLocalDBMock.insertAll(any()) }
     }
@@ -80,7 +80,7 @@ class BuddyRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 
@@ -101,8 +101,8 @@ class BuddyRepoTest {
         val errorResp = buddyRepo.saveCooldown(testUser.uuid, testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
         coVerify(exactly = 0) { mockLocalDBMock.insertAll(any()) }
     }
@@ -117,7 +117,7 @@ class BuddyRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 

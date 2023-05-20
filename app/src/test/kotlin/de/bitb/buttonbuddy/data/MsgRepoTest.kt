@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.Message
@@ -68,7 +68,7 @@ class MsgRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 
@@ -91,7 +91,7 @@ class MsgRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 

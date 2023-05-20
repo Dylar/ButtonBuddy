@@ -2,7 +2,7 @@ package de.bitb.buttonbuddy.usecase.buddy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.BuddyRepository
@@ -69,8 +69,8 @@ class ScanBuddyUCTest {
         val errorResp = scanBuddyUC(testBuddy.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -82,8 +82,8 @@ class ScanBuddyUCTest {
         val errorResp = scanBuddyUC(testBuddy.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -94,8 +94,8 @@ class ScanBuddyUCTest {
         val errorResp = scanBuddyUC(testBuddy.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
-            R.string.no_buddy_found.asResourceError<List<Buddy>>().message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            R.string.no_buddy_found.asResourceError<List<Buddy>>().getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -107,8 +107,8 @@ class ScanBuddyUCTest {
         val errorResp = scanBuddyUC(testBuddy.uuid)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 

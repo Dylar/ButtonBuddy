@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.usecase.user
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.UserRepository
@@ -70,8 +70,8 @@ class RegisterUCTest {
             val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
             assert(errorResp is Resource.Error)
             assertEquals(
-                RegisterResponse.FirstNameEmpty().asError.message!!.asString(::getString),
-                errorResp.message!!.asString(::getString)
+                RegisterResponse.FirstNameEmpty().asError.getMessageString(),
+                errorResp.getMessageString(),
             )
         }
 
@@ -84,8 +84,8 @@ class RegisterUCTest {
             val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
             assert(errorResp is Resource.Error)
             assertEquals(
-                expectedResp.message!!.asString(::getString),
-                errorResp.message!!.asString(::getString)
+                expectedResp.getMessageString(),
+                errorResp.getMessageString(),
             )
         }
 
@@ -98,8 +98,8 @@ class RegisterUCTest {
             val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
             assert(errorResp is Resource.Error)
             assertEquals(
-                expectedResp.message!!.asString(::getString),
-                errorResp.message!!.asString(::getString)
+                expectedResp.getMessageString(),
+                errorResp.getMessageString(),
             )
         }
 
@@ -111,8 +111,8 @@ class RegisterUCTest {
 
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 

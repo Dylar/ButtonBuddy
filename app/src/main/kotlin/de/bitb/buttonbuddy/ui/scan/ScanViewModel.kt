@@ -21,14 +21,11 @@ class ScanViewModel @Inject constructor(
     private val useCases: BuddyUseCases,
 ) : BaseViewModel(), PermissionHandler by PermissionHandlerImpl() {
 
-    var error by mutableStateOf<ResString?>(null)
-
     fun onScan(scanText: String) {
-        error = null
         viewModelScope.launch {
             val res = useCases.scanBuddyUC(scanText)
             if (res is Resource.Error) {
-                error = res.message
+                showSnackbar(res.message!!)
             } else {
                 navigateBack(null)
             }

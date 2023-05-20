@@ -2,7 +2,7 @@ package de.bitb.buttonbuddy.usecase.message
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.core.Notifier
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.MessageRepository
@@ -60,7 +60,7 @@ class ReceivingMessageUCTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             NullPointerException().toString(),
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 
@@ -71,8 +71,8 @@ class ReceivingMessageUCTest {
         val errorResp = receivingMessageUC(testMsg.toMap())
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 

@@ -1,7 +1,7 @@
 package de.bitb.buttonbuddy.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.model.User
@@ -57,8 +57,8 @@ class UserRepoTest {
         val errorResp = userRepo.isUserLoggedIn()
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString()
         )
     }
 
@@ -89,7 +89,7 @@ class UserRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString()
         )
     }
 
@@ -111,8 +111,8 @@ class UserRepoTest {
         val errorResp = userRepo.registerUser(testUser.email, "pw")
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString()
         )
     }
 
@@ -132,8 +132,8 @@ class UserRepoTest {
         val errorResp = userRepo.loginUser(testUser.email, "pw")
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -156,8 +156,8 @@ class UserRepoTest {
         val errorResp = userRepo.loadUser(testUser.email)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -180,8 +180,8 @@ class UserRepoTest {
         val errorResp = userRepo.loadUser(testUser.email)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -205,7 +205,7 @@ class UserRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 
@@ -219,7 +219,7 @@ class UserRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 
@@ -233,8 +233,8 @@ class UserRepoTest {
         val errorResp = userRepo.saveUser(testUser)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -263,7 +263,7 @@ class UserRepoTest {
         assert(errorResp is Resource.Error)
         assertEquals(
             expectedError.message,
-            errorResp.message!!.asString(::getString)
+            errorResp.getMessageString(),
         )
     }
 
@@ -277,8 +277,8 @@ class UserRepoTest {
         val errorResp = userRepo.updateToken("new Token")
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 

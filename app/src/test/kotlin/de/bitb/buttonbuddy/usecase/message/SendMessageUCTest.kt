@@ -2,7 +2,7 @@ package de.bitb.buttonbuddy.usecase.message
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
@@ -82,8 +82,8 @@ class SendMessageUCTest {
         val errorResp = sendMessageUC(testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -95,8 +95,8 @@ class SendMessageUCTest {
         val errorResp = sendMessageUC(testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -107,8 +107,8 @@ class SendMessageUCTest {
         val errorResp = sendMessageUC(testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            R.string.send_on_cooldown.asResourceError<Unit>().message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            R.string.send_on_cooldown.asResourceError<Unit>().getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -122,8 +122,8 @@ class SendMessageUCTest {
         val errorResp = sendMessageUC(testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -135,8 +135,8 @@ class SendMessageUCTest {
         val errorResp = sendMessageUC(testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -148,8 +148,8 @@ class SendMessageUCTest {
         val errorResp = sendMessageUC(testBuddy)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 

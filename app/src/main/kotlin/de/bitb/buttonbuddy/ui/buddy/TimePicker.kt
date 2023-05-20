@@ -225,7 +225,7 @@ fun Mark(
     Text(
         text = text,
         color = if (isSelected) secondaryColor else Color.White,
-        modifier = Modifier.testTag(TimePickerTags.timePickerMark(text)).clickable(
+        modifier = Modifier.testTag(TimePickerTags.timePickerMark(text.padStart(2, '0'))).clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
             onClick = { onIndex(index) }
@@ -246,7 +246,7 @@ fun TimeCard(
         modifier = Modifier.testTag(tag).clickable { onClick() }
     ) {
         Text(
-            text = time.toString().padStart(2,'0'),
+            text = time.toString().padStart(2, '0'),
             fontSize = 26.sp,
             color = if (isSelected) secondaryColor else Color.White,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)

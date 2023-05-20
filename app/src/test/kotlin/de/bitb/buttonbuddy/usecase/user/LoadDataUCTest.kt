@@ -2,7 +2,7 @@ package de.bitb.buttonbuddy.usecase.user
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.BuddyRepository
@@ -72,8 +72,8 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -85,8 +85,8 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -97,8 +97,8 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            R.string.user_not_found.asResourceError<User?>().message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            R.string.user_not_found.asResourceError<User?>().getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -110,8 +110,8 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -126,8 +126,8 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -139,8 +139,8 @@ class LoadDataUCTest {
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
         coVerify(exactly = 0) { mockBuddyRepo.loadBuddies(any(), any()) }
     }

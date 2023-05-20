@@ -10,20 +10,24 @@ const val LOG_BORDER_TOP: String = "--------------------------------------------
 
 enum class PrintLevel { INFO, WARNING, ERROR, SYSTEM }
 
+@Suppress("unused")
 object Logger {
     val loggingActive: Boolean = true
 
     private var time: Long = 0
 
+    @Suppress("unused")
     fun startTimer() {
         time = System.currentTimeMillis()
     }
 
+    @Suppress("unused")
     fun printTimer(msg: String) {
         val inMillis = (System.currentTimeMillis() - time).toDouble()
         printLog("$msg (TIME: $inMillis)")
     }
 
+    @SuppressWarnings("FunctionCouldBePrivate")
     fun <T : Any> printLog(vararg params: T, level: PrintLevel = PrintLevel.SYSTEM) {
         val log = createLog(params)
         printMessage(

@@ -2,7 +2,7 @@ package de.bitb.buttonbuddy.usecase.buddy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.getString
+import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
@@ -70,8 +70,8 @@ class SetCooldownUCTest {
         val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -82,8 +82,8 @@ class SetCooldownUCTest {
         val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
         assertEquals(
-            R.string.user_not_found.asResourceError<User>().message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            R.string.user_not_found.asResourceError<User>().getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 
@@ -95,8 +95,8 @@ class SetCooldownUCTest {
         val errorResp = setCooldownUC(testBuddy, testHours, testMins)
         assert(errorResp is Resource.Error)
         assertEquals(
-            expectedError.message!!.asString(::getString),
-            errorResp.message!!.asString(::getString)
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
         )
     }
 

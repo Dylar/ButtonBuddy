@@ -105,6 +105,8 @@ class BuddyFragmentTest {
     @Test
     fun tapCooldownButton_opensTimePicker_selectTime_updateCooldown() = runTest {
         composeRule.apply {
+            fun Int.pad() = this.toString().padStart(2, '0')
+
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
 
@@ -128,10 +130,9 @@ class BuddyFragmentTest {
             onNodeWithTag(TimePickerTags.TIME_PICKER_CANCEL).assertIsDisplayed()
             onNodeWithTag(TimePickerTags.TIME_PICKER_OK).assertIsDisplayed()
             for (i in 0..23) {
-                onNodeWithTag(TimePickerTags.timePickerMark(i.toString())).assertIsDisplayed()
+                onNodeWithTag(TimePickerTags.timePickerMark(i.pad())).assertIsDisplayed()
             }
 
-            fun Int.pad() = this.toString().padStart(2, '0')
             onNodeWithTag(TimePickerTags.TIME_PICKER_HOUR).assertTextEquals(oldHour.pad())
             onNodeWithTag(TimePickerTags.TIME_PICKER_MIN).assertTextEquals(oldMin.pad())
             onNodeWithTag(TimePickerTags.timePickerMark(newHour.pad())).performClick()

@@ -48,7 +48,7 @@ class ProfileFragmentTest {
     fun render_profileFragment() = runTest {
         composeRule.apply {
             val user = buildUser()
-            remoteService.mockUserDao(user)
+            remoteService.mockWholeService(user)
 
             launchActivity(TestNavigation.Profile(user))
             waitForIdle()

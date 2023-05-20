@@ -1,19 +1,24 @@
 package de.bitb.buttonbuddy.core
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.NavHostFragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import de.bitb.buttonbuddy.R
+import de.bitb.buttonbuddy.core.misc.Logger
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 import de.bitb.buttonbuddy.ui.intro.LoginFragment
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 sealed class TestNavigation {
     object Splash : TestNavigation()
@@ -28,22 +33,24 @@ sealed class TestNavigation {
     object Settings : TestNavigation()
 }
 
+inline fun <reified T : Fragment> AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.getFragment(): T =
+    (activity.supportFragmentManager.fragments.first() as NavHostFragment).childFragmentManager.fragments.firstOrNull { it is T } as? T
+        ?: throw Exception("Fragment ${T::class.java.name} not found")
+
 fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.launchActivity(
     naviTo: TestNavigation,
 ) {
-    val startActivityIntent = Intent.makeMainActivity(
-        ComponentName(
-            ApplicationProvider.getApplicationContext(),
-            MainActivity::class.java
-        )
-    ).putExtra(
-        "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
-        R.style.Theme_ButtonBuddy
-    )
-
-    ActivityScenario.launch<MainActivity>(startActivityIntent)
-    waitForIdle()
-
+//    val startActivityIntent = Intent.makeMainActivity(
+//        ComponentName(
+//            ApplicationProvider.getApplicationContext(),
+//            MainActivity::class.java
+//        )
+//    ).putExtra(
+//        "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
+//        R.style.Theme_ButtonBuddy
+//    )
+//
+//    ActivityScenario.launch<MainActivity>(startActivityIntent)
     when (naviTo) {
         TestNavigation.Splash -> TODO()
         TestNavigation.Register -> tapRegister()
@@ -63,6 +70,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.lau
         }
         TestNavigation.Settings -> TODO()
     }
+    waitForIdle()
 }
 
 fun doNothing() {}
@@ -80,7 +88,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.doL
     onNodeWithTag(LoginFragment.PW_TAG).performTextInput(pw)
     onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
     waitForIdle()
-    runBlocking { delay(5000) }
+//    runBlocking { delay(5000) }
 }
 
 fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapBuddy(buddy: Buddy) {
