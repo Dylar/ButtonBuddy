@@ -50,7 +50,7 @@ class ProfileFragmentTest {
             val user = buildUser()
             remoteService.mockWholeService(user)
 
-            launchActivity(TestNavigation.Profile(user))
+            navigateTo(TestNavigation.Profile(user))
             waitForIdle()
             onNodeWithTag(ProfileFragment.APPBAR_TAG)
                 .assertIsDisplayed()

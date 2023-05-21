@@ -39,6 +39,7 @@ class LoginFragment : BaseFragment<LoginViewModel>() {
     override fun ScreenContent() {
         val showDialog = remember { mutableStateOf(false) }
         Scaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),

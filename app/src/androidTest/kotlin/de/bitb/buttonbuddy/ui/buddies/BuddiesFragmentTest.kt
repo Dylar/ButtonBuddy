@@ -51,7 +51,7 @@ class BuddiesFragmentTest {
             val user = buildUser()
             remoteService.mockWholeService(user)
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.APPBAR_TAG)
@@ -82,7 +82,7 @@ class BuddiesFragmentTest {
             val user = buildUser(mutableListOf(buddies.first().uuid, buddies.last().uuid))
             remoteService.mockWholeService(user, buddies = buddies)
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -117,7 +117,7 @@ class BuddiesFragmentTest {
             val user = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockWholeService(user, buddies =listOf(buddy))
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             val snackMsg = getString(R.string.message_sent_toast, buddy.fullName)
@@ -139,7 +139,7 @@ class BuddiesFragmentTest {
             remoteService.mockWholeService(user, buddies =listOf(buddy))
             remoteService.mockMessageService(sendMessageError = error)
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithText(error)
@@ -158,7 +158,7 @@ class BuddiesFragmentTest {
             val user = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockWholeService(user, buddies =listOf(buddy))
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
@@ -178,7 +178,7 @@ class BuddiesFragmentTest {
             val user = buildUser()
             remoteService.mockWholeService(user)
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
@@ -198,7 +198,7 @@ class BuddiesFragmentTest {
             val user = buildUser()
             remoteService.mockWholeService(user)
 
-            launchActivity(TestNavigation.Buddies(user))
+            navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
             onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)

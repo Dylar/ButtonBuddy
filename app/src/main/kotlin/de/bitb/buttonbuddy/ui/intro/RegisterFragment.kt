@@ -35,6 +35,7 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
     @Composable
     override fun ScreenContent() {
         Scaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),

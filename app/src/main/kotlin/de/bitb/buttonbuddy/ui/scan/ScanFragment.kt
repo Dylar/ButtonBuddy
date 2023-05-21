@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.ui.base.BaseFragment
 import de.bitb.buttonbuddy.ui.base.composable.LifecycleComp
+import de.bitb.buttonbuddy.ui.base.composable.asResString
 import de.bitb.buttonbuddy.ui.base.openAppSettings
 import de.bitb.buttonbuddy.ui.base.permission.CameraPermissionTextProvider
 import de.bitb.buttonbuddy.ui.base.permission.PermissionDialog
@@ -46,6 +47,7 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
         )
 
         Scaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),

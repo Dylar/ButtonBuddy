@@ -47,7 +47,7 @@ class RegisterFragmentTest {
     @Test
     fun render_registerFragment() = runTest {
         composeRule.apply {
-            launchActivity(TestNavigation.Register)
+            navigateTo(TestNavigation.Register)
             waitForIdle()
 
             onNodeWithTag(RegisterFragment.APPBAR_TAG)
@@ -75,7 +75,7 @@ class RegisterFragmentTest {
         composeRule.apply {
             remoteService.mockWholeService(buildUser(), isLoggedIn = false)
 
-            launchActivity(TestNavigation.Register)
+            navigateTo(TestNavigation.Register)
             waitForIdle()
 
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()

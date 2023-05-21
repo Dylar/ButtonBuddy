@@ -59,7 +59,7 @@ class BuddyFragmentTest {
             val user = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockWholeService(user, buddies = listOf(buddy))
 
-            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
+            navigateTo(TestNavigation.BuddyDetail(user, buddy = buddy))
             waitForIdle()
             onNodeWithTag(BuddyFragment.APPBAR_TAG)
                 .assertIsDisplayed()
@@ -86,7 +86,7 @@ class BuddyFragmentTest {
             remoteService.mockWholeService(user, buddies = listOf(buddy))
             localDatabase.mockLocalDatabase(messages)
 
-            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
+            navigateTo(TestNavigation.BuddyDetail(user, buddy = buddy))
             waitForIdle()
 
             onNodeWithTag(BuddyFragment.LIST_TAG)
@@ -119,7 +119,7 @@ class BuddyFragmentTest {
 
             remoteService.mockWholeService(user, buddies = listOf(buddy))
 
-            launchActivity(TestNavigation.BuddyDetail(user, buddy = buddy))
+            navigateTo(TestNavigation.BuddyDetail(user, buddy = buddy))
             waitForIdle()
 
             onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG).assertTextEquals(oldCooldown)

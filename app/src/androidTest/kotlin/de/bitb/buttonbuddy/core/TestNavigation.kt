@@ -33,24 +33,15 @@ sealed class TestNavigation {
     object Settings : TestNavigation()
 }
 
-inline fun <reified T : Fragment> AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.getFragment(): T =
-    (activity.supportFragmentManager.fragments.first() as NavHostFragment).childFragmentManager.fragments.firstOrNull { it is T } as? T
-        ?: throw Exception("Fragment ${T::class.java.name} not found")
+inline fun <reified T : Fragment> AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.getFragment(): T {
+    val navFrag = activity.supportFragmentManager.fragments.first() as NavHostFragment
+    val frag = navFrag.childFragmentManager.fragments.firstOrNull { it is T } as? T
+    return frag ?: throw Exception("Fragment ${T::class.java.name} not found")
+}
 
-fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.launchActivity(
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.navigateTo(
     naviTo: TestNavigation,
 ) {
-//    val startActivityIntent = Intent.makeMainActivity(
-//        ComponentName(
-//            ApplicationProvider.getApplicationContext(),
-//            MainActivity::class.java
-//        )
-//    ).putExtra(
-//        "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
-//        R.style.Theme_ButtonBuddy
-//    )
-//
-//    ActivityScenario.launch<MainActivity>(startActivityIntent)
     when (naviTo) {
         TestNavigation.Splash -> TODO()
         TestNavigation.Register -> tapRegister()

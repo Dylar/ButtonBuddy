@@ -9,13 +9,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.*
-import de.bitb.buttonbuddy.core.misc.Logger
+import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.shared.buildUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -55,7 +54,7 @@ class ScanFragmentTest {
             val user = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockWholeService(user, buddies = listOf(buddy))
 
-            launchActivity(TestNavigation.Scan(user))
+            navigateTo(TestNavigation.Scan(user))
             waitForIdle()
             onNodeWithTag(ScanFragment.APPBAR_TAG)
                 .assertIsDisplayed()
@@ -72,15 +71,13 @@ class ScanFragmentTest {
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockWholeService(user, buddies = listOf(buddy))
+            navigateTo(TestNavigation.Scan(user))
 
-            launchActivity(TestNavigation.Scan(user))
-            val frag = getFragment<ScanFragment>()
-            val snackMsg = "ERROR"
-            onNodeWithText(snackMsg)
-                .assertDoesNotExist()
-            frag.viewModel.onScan("Wrong scan")
-            onNodeWithText(snackMsg)
-                .assertIsDisplayed()
+            val errorMessage = "ERROR"
+            onNodeWithText(errorMessage).assertDoesNotExist()
+            remoteService.mockBuddyDao(loadBuddiesError = Resource.Error(errorMessage))
+            getFragment<ScanFragment>().viewModel.onScan("Wrong scan")
+            onNodeWithText(errorMessage).assertIsDisplayed()
         }
     }
 }

@@ -51,7 +51,7 @@ class LoginFragmentTest {
     @Test
     fun render_loginFragment() = runTest {
         composeRule.apply {
-            launchActivity(TestNavigation.Login)
+            navigateTo(TestNavigation.Login)
             waitForIdle()
 
             onNodeWithTag(LoginFragment.APPBAR_TAG)
@@ -80,7 +80,7 @@ class LoginFragmentTest {
         composeRule.apply {
             remoteService.mockWholeService(buildUser(), isLoggedIn = false)
 
-            launchActivity(TestNavigation.Login)
+            navigateTo(TestNavigation.Login)
             waitForIdle()
 
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
