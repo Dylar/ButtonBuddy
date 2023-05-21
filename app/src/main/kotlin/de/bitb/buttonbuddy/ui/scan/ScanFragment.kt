@@ -28,13 +28,13 @@ import de.bitb.buttonbuddy.ui.base.permission.PermissionDialog
 class ScanFragment : BaseFragment<ScanViewModel>() {
     companion object {
         const val APPBAR_TAG = "ScanAppbar"
+        const val SCANNER_TAG = "ScanScanner"
     }
 
     override val viewModel: ScanViewModel by viewModels()
 
     @Composable
     override fun ScreenContent() {
-        val dialogQueue = viewModel.visiblePermissionDialogQueue
         val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { isGranted ->
@@ -57,7 +57,7 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
             cameraPermissionResultLauncher.launch(Manifest.permission.CAMERA)
         }
 
-        dialogQueue
+        viewModel.visiblePermissionDialogQueue
             .reversed()
             .forEach { permission ->
                 PermissionDialog(
@@ -77,7 +77,7 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
     fun ScannerPreview(innerPadding: PaddingValues) {
         var codeScanner: CodeScanner? = null
         AndroidView(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding).testTag(SCANNER_TAG),
             factory = { context ->
                 CodeScannerView(context).apply {
                     isMaskVisible = true
@@ -99,23 +99,6 @@ class ScanFragment : BaseFragment<ScanViewModel>() {
                 }
             },
         )
-        LifecycleComp { _, event -> //TODO twice?
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> codeScanner?.startPreview()
-                Lifecycle.Event.ON_PAUSE -> codeScanner?.releaseResources()
-                else -> {}
-            }
-        }
-
-        val error = viewModel.error
-//        val scaffoldState: ScaffoldState = rememberScaffoldState()
-        LaunchedEffect(key1 = error) {
-            if (error != null) {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = error.asString(requireActivity()),
-                )
-            }
-        }
         LifecycleComp { _, event ->
             when (event) {
                 Lifecycle.Event.ON_RESUME -> codeScanner?.startPreview()

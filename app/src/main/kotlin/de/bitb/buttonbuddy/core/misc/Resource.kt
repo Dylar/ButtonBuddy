@@ -32,11 +32,9 @@ fun <T> Throwable.asResourceError(): Resource.Error<T> = Resource.Error(this)
 suspend fun <T> tryIt(
     onError: suspend (Exception) -> Resource<T>? = { _ -> null },
     onTry: suspend () -> Resource<T>,
-): Resource<T> {
-    return try {
-        onTry()
-    } catch (e: Exception) {
-        e.printStackTrace()
-        onError(e) ?: e.asResourceError()
-    }
+): Resource<T> = try {
+    onTry()
+} catch (e: Exception) {
+    e.printStackTrace()
+    onError(e) ?: e.asResourceError()
 }

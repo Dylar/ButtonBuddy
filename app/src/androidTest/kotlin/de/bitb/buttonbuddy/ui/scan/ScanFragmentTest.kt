@@ -9,11 +9,13 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.*
+import de.bitb.buttonbuddy.core.misc.Logger
 import de.bitb.buttonbuddy.data.source.LocalDatabase
 import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.shared.buildUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -53,34 +55,32 @@ class ScanFragmentTest {
             val user = buildUser(mutableListOf(buddy.uuid))
             remoteService.mockWholeService(user, buddies = listOf(buddy))
 
-            launchActivity(TestNavigation.Scan(user, pw = "pw"))
+            launchActivity(TestNavigation.Scan(user))
             waitForIdle()
             onNodeWithTag(ScanFragment.APPBAR_TAG)
                 .assertIsDisplayed()
                 .onChildren()
                 .assertAny(hasText(getString(R.string.scan_title)))
+            onNodeWithTag(ScanFragment.SCANNER_TAG)
+                .assertIsDisplayed()
         }
     }
 
     @Test
-    fun askCameraPermission() = runTest {
+    fun scanError() = runTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
-            launchActivity(TestNavigation.Scan(user, pw = "pw"))
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
 
-            // Prüfen, ob die Kamera-Berechtigung angefordert wird
-            activity.requestedPermissions.contains(Manifest.permission.CAMERA)
-
-            // Berechtigung verweigern und prüfen, ob das Dialogfeld angezeigt wird
-            val permissionDeniedEvent = viewModel.visiblePermissionDialogQueue.firstOrNull()
-            assert(permissionDeniedEvent)
-            assertEquals(Manifest.permission.CAMERA, permissionDeniedEvent.permission)
-
-            // Bestätigen, dass das Dialogfeld angezeigt wird
-            composeTestRule.onNodeWithText(R.string.camera_permission_dialog_title).assertIsDisplayed()
-            composeTestRule.onNodeWithText(R.string.camera_permission_dialog_message).assertIsDisplayed()
-            composeTestRule.onNodeWithText(R.string.camera_permission_dialog_button_text).assertIsDisplayed()
+            launchActivity(TestNavigation.Scan(user))
+            val frag = getFragment<ScanFragment>()
+            val snackMsg = "ERROR"
+            onNodeWithText(snackMsg)
+                .assertDoesNotExist()
+            frag.viewModel.onScan("Wrong scan")
+            onNodeWithText(snackMsg)
+                .assertIsDisplayed()
         }
     }
 }

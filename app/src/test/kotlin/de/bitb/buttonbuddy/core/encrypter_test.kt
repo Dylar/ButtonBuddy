@@ -26,8 +26,8 @@ class EncryptionTest {
         val key2 = key.toCharArray()
         val key3 = key.toCharArray()
         val key4 = key.toCharArray()
-
         checkKeys(keys = arrayListOf(key1, key2, key3, key4))
+
         val encryptedData1 = encrypt(data, key1).data!!
         checkKeys(
             keys = arrayListOf(key2, key3, key4),
@@ -38,7 +38,6 @@ class EncryptionTest {
             keys = arrayListOf(key3, key4),
             usedKeys = arrayListOf(key1, key2)
         )
-
         val decryptedData1 = decrypt(encryptedData1, key3).data!!
         checkKeys(
             keys = arrayListOf(key4),
@@ -60,7 +59,6 @@ class EncryptionTest {
         assertEquals(data, decryptedData2)
         assertNotEquals(data, decryptedData3.data)
         assert(decryptedData3 is Resource.Error)
-        assertEquals(decryptedData3.getMessageString(), "Decryption failed")
-
+        assertEquals(decryptedData3, DECRYPTION_EXCEPTION)
     }
 }
