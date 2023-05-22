@@ -1,5 +1,6 @@
 package de.bitb.buttonbuddy.data.source
 
+import de.bitb.buttonbuddy.BuildConfig
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.core.misc.tryIt
@@ -28,10 +29,9 @@ class RetrofitService(private val api: RetrofitApi) : MessageService {
         return tryIt {
             @Suppress("BlockingMethodInNonBlockingContext")
             withContext(IO) {
-                val appKey = // TODO key not in app
-                    "key=AAAABWzyIco:APA91bGW62e5atzxL1WIyGEXYd8j1ztelp0kvn2GITJy2HC3_OdLr4ZYf7e6ZhtqrAgM1L6Casb5REDZ6pVGO_eUylcdgzWfyM4ui-g3D9KwEERlDEUr5SVDc3VGQ3FcUDUph2ynWu4C"
+                val msgToken = "key=${BuildConfig.MESSAGE_TOKEN}"
                 val request = MessageRequest(msg.toMap(), msg.token)
-                val call = api.sendMessage(appKey, request)
+                val call = api.sendMessage(msgToken, request)
                 val response = call.execute()
                 if (response.isSuccessful) {
 //                val msgResp = response.body()

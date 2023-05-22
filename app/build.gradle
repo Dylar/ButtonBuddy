@@ -22,7 +22,12 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "MESSAGE_TOKEN", "\"${System.getenv("MESSAGE_TOKEN")}\"")
+        }
         release {
+            buildConfigField("String", "MESSAGE_TOKEN", "\"${System.getenv("MESSAGE_TOKEN")}\"")
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
