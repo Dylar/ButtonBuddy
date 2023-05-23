@@ -13,10 +13,10 @@ class SettingsViewModel @Inject constructor(
     override val settingsRepo: SettingsRepository,
 ) : BaseViewModel() {
 
-    fun saveSettings(settings : Settings){
-       viewModelScope.launch {
-           settingsRepo.saveSettings(settings)
-       }
+    fun saveSettings(settings: Settings) {
+        viewModelScope.launch {
+            settingsRepo.saveSettings(settings)
+        }
     }
 
 }

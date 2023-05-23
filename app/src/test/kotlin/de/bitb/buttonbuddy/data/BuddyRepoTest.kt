@@ -73,7 +73,12 @@ class BuddyRepoTest {
     @Test
     fun `load buddies, insert buddies failed, should return error`() = runTest {
         val expectedError = Exception("Insert buddies error")
-        coEvery { mockRemoteService.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
+        coEvery {
+            mockRemoteService.loadBuddies(
+                any(),
+                any()
+            )
+        } returns Resource.Success(emptyList())
         coEvery { mockLocalDBMock.insertAllBuddys(any()) } throws expectedError
 
         val errorResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)
@@ -86,7 +91,12 @@ class BuddyRepoTest {
 
     @Test
     fun `load buddies succeeded, should return error`() = runTest {
-        coEvery { mockRemoteService.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
+        coEvery {
+            mockRemoteService.loadBuddies(
+                any(),
+                any()
+            )
+        } returns Resource.Success(emptyList())
         coJustRun { mockLocalDBMock.insertAllBuddys(any()) }
 
         val successResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)
@@ -110,7 +120,9 @@ class BuddyRepoTest {
     @Test
     fun `save cooldown, insert buddies failed, should return error`() = runTest {
         val expectedError = Exception("Insert buddies error")
-        coEvery { mockRemoteService.updateCooldown(any(), any(), any()) } returns Resource.Success(Unit)
+        coEvery { mockRemoteService.updateCooldown(any(), any(), any()) } returns Resource.Success(
+            Unit
+        )
         coEvery { mockLocalDBMock.insertAllBuddys(any()) } throws expectedError
 
         val errorResp = buddyRepo.saveCooldown(testUser.uuid, testBuddy)
@@ -123,8 +135,15 @@ class BuddyRepoTest {
 
     @Test
     fun `save cooldown succeeded, should return error`() = runTest {
-        coEvery { mockRemoteService.updateCooldown(any(), any(), any()) } returns Resource.Success(Unit)
-        coEvery { mockRemoteService.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
+        coEvery { mockRemoteService.updateCooldown(any(), any(), any()) } returns Resource.Success(
+            Unit
+        )
+        coEvery {
+            mockRemoteService.loadBuddies(
+                any(),
+                any()
+            )
+        } returns Resource.Success(emptyList())
         coJustRun { mockLocalDBMock.insertAllBuddys(any()) }
 
         val successResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)

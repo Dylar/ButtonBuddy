@@ -16,6 +16,7 @@ class PreferenceDatabase(private val pref: SharedPreferences) : TokenDao, Settin
         val json = Gson().toJson(cooldowns)
         pref.edit().putString("cooldowns", json).apply()
     }
+
     override fun getCoolDowns(): Map<String, Long> {
         val json = pref.getString("cooldowns", null)
         return if (json != null) {

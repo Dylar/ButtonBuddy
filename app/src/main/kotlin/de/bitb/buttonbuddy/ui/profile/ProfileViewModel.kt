@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     override val settingsRepo: SettingsRepository,
     userRepo: UserRepository,
-) : BaseViewModel(){
+) : BaseViewModel() {
 
     val user: LiveData<User> = userRepo.getLiveUser()
 

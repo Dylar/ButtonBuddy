@@ -4,7 +4,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
 
-object BaseColors{
+object BaseColors {
     val White = Color(0xFFFFFFFF)
     val Black = Color(0xFF000000)
 

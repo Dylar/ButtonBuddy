@@ -73,7 +73,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="de.bitb.buttonbuddy.ui.profile.ProfileFragment"
-        android:label="profile" >
+        android:label="profile">
         <action
             android:id="@+id/profile_to_settings"
             app:destination="@id/settingsFragment" />

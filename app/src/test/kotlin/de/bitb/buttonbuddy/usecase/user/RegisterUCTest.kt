@@ -133,7 +133,8 @@ class RegisterUCTest {
         val expectedError = "DATABASE_ERROR".asResourceError<User>()
         coEvery { mockUserRepo.saveUser(any()) } returns expectedError
 
-        val successResp = registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
+        val successResp =
+            registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
 
         assert(successResp is Resource.Error)
         assertEquals(expectedError.message, successResp.message)

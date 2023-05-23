@@ -22,7 +22,7 @@ class SplashFragment : BaseFragment<SplashViewModel>() {
 
     private fun handleNotificationIntent(intent: Intent?) {
         // TODO check das xD
-        intent?.getStringExtra(KEY_BUDDY_UUID)?.let { uuid->
+        intent?.getStringExtra(KEY_BUDDY_UUID)?.let { uuid ->
             navController.apply {
                 popBackStack(destinationId = R.id.splashFragment, inclusive = false)
                 navigate(R.id.buddiesFragment)
@@ -32,6 +32,8 @@ class SplashFragment : BaseFragment<SplashViewModel>() {
     }
 
     @Composable
-    override fun ScreenContent() { LoadingIndicator() }
+    override fun ScreenContent() {
+        LoadingIndicator()
+    }
 
 }

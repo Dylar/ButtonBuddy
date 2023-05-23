@@ -93,7 +93,7 @@ class BuddiesFragmentTest {
                 }
 
             buddies.add(buddy.copy(uuid = "uuid3", firstName = "first3"))
-            remoteService.mockWholeService(user, buddies =buddies)
+            remoteService.mockWholeService(user, buddies = buddies)
 
             onNodeWithTag(BuddiesFragment.LIST_TAG)
                 .assertExists()
@@ -115,7 +115,7 @@ class BuddiesFragmentTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockWholeService(user, buddies =listOf(buddy))
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
 
             navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
@@ -136,7 +136,7 @@ class BuddiesFragmentTest {
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
             val error = "ERROR"
-            remoteService.mockWholeService(user, buddies =listOf(buddy))
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
             remoteService.mockMessageService(sendMessageError = error)
 
             navigateTo(TestNavigation.Buddies(user))
@@ -156,7 +156,7 @@ class BuddiesFragmentTest {
         composeRule.apply {
             val buddy = buildBuddy()
             val user = buildUser(mutableListOf(buddy.uuid))
-            remoteService.mockWholeService(user, buddies =listOf(buddy))
+            remoteService.mockWholeService(user, buddies = listOf(buddy))
 
             navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
