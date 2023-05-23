@@ -67,14 +67,14 @@ class BuddyRepoTest {
             expectedError.getMessageString(),
             errorResp.getMessageString()
         )
-        coVerify(exactly = 0) { mockLocalDBMock.insertAll(any()) }
+        coVerify(exactly = 0) { mockLocalDBMock.insertAllBuddys(any()) }
     }
 
     @Test
     fun `load buddies, insert buddies failed, should return error`() = runTest {
         val expectedError = Exception("Insert buddies error")
         coEvery { mockRemoteService.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
-        coEvery { mockLocalDBMock.insertAll(any()) } throws expectedError
+        coEvery { mockLocalDBMock.insertAllBuddys(any()) } throws expectedError
 
         val errorResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)
         assert(errorResp is Resource.Error)
@@ -87,7 +87,7 @@ class BuddyRepoTest {
     @Test
     fun `load buddies succeeded, should return error`() = runTest {
         coEvery { mockRemoteService.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
-        coJustRun { mockLocalDBMock.insertAll(any()) }
+        coJustRun { mockLocalDBMock.insertAllBuddys(any()) }
 
         val successResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)
         assert(successResp is Resource.Success)
@@ -104,14 +104,14 @@ class BuddyRepoTest {
             expectedError.getMessageString(),
             errorResp.getMessageString(),
         )
-        coVerify(exactly = 0) { mockLocalDBMock.insertAll(any()) }
+        coVerify(exactly = 0) { mockLocalDBMock.insertAllBuddys(any()) }
     }
 
     @Test
     fun `save cooldown, insert buddies failed, should return error`() = runTest {
         val expectedError = Exception("Insert buddies error")
         coEvery { mockRemoteService.updateCooldown(any(), any(), any()) } returns Resource.Success(Unit)
-        coEvery { mockLocalDBMock.insertAll(any()) } throws expectedError
+        coEvery { mockLocalDBMock.insertAllBuddys(any()) } throws expectedError
 
         val errorResp = buddyRepo.saveCooldown(testUser.uuid, testBuddy)
         assert(errorResp is Resource.Error)
@@ -125,7 +125,7 @@ class BuddyRepoTest {
     fun `save cooldown succeeded, should return error`() = runTest {
         coEvery { mockRemoteService.updateCooldown(any(), any(), any()) } returns Resource.Success(Unit)
         coEvery { mockRemoteService.loadBuddies(any(), any()) } returns Resource.Success(emptyList())
-        coJustRun { mockLocalDBMock.insertAll(any()) }
+        coJustRun { mockLocalDBMock.insertAllBuddys(any()) }
 
         val successResp = buddyRepo.loadBuddies(testUser.uuid, testUser.buddies)
         assert(successResp is Resource.Success)
