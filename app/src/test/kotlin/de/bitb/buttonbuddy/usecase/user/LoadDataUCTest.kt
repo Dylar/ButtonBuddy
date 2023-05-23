@@ -6,11 +6,14 @@ import de.bitb.buttonbuddy.core.getMessageString
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.data.BuddyRepository
+import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.data.model.Buddy
+import de.bitb.buttonbuddy.data.model.Message
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.shared.buildBuddy
+import de.bitb.buttonbuddy.shared.buildMessage
 import de.bitb.buttonbuddy.shared.buildUser
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -37,6 +40,7 @@ class LoadDataUCTest {
     private lateinit var mockSettingsRepo: SettingsRepository
     private lateinit var mockUserRepo: UserRepository
     private lateinit var mockBuddyRepo: BuddyRepository
+    private lateinit var mockMsgRepo: MessageRepository
     private lateinit var loadDataUC: LoadDataUC
 
     private lateinit var testUser: User
@@ -51,8 +55,9 @@ class LoadDataUCTest {
         Dispatchers.setMain(testDispatcher)
         mockUserRepo = mockk()
         mockBuddyRepo = mockk()
+        mockMsgRepo = mockk()
         mockSettingsRepo = mockk()
-        loadDataUC = LoadDataUC(mockSettingsRepo, mockUserRepo, mockBuddyRepo)
+        loadDataUC = LoadDataUC(mockSettingsRepo, mockUserRepo, mockBuddyRepo, mockMsgRepo)
 
         testUser = buildUser()
         coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success(mapOf())
@@ -61,6 +66,8 @@ class LoadDataUCTest {
         coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(testUser)
         coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns
                 Resource.Success(listOf(buildBuddy()))
+        coEvery { mockMsgRepo.loadMessages(any()) } returns
+                Resource.Success(listOf(buildMessage()))
         coEvery { mockSettingsRepo.loadSettings(any()) } returns Resource.Success()
     }
 
@@ -122,6 +129,19 @@ class LoadDataUCTest {
         coEvery { mockUserRepo.getLocalUser() } returns Resource.Success(user)
         coEvery { mockUserRepo.loadUser(any()) } returns Resource.Success(user)
         coEvery { mockBuddyRepo.loadBuddies(any(), any()) } returns expectedError
+
+        val errorResp = loadDataUC()
+        assert(errorResp is Resource.Error)
+        assertEquals(
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
+        )
+    }
+
+    @Test
+    fun `load messages error, should return error`() = runTest {
+        val expectedError = "Load Messages Error".asResourceError<List<Message>>()
+        coEvery { mockMsgRepo.loadMessages(any()) } returns expectedError
 
         val errorResp = loadDataUC()
         assert(errorResp is Resource.Error)

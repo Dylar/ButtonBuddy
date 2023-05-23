@@ -98,8 +98,9 @@ object AppModule {
         settingsRepo: SettingsRepository,
         userRepo: UserRepository,
         buddyRepo: BuddyRepository,
+        msgRepo: MessageRepository,
     ): UserUseCases = UserUseCases(
-        loadDataUC = LoadDataUC(settingsRepo, userRepo, buddyRepo),
+        loadDataUC = LoadDataUC(settingsRepo, userRepo, buddyRepo, msgRepo),
         loginUC = LoginUC(settingsRepo, userRepo, buddyRepo),
         registerUC = RegisterUC(userRepo),
     )

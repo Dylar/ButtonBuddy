@@ -5,6 +5,7 @@ import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.core.misc.asResourceError
 import de.bitb.buttonbuddy.core.misc.tryIt
 import de.bitb.buttonbuddy.data.BuddyRepository
+import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.UserRepository
 
@@ -12,6 +13,7 @@ class LoadDataUC(
     private val settingsRepo: SettingsRepository,
     private val userRepo: UserRepository,
     private val buddyRepo: BuddyRepository,
+    private val msgRepo: MessageRepository,
 ) {
     suspend operator fun invoke(): Resource<Boolean> {
         return tryIt {
@@ -40,6 +42,11 @@ class LoadDataUC(
                 if (loadBuddiesResp is Resource.Error) {
                     return@tryIt loadBuddiesResp.castTo<Boolean>()
                 }
+            }
+
+            val loadMessagesResp = msgRepo.loadMessages(user.uuid)
+            if (loadMessagesResp is Resource.Error) {
+                return@tryIt loadMessagesResp.castTo<Boolean>()
             }
 
             val loadSettingsResp = settingsRepo.loadSettings(user.uuid)
