@@ -98,6 +98,7 @@ class MsgRepoTest {
     @Test
     fun `save last msg succeeded, should return error`() = runTest {
         coJustRun { mockLocalDBMock.insert(any<Message>()) }
+        coEvery { mockRemoteService.saveMessage(any()) } returns Resource.Success()
 
         val successResp = msgRepo.saveMessage(testMsg)
         assert(successResp is Resource.Success)
