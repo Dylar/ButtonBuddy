@@ -35,7 +35,7 @@ interface UserDao {
 @Dao
 interface BuddyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(buddies: List<Buddy>)
+    suspend fun insertAllBuddys(buddies: List<Buddy>)
 
     @Query("SELECT * FROM buddy")
     fun getAll(): LiveData<List<Buddy>>
@@ -57,4 +57,7 @@ interface MessageDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(msg: Message)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllMessages(msg: List<Message>)
 }

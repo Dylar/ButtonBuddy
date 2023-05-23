@@ -16,11 +16,11 @@ class ReceivingMessageUC(
             //TODO wenn ich die id nicht kenne ignorieren? -> trotzdem speichern bzw tracken
 
             val saveMsgResp = msgRepo.saveMessage(msg)
-            if(saveMsgResp is Resource.Error){
+            if (saveMsgResp is Resource.Error) {
                 return@tryIt saveMsgResp
             }
             notifier.showNotification(msg)
-            return@tryIt Resource.Success()
+            Resource.Success()
         }
     }
 }

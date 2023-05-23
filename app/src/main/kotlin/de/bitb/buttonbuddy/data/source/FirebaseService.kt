@@ -59,6 +59,17 @@ class FirestoreService(
         }
     }
 
+    override suspend fun loadMessages(uuid: String): Resource<List<Message>> {
+        return tryIt {
+            val messages = buddyCollection
+                .whereEqualTo("uuid", uuid)
+                .get().await()
+                .documents.firstOrNull()?.reference?.collection("messages")
+                ?.get()?.await()?.toObjects(Message::class.java)
+            Resource.Success(messages)
+        }
+    }
+
     override suspend fun saveMessage(msg: Message): Resource<Unit> {
         return tryIt {
             val msgCol = buddyCollection

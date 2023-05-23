@@ -61,8 +61,7 @@ class SendMessageUC @Inject constructor(
             if (sendMsgResp is Resource.Error) {
                 return@tryIt sendMsgResp.castTo<Unit>()
             }
-
-            return@tryIt msgRepo.saveMessage(msg)
+            msgRepo.saveMessage(msg)
         }
     }
 }

@@ -28,9 +28,10 @@ class ScanBuddyUC(
             user.buddies.add(uuid)
             val saveUserResp = userRepo.saveUser(user)
             if (saveUserResp is Resource.Error) {
-                return@tryIt saveUserResp.castTo()
+                saveUserResp.castTo()
+            } else {
+                Resource.Success()
             }
-            return@tryIt Resource.Success()
         }
     }
 }

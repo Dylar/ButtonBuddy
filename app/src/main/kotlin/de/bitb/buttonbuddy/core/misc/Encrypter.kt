@@ -47,7 +47,7 @@ suspend fun encrypt(data: String, key: CharArray): Resource<String> {
             System.arraycopy(encryptedData, 0, combined, salt.size + iv.size, encryptedData.size)
 
             // Encode the combined byte array as a UrlBase64 string
-            return@tryIt Resource.Success(Base64.getUrlEncoder().encodeToString(combined))
+            Resource.Success(Base64.getUrlEncoder().encodeToString(combined))
         },
     )
 }
@@ -75,7 +75,7 @@ suspend fun decrypt(data: String, key: CharArray): Resource<String> {
 
             // Convert the decrypted byte array back to a string using the specified character set
             val decryptedString = String(decryptedData, Charset.forName(CHARSET_NAME))
-            return@tryIt Resource.Success(decryptedString)
+            Resource.Success(decryptedString)
         },
     )
 }

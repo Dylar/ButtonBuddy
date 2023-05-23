@@ -44,9 +44,10 @@ class LoadDataUC(
 
             val loadSettingsResp = settingsRepo.loadSettings(user.uuid)
             if (loadSettingsResp is Resource.Error) {
-                return@tryIt loadSettingsResp.castTo<Boolean>()
+                loadSettingsResp.castTo()
+            } else {
+                Resource.Success(true)
             }
-            return@tryIt Resource.Success(true)
         }
     }
 }

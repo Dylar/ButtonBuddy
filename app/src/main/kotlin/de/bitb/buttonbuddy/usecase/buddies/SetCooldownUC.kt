@@ -25,7 +25,7 @@ class SetCooldownUC(
 
             val cooldown = calculateMilliseconds(hour, min)
             val xBuddy = buddy.copy(cooldown = cooldown)
-            return@tryIt buddyRepo.saveCooldown(userResp.data!!.uuid, xBuddy)
+            buddyRepo.saveCooldown(userResp.data!!.uuid, xBuddy)
         }
     }
 }

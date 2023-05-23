@@ -30,11 +30,11 @@ class BuddyRepositoryImpl(
         buddyIds: List<String>
     ): Resource<List<Buddy>> {
         return tryIt {
-            val loadBuddiesResp = remoteDB.loadBuddies(userUuid, buddyIds)
-            if (loadBuddiesResp is Resource.Success) {
-                localDB.insertAll(loadBuddiesResp.data!!)
+            val resp = remoteDB.loadBuddies(userUuid, buddyIds)
+            if (resp is Resource.Success) {
+                localDB.insertAllBuddys(resp.data!!)
             }
-            loadBuddiesResp
+            resp
         }
     }
 
@@ -43,11 +43,11 @@ class BuddyRepositoryImpl(
         buddy: Buddy,
     ): Resource<Unit> {
         return tryIt {
-            val updateCDResp = remoteDB.updateCooldown(userUuid, buddy.uuid, buddy.cooldown)
-            if (updateCDResp is Resource.Success) {
-                localDB.insertAll(listOf(buddy))
+            val resp = remoteDB.updateCooldown(userUuid, buddy.uuid, buddy.cooldown)
+            if (resp is Resource.Success) {
+                localDB.insertAllBuddys(listOf(buddy))
             }
-            updateCDResp
+            resp
         }
     }
 

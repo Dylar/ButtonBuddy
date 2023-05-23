@@ -37,11 +37,12 @@ class UserRepositoryImpl constructor(
 
     override suspend fun loginUser(email: String, pw: String): Resource<User?> {
         return tryIt {
-            val loginResp = remoteDB.loginUser(email, pw)
-            if (loginResp is Resource.Error) {
-                return@tryIt loginResp.castTo<User?>()
+            val resp = remoteDB.loginUser(email, pw)
+            if (resp is Resource.Error) {
+                resp.castTo<User?>()
+            } else {
+                loadUser(email)
             }
-            loadUser(email)
         }
     }
 
@@ -51,11 +52,11 @@ class UserRepositoryImpl constructor(
                 is Resource.Success -> {
                     val data = userRes.data
                     if (userRes.hasData) {
-                        val saveUserResp = saveUser(data!!)
-                        if (saveUserResp is Resource.Error) {
-                            return@tryIt saveUserResp.castTo()
+                        val resp = saveUser(data!!)
+                        if (resp is Resource.Error) {
+                            return@tryIt resp.castTo()
                         }
-                        return@tryIt Resource.Success(saveUserResp.data)
+                        return@tryIt Resource.Success(resp.data)
                     }
                     Resource.Success()
                 }
@@ -72,9 +73,9 @@ class UserRepositoryImpl constructor(
             val saveUser = user.copy(token = token)
             localDB.insert(saveUser)
             if (user.uuid.isNotBlank()) {
-                val saveUserResp = remoteDB.saveUser(saveUser)
-                if (saveUserResp is Resource.Error) {
-                    return@tryIt saveUserResp.castTo()
+                val resp = remoteDB.saveUser(saveUser)
+                if (resp is Resource.Error) {
+                    return@tryIt resp.castTo()
                 }
             }
             Resource.Success(saveUser)
@@ -86,9 +87,9 @@ class UserRepositoryImpl constructor(
             localDB.setToken(token)
             val user = localDB.getUser()
             if (user != null) {
-                val saveUserResp = remoteDB.saveUser(user)
-                if (saveUserResp is Resource.Error) {
-                    return@tryIt saveUserResp.castTo()
+                val resp = remoteDB.saveUser(user)
+                if (resp is Resource.Error) {
+                    return@tryIt resp.castTo()
                 }
             }
             Resource.Success()

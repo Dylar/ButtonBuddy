@@ -12,6 +12,7 @@ interface MessageRepository {
     fun getLiveLastMessage(uuid: String): LiveData<Message?>
     suspend fun getLastMessage(uuid: String): Resource<Message>
     suspend fun saveMessage(msg: Message): Resource<Unit>
+    suspend fun loadMessages(uuid: String): Resource<List<Message>>
 }
 
 class MessageRepositoryImpl constructor(
@@ -32,8 +33,20 @@ class MessageRepositoryImpl constructor(
     override suspend fun saveMessage(msg: Message): Resource<Unit> {
         return tryIt {
             localDB.insert(msg)
-//                remoteDB.saveMessage(saveInfo) TODO save online + test
-            Resource.Success()
+            remoteDB.saveMessage(msg)
         }
     }
+
+    override suspend fun loadMessages(
+        uuid: String,
+    ): Resource<List<Message>> {
+        return tryIt {
+            val resp = remoteDB.loadMessages(uuid)
+            if (resp is Resource.Success) {
+                localDB.insertAllMessages(resp.data!!)
+            }
+            resp
+        }
+    }
+
 }
