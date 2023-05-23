@@ -1,24 +1,14 @@
 package de.bitb.buttonbuddy.core
 
-import android.app.Activity
-import android.content.ComponentName
-import android.content.Intent
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.misc.Logger
 import de.bitb.buttonbuddy.data.model.Buddy
 import de.bitb.buttonbuddy.data.model.User
 import de.bitb.buttonbuddy.ui.buddies.BuddiesFragment
 import de.bitb.buttonbuddy.ui.intro.LoginFragment
-import kotlinx.coroutines.*
 
 sealed class TestNavigation {
     object Splash : TestNavigation()

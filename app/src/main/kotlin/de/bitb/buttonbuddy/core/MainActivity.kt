@@ -8,7 +8,6 @@ import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.misc.Logger
 
 @HiltAndroidApp
 class BuddyApp : Application()

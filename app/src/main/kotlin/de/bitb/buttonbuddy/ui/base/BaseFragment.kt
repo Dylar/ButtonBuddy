@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import de.bitb.buttonbuddy.core.misc.Logger
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.styles.ButtonBuddyAppTheme
 import kotlinx.coroutines.launch
