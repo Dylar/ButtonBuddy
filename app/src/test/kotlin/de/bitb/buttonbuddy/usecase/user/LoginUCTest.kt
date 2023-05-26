@@ -89,7 +89,7 @@ class LoginUCTest {
     fun `login with empty user name should return error`() = runTest {
         val errorResp = loginUC("", "pw")
         assert(errorResp is Resource.Error)
-        assert(errorResp.data is LoginResponse.EmailEmpty)
+        assert(errorResp.data is LoginResponse.EmailError.EmailEmpty)
     }
 
     @Test

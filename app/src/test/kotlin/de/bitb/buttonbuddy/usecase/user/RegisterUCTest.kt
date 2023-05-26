@@ -35,8 +35,8 @@ class RegisterUCTest {
 
     private lateinit var testUser: User
 
-    private val pw1 = "password"
-    private val pw2 = "password"
+    private val pw1 = "6asdjaksd&&(FD"
+    private val pw2 = "6asdjaksd&&(FD"
 
     @After
     fun cleanup() {
@@ -70,7 +70,7 @@ class RegisterUCTest {
             val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
             assert(errorResp is Resource.Error)
             assertEquals(
-                RegisterResponse.FirstNameEmpty().asError.getMessageString(),
+                RegisterResponse.FirstNameEmpty.asError.getMessageString(),
                 errorResp.getMessageString(),
             )
         }
@@ -79,7 +79,7 @@ class RegisterUCTest {
     fun `given invalid last name, when invoke registerUser, then return LastNameEmpty response`() =
         runTest {
             val user = testUser.copy(lastName = "")
-            val expectedResp = RegisterResponse.LastNameEmpty().asError
+            val expectedResp = RegisterResponse.LastNameEmpty.asError
 
             val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
             assert(errorResp is Resource.Error)
@@ -93,7 +93,7 @@ class RegisterUCTest {
     fun `given invalid email, when invoke registerUser, then return EmailEmpty response`() =
         runTest {
             val user = testUser.copy(email = "")
-            val expectedResp = RegisterResponse.EmailEmpty().asError
+            val expectedResp = RegisterResponse.EmailError.EmailEmpty.asError
 
             val errorResp = registerUC(user.firstName, user.lastName, user.email, pw1, pw2)
             assert(errorResp is Resource.Error)
@@ -105,7 +105,7 @@ class RegisterUCTest {
 
     @Test
     fun `when password is not the same, then returns error`() = runTest {
-        val expectedError = RegisterResponse.PWNotSame().asError
+        val expectedError = RegisterResponse.PWError.PWNotSame.asError
         val errorResp =
             registerUC(testUser.firstName, testUser.lastName, testUser.email, "pw1", "pw2")
 
@@ -124,7 +124,10 @@ class RegisterUCTest {
         val errorResp = registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
 
         assert(errorResp is Resource.Error)
-        assertEquals(expectedError.message, errorResp.message)
+        assertEquals(
+            expectedError.getMessageString(),
+            errorResp.getMessageString(),
+        )
         coVerify { mockUserRepo.registerUser(testUser.email, pw1) }
     }
 
@@ -137,7 +140,10 @@ class RegisterUCTest {
             registerUC(testUser.firstName, testUser.lastName, testUser.email, pw1, pw2)
 
         assert(successResp is Resource.Error)
-        assertEquals(expectedError.message, successResp.message)
+        assertEquals(
+            expectedError.getMessageString(),
+            successResp.getMessageString(),
+        )
         coVerifyOrder {
             mockUserRepo.registerUser(testUser.email, pw1)
             mockUserRepo.saveUser(any())

@@ -9,8 +9,8 @@ import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.Resource
 import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.ui.base.BaseViewModel
-import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.usecase.UserUseCases
+import de.bitb.buttonbuddy.usecase.user.LoginResponse
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class LoginViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     var isLoading by mutableStateOf(false)
-    var error by mutableStateOf<ResString?>(null)
+    var error by mutableStateOf<LoginResponse?>(null)
 
     var email by mutableStateOf("")
     var pw by mutableStateOf("")
@@ -37,7 +37,7 @@ class LoginViewModel @Inject constructor(
             if (result is Resource.Success) {
                 navigate(R.id.login_to_buddies)
             } else {
-                error = result.message
+                error = result.data
             }
             isLoading = false
         }

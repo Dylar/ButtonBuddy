@@ -7,13 +7,17 @@ import de.bitb.buttonbuddy.data.SettingsRepository
 import de.bitb.buttonbuddy.data.UserRepository
 import de.bitb.buttonbuddy.ui.base.composable.ResString
 import de.bitb.buttonbuddy.ui.base.composable.ResString.DynamicString
-import de.bitb.buttonbuddy.ui.base.composable.ResString.ResourceString
+import de.bitb.buttonbuddy.ui.base.composable.asResString
 
 sealed class LoginResponse(val message: ResString) {
-    class LoggedIn : LoginResponse(ResourceString(R.string.ok))
-    class EmailEmpty : LoginResponse(ResourceString(R.string.email_is_empty))
-    class PwEmpty : LoginResponse(ResourceString(R.string.pw_is_empty))
-    class UserNotFound : LoginResponse(ResourceString(R.string.user_not_found))
+    class LoggedIn : LoginResponse(R.string.ok.asResString())
+    sealed class EmailError(msg: ResString) : LoginResponse(msg) {
+        object EmailEmpty : EmailError(R.string.email_is_empty.asResString())
+        object EmailInvalidFormat : EmailError(R.string.email_wrong_format.asResString())
+    }
+
+    object PwEmpty : LoginResponse(R.string.pw_is_empty.asResString())
+    object UserNotFound : LoginResponse(R.string.user_not_found.asResString())
     class ErrorThrown<T>(error: Resource.Error<T>) :
         LoginResponse(error.message ?: DynamicString("Error thrown"))
 
@@ -45,7 +49,7 @@ class LoginUC(
         }
 
         if (!loginUserResp.hasData) {
-            return LoginResponse.UserNotFound().asError
+            return LoginResponse.UserNotFound.asError
         }
         val user = loginUserResp.data!!
         val buddies = user.buddies
@@ -70,12 +74,22 @@ class LoginUC(
     }
 
     private fun isValid(email: String, pw: String): LoginResponse? {
-        if (email.isBlank()) {
-            return LoginResponse.EmailEmpty()
-        }
         if (pw.isBlank()) {
-            return LoginResponse.PwEmpty()
+            return LoginResponse.PwEmpty
         }
+        return validateEmail(email)
+    }
+
+    private fun validateEmail(email: String): LoginResponse? {
+        if (email.isBlank()) {
+            return LoginResponse.EmailError.EmailEmpty
+        }
+
+        val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
+        if (!emailRegex.matches(email)) {
+            return LoginResponse.EmailError.EmailInvalidFormat
+        }
+
         return null
     }
 }
