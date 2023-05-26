@@ -11,12 +11,12 @@
         <action
             android:id="@+id/splash_to_buddies"
             app:destination="@id/buddiesFragment"
-            app:popUpTo="@+id/loginFragment"
+            app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/splash_to_login"
             app:destination="@id/loginFragment"
-            app:popUpTo="@+id/loginFragment"
+            app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -27,7 +27,7 @@
         <action
             android:id="@+id/login_to_buddies"
             app:destination="@id/buddiesFragment"
-            app:popUpTo="@+id/buddiesFragment"
+            app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/login_to_register"
@@ -41,7 +41,7 @@
         <action
             android:id="@+id/register_to_buddies"
             app:destination="@id/buddiesFragment"
-            app:popUpTo="@+id/buddiesFragment"
+            app:popUpTo="@+id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -58,6 +58,14 @@
         <action
             android:id="@+id/buddies_to_scan"
             app:destination="@id/scanFragment" />
+        <action
+            android:id="@+id/buddies_to_settings"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/buddies_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

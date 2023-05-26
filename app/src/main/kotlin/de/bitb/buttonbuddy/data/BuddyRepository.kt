@@ -15,6 +15,8 @@ interface BuddyRepository {
         userUuid: String,
         buddy: Buddy,
     ): Resource<Unit>
+
+    suspend fun clearBuddys(): Resource<Unit>
 }
 
 class BuddyRepositoryImpl(
@@ -48,6 +50,13 @@ class BuddyRepositoryImpl(
                 localDB.insertAllBuddys(listOf(buddy))
             }
             resp
+        }
+    }
+
+    override suspend fun clearBuddys(): Resource<Unit> {
+        return tryIt {
+            localDB.clearBuddys()
+            Resource.Success()
         }
     }
 

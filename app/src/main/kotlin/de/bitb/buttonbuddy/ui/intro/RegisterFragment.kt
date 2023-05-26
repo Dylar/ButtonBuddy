@@ -41,7 +41,8 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
 
     @Composable
     override fun ScreenContent() {
-        var passwordVisibility by remember { mutableStateOf(false) }
+        var password1Visibility by remember { mutableStateOf(false) }
+        var password2Visibility by remember { mutableStateOf(false) }
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
@@ -104,15 +105,15 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                     value = viewModel.pw1,
                     onValueChange = { viewModel.pw1 = it },
                     label = { Text(getString(R.string.pw1_label)) },
-                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (password1Visibility) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     trailingIcon = {
                         IconButton(
-                            onClick = { passwordVisibility = !passwordVisibility },
+                            onClick = { password1Visibility = !password1Visibility },
                             modifier = Modifier.padding(end = 8.dp)
                         ) {
                             val icon =
-                                if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                                if (password1Visibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                             Icon(icon, contentDescription = "Toggle password visibility")
                         }
                     },
@@ -126,15 +127,15 @@ class RegisterFragment : BaseFragment<RegisterViewModel>() {
                     value = viewModel.pw2,
                     onValueChange = { viewModel.pw2 = it },
                     label = { Text(getString(R.string.pw2_label)) },
-                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (password2Visibility) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     trailingIcon = {
                         IconButton(
-                            onClick = { passwordVisibility = !passwordVisibility },
+                            onClick = { password2Visibility = !password2Visibility },
                             modifier = Modifier.padding(end = 8.dp)
                         ) {
                             val icon =
-                                if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                                if (password2Visibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                             Icon(icon, contentDescription = "Toggle password visibility")
                         }
                     },

@@ -16,6 +16,8 @@ interface UserRepository {
     suspend fun loadUser(email: String): Resource<User?>
     suspend fun saveUser(user: User): Resource<User>
     suspend fun updateToken(token: String): Resource<Unit>
+    suspend fun logoutUser(): Resource<Unit>
+    suspend fun clearUser(): Resource<Unit>
 }
 
 class UserRepositoryImpl constructor(
@@ -39,10 +41,21 @@ class UserRepositoryImpl constructor(
         return tryIt {
             val resp = remoteDB.loginUser(email, pw)
             if (resp is Resource.Error) {
-                resp.castTo<User?>()
+                resp.castTo()
             } else {
                 loadUser(email)
             }
+        }
+    }
+
+    override suspend fun logoutUser(): Resource<Unit> {
+        return tryIt { remoteDB.logoutUser() }
+    }
+
+    override suspend fun clearUser(): Resource<Unit> {
+        return tryIt {
+            localDB.clearUser()
+            Resource.Success()
         }
     }
 

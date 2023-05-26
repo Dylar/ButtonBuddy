@@ -53,6 +53,7 @@ interface UserRemoteDao {
     suspend fun isUserLoggedIn(): Resource<Boolean>
     suspend fun registerUser(email: String, pw: String): Resource<Unit>
     suspend fun loginUser(email: String, pw: String): Resource<Boolean>
+    suspend fun logoutUser(): Resource<Unit>
     suspend fun getUser(email: String): Resource<User?>
     suspend fun saveUser(user: User): Resource<Unit>
 }

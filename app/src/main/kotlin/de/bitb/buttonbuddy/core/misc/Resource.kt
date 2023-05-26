@@ -27,7 +27,7 @@ sealed class Resource<T>(val data: T? = null, val message: ResString? = null) {
 
 fun <T> Int.asResourceError(): Resource.Error<T> = Resource.Error(this)
 fun <T> String.asResourceError(): Resource.Error<T> = Resource.Error(this)
-fun <T> Throwable.asResourceError(): Resource.Error<T> = Resource.Error(this)
+fun <T> Throwable.asResourceError(data: T? = null): Resource.Error<T> = Resource.Error(this, data)
 
 suspend fun <T> tryIt(
     onError: suspend (Exception) -> Resource<T>? = { _ -> null },

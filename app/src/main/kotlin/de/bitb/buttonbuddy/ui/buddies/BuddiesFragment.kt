@@ -5,34 +5,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import de.bitb.buttonbuddy.R
 import de.bitb.buttonbuddy.core.misc.DEFAULT_COOLDOWN
 import de.bitb.buttonbuddy.data.model.Buddy
-import de.bitb.buttonbuddy.ui.base.BaseFragment
+import de.bitb.buttonbuddy.ui.base.*
 import de.bitb.buttonbuddy.ui.base.composable.CoolDownButton
 import de.bitb.buttonbuddy.ui.base.composable.LoadingIndicator
-import de.bitb.buttonbuddy.ui.base.naviToBuddy
-import de.bitb.buttonbuddy.ui.base.naviToProfile
-import de.bitb.buttonbuddy.ui.base.naviToScan
 import de.bitb.buttonbuddy.ui.info.InfoDialog
+import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
@@ -42,6 +35,8 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
 
         const val INFO_BUTTON_TAG = "BuddiesInfoButton"
         const val PROFILE_BUTTON_TAG = "BuddiesProfileButton"
+        const val LOGOUT_BUTTON_TAG = "BuddiesLogoutButton"
+        const val SETTINGS_BUTTON_TAG = "BuddiesSettingsButton"
         const val SCAN_BUTTON_TAG = "BuddiesScanButton"
 
         const val LIST_TAG = "BuddiesList"
@@ -56,22 +51,57 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
     @Composable
     override fun ScreenContent() {
         val showDialog = remember { mutableStateOf(false) }
+        val scope = rememberCoroutineScope()
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
                 TopAppBar(
                     modifier = Modifier.testTag(APPBAR_TAG),
                     title = { Text(getString(R.string.buddies_title)) },
-                    actions = {
-                        IconButton(
-                            modifier = Modifier.testTag(PROFILE_BUTTON_TAG),
-                            onClick = ::naviToProfile
-                        ) { Icon(Icons.Default.Person, contentDescription = "Profil") }
-                        IconButton(
-                            modifier = Modifier.testTag(INFO_BUTTON_TAG),
-                            onClick = { showDialog.value = !showDialog.value }
-                        ) { Icon(Icons.Default.Info, contentDescription = "Info") }
-                    },
+                    navigationIcon = {
+                        IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Toggle drawer"
+                            )
+                        }
+                    }
+                )
+            },
+            drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
+            drawerContent = {
+                DrawerHeader()
+                DrawerBody(
+                    items = listOf(
+                        MenuItem(
+                            tag = PROFILE_BUTTON_TAG,
+                            title = stringResource(R.string.profile_title),
+                            contentDescription = "Profile",
+                            icon = Icons.Default.Person,
+                            onTap = ::naviToProfile,
+                        ),
+                        MenuItem(
+                            tag = LOGOUT_BUTTON_TAG,
+                            title = stringResource(R.string.logout_title),
+                            contentDescription = "Logout",
+                            icon = Icons.Default.Info,
+                            onTap = viewModel::logout,
+                        ),
+                        MenuItem(
+                            tag = SETTINGS_BUTTON_TAG,
+                            title = stringResource(R.string.settings_title),
+                            contentDescription = "Settings screen button",
+                            icon = Icons.Default.Settings,
+                            onTap = ::naviBuddysToSettings,
+                        ),
+                        MenuItem(
+                            tag = INFO_BUTTON_TAG,
+                            title = stringResource(R.string.info_title),
+                            contentDescription = "Information dialog",
+                            icon = Icons.Default.Info,
+                            onTap = { showDialog.value = !showDialog.value }
+                        ),
+                    ),
                 )
             },
             floatingActionButton = {
@@ -103,7 +133,10 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
         ) {
             when {
                 buddies == null -> LoadingIndicator()
-                buddies.isEmpty() -> Text(text = getString(R.string.no_buddies))
+                buddies.isEmpty() -> Text(
+                    modifier = Modifier.fillMaxSize(),
+                    text = getString(R.string.no_buddies)
+                )
                 else -> {
                     LazyColumn(
                         modifier = Modifier

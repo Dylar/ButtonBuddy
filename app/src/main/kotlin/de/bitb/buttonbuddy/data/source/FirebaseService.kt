@@ -47,6 +47,13 @@ class FirestoreService(
         }
     }
 
+    override suspend fun logoutUser(): Resource<Unit> {
+        return tryIt {
+            fireAuth.signOut()
+            Resource.Success()
+        }
+    }
+
     override suspend fun saveUser(user: User): Resource<Unit> {
         return tryIt {
             val doc = buddyCollection

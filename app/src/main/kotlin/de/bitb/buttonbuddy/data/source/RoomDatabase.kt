@@ -30,6 +30,9 @@ interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
+
+    @Query("DELETE FROM user")
+    suspend fun clearUser()
 }
 
 @Dao
@@ -42,6 +45,9 @@ interface BuddyDao {
 
     @Query("SELECT * FROM buddy WHERE uuid = :uuid LIMIT 1")
     fun getByUuid(uuid: String): LiveData<Buddy>
+
+    @Query("DELETE FROM buddy")
+    suspend fun clearBuddys()
 }
 
 @Dao
@@ -60,4 +66,7 @@ interface MessageDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMessages(msg: List<Message>)
+
+    @Query("DELETE FROM message")
+    suspend fun clearMessages()
 }

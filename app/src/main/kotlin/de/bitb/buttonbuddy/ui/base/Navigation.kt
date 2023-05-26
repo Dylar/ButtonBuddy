@@ -20,6 +20,9 @@ fun Activity.openAppSettings() {
 fun Fragment.naviToSettings() {
     findNavController(this).navigate(R.id.profile_to_settings)
 }
+fun Fragment.naviBuddysToSettings() {
+    findNavController(this).navigate(R.id.buddies_to_settings)
+}
 
 fun Fragment.naviToBuddy(uuid: String? = null) {
     findNavController(this).navigate(R.id.buddies_to_buddy, bundleOf(KEY_BUDDY_UUID to uuid))

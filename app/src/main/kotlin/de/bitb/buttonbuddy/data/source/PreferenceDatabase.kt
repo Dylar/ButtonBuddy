@@ -10,6 +10,7 @@ class PreferenceDatabase(private val pref: SharedPreferences) : TokenDao, Settin
     override fun getToken(): String = pref.getString("token", "")!!
 
     override fun setDarkMode(isDark: Boolean) = pref.edit().putBoolean("darkMode", isDark).apply()
+
     override fun getDarkMode(): Boolean = pref.getBoolean("darkMode", true)
 
     override fun setCoolDowns(cooldowns: Map<String, Long>) {

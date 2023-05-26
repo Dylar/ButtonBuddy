@@ -17,10 +17,7 @@ import de.bitb.buttonbuddy.usecase.buddies.ScanBuddyUC
 import de.bitb.buttonbuddy.usecase.buddies.SetCooldownUC
 import de.bitb.buttonbuddy.usecase.message.ReceivingMessageUC
 import de.bitb.buttonbuddy.usecase.message.SendMessageUC
-import de.bitb.buttonbuddy.usecase.user.LoadDataUC
-import de.bitb.buttonbuddy.usecase.user.LoginUC
-import de.bitb.buttonbuddy.usecase.user.RegisterUC
-import de.bitb.buttonbuddy.usecase.user.UpdateTokenUC
+import de.bitb.buttonbuddy.usecase.user.*
 import io.mockk.mockk
 import javax.inject.Singleton
 
@@ -78,9 +75,11 @@ object TestAppModule {
         settingsRepo: SettingsRepository,
         userRepo: UserRepository,
         buddyRepo: BuddyRepository,
+        msgRepo: MessageRepository,
     ): UserUseCases = UserUseCases(
-        loadDataUC = LoadDataUC(settingsRepo, userRepo, buddyRepo),
+        loadDataUC = LoadDataUC(settingsRepo, userRepo, buddyRepo, msgRepo),
         loginUC = LoginUC(settingsRepo, userRepo, buddyRepo),
+        logoutUC = LogoutUC(userRepo, buddyRepo, msgRepo),
         registerUC = RegisterUC(userRepo),
     )
 

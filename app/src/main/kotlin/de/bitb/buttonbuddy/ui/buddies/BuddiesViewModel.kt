@@ -32,6 +32,8 @@ class BuddiesViewModel @Inject constructor(
     val buddies: LiveData<List<Buddy>> = buddyRepo.getLiveBuddies()
     fun getLastMessage(uuid: String): LiveData<Message?> = msgRepo.getLiveLastMessage(uuid)
 
+    fun sendMessageToBuddy(buddy: Buddy) = sendMessage(buddy)
+
     fun refreshData() {
         isRefreshing.value = true
         viewModelScope.launch {
@@ -43,5 +45,12 @@ class BuddiesViewModel @Inject constructor(
         }
     }
 
-    fun sendMessageToBuddy(buddy: Buddy) = sendMessage(buddy)
+    fun logout(){
+        viewModelScope.launch {
+            when (val resp = userUC.logoutUC()) {
+                is Resource.Error -> showSnackbar(resp.message!!)
+                is Resource.Success -> navigate(R.id.buddies_to_login)
+            }
+        }
+    }
 }

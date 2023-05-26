@@ -13,6 +13,7 @@ interface MessageRepository {
     suspend fun getLastMessage(uuid: String): Resource<Message>
     suspend fun saveMessage(msg: Message): Resource<Unit>
     suspend fun loadMessages(uuid: String): Resource<List<Message>>
+    suspend fun clearMessages(): Resource<Unit>
 }
 
 class MessageRepositoryImpl constructor(
@@ -46,6 +47,13 @@ class MessageRepositoryImpl constructor(
                 localDB.insertAllMessages(resp.data!!)
             }
             resp
+        }
+    }
+
+    override suspend fun clearMessages(): Resource<Unit> {
+        return tryIt {
+            localDB.clearMessages()
+            Resource.Success()
         }
     }
 
