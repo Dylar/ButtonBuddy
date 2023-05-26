@@ -92,7 +92,7 @@ class RegisterUC(
     }
 
     private fun validateEmail(email: String): RegisterResponse? {
-        if (email.isBlank()) { // TODO check if already exists
+        if (email.isBlank()) {
             return RegisterResponse.EmailError.EmailEmpty
         }
 
