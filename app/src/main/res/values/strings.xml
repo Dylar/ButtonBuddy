@@ -24,7 +24,7 @@
     <string name="pw_missing_upper_case">Password must contain at least one uppercase letter</string>
     <string name="pw_missing_lower_case">Password must contain at least one lowercase letter</string>
     <string name="pw_missing_digit">Password must contain at least one digit</string>
-    <string name="pw_missing_special">Password must contain at least one special character (!@#$%^&amp;*())</string>
+    <string name="pw_missing_special">Password must contain at least one special character</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>

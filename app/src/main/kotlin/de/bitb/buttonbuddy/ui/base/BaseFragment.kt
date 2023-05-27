@@ -53,10 +53,10 @@ abstract class BaseFragment<T : BaseViewModel> : Fragment() {
     @Composable
     abstract fun ScreenContent()
 
-    private fun showSnackBar(string: ResString) {
+    private fun showSnackBar(msg: ResString) {
         lifecycleScope.launch {
             scaffoldState.snackbarHostState.showSnackbar(
-                message = string.asString(resources::getString),
+                message = msg.asString(resources::getString),
 //                    actionLabel = "Do something"
             )
         }

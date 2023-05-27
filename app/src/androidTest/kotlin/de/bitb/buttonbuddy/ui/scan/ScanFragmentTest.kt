@@ -15,6 +15,8 @@ import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.shared.buildUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -65,6 +67,7 @@ class ScanFragmentTest {
         }
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
     fun scanError() = runTest {
         composeRule.apply {
@@ -77,7 +80,8 @@ class ScanFragmentTest {
             onNodeWithText(errorMessage).assertDoesNotExist()
             remoteService.mockBuddyDao(loadBuddiesError = Resource.Error(errorMessage))
             getFragment<ScanFragment>().viewModel.onScan("Wrong scan")
-            onNodeWithText(errorMessage).assertIsDisplayed()
+
+            waitUntilExactlyOneExists(hasText(errorMessage))
         }
     }
 }

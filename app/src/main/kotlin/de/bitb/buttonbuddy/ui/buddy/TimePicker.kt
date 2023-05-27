@@ -78,7 +78,7 @@ fun TimerPicker(
     val selectedTime by remember {
         derivedStateOf { if (selectedPart == TimePart.Hour) selectedHour else selectedMinute / 5 }
     }
-
+ // TODO on select change selectedPart
     val onTime: (Int) -> Unit = remember {
         { if (selectedPart == TimePart.Hour) selectedHour = it else selectedMinute = it * 5 }
     }

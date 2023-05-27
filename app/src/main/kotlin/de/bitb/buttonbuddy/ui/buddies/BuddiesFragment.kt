@@ -32,11 +32,12 @@ import java.util.*
 class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
     companion object {
         const val APPBAR_TAG = "BuddiesAppbar"
+        const val MENU_BUTTON_TAG = "BuddiesMenuButton"
+        const val DRAWER_INFO_BUTTON_TAG = "BuddiesInfoButton"
+        const val DRAWER_PROFILE_BUTTON_TAG = "BuddiesProfileButton"
+        const val DRAWER_LOGOUT_BUTTON_TAG = "BuddiesLogoutButton"
+        const val DRAWER_SETTINGS_BUTTON_TAG = "BuddiesSettingsButton"
 
-        const val INFO_BUTTON_TAG = "BuddiesInfoButton"
-        const val PROFILE_BUTTON_TAG = "BuddiesProfileButton"
-        const val LOGOUT_BUTTON_TAG = "BuddiesLogoutButton"
-        const val SETTINGS_BUTTON_TAG = "BuddiesSettingsButton"
         const val SCAN_BUTTON_TAG = "BuddiesScanButton"
 
         const val LIST_TAG = "BuddiesList"
@@ -59,7 +60,10 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                     modifier = Modifier.testTag(APPBAR_TAG),
                     title = { Text(getString(R.string.buddies_title)) },
                     navigationIcon = {
-                        IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
+                        IconButton(
+                            onClick = { scope.launch { scaffoldState.drawerState.open() } },
+                            modifier = Modifier.testTag(MENU_BUTTON_TAG)
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = "Toggle drawer"
@@ -74,28 +78,28 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
                 DrawerBody( // TODO back button not correct
                     items = listOf(
                         MenuItem(
-                            tag = PROFILE_BUTTON_TAG,
+                            tag = DRAWER_PROFILE_BUTTON_TAG,
                             title = stringResource(R.string.profile_title),
                             contentDescription = "Profile",
                             icon = Icons.Default.Person,
                             onTap = ::naviToProfile,
                         ),
                         MenuItem(
-                            tag = LOGOUT_BUTTON_TAG,
+                            tag = DRAWER_LOGOUT_BUTTON_TAG,
                             title = stringResource(R.string.logout_title),
                             contentDescription = "Logout",
                             icon = Icons.Default.Info,
                             onTap = viewModel::logout,
                         ),
                         MenuItem(
-                            tag = SETTINGS_BUTTON_TAG,
+                            tag = DRAWER_SETTINGS_BUTTON_TAG,
                             title = stringResource(R.string.settings_title),
                             contentDescription = "Settings screen button",
                             icon = Icons.Default.Settings,
                             onTap = ::naviBuddysToSettings,
                         ),
                         MenuItem(
-                            tag = INFO_BUTTON_TAG,
+                            tag = DRAWER_INFO_BUTTON_TAG,
                             title = stringResource(R.string.info_title),
                             contentDescription = "Information dialog",
                             icon = Icons.Default.Info,

@@ -38,7 +38,8 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
         const val SEND_BUTTON_TAG = "BuddySendButton"
         const val LIST_TAG = "BuddyList"
 
-        const val COOLDOWN_BUTTON_TAG = "BuddyCooldownButton"
+        const val COOLDOWN_SENDING_TAG = "BuddyCooldownSending"
+        const val COOLDOWN_RECEIVING_TAG = "BuddyCooldownReceiving"
     }
 
     override val viewModel: BuddyViewModel by viewModels()
@@ -113,7 +114,7 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
                     top = 16.dp,
                     start = 16.dp,
                     end = 16.dp
-                ), // TODO test if buddy cooldown shown
+                ).testTag(COOLDOWN_SENDING_TAG),
                 text = if (cooldown != 0L) getString(
                     R.string.cooldown_sending,
                     formatDuration(cooldown)
@@ -124,11 +125,10 @@ class BuddyFragment : BaseFragment<BuddyViewModel>() {
             Button(
                 modifier = Modifier
                     .padding(16.dp)
-                    .testTag(COOLDOWN_BUTTON_TAG),
+                    .testTag(COOLDOWN_RECEIVING_TAG),
                 onClick = { showDialog.value = true },
                 content = {
                     Text(
-                        // TODO test if selected cooldown shown
                         text = if (timePicked.value != 0L) getString(
                             R.string.cooldown_receiving,
                             formatDuration(timePicked.value)

@@ -32,8 +32,6 @@ class SplashFragment : BaseFragment<SplashViewModel>() {
     }
 
     @Composable
-    override fun ScreenContent() {
-        LoadingIndicator()
-    }
+    override fun ScreenContent() = LoadingIndicator()
 
 }

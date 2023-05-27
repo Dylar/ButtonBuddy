@@ -70,7 +70,9 @@ class BuddyFragmentTest {
             onNodeWithText(getString(R.string.buddy_no_messages)).assertIsDisplayed()
             onNodeWithTag(BuddyFragment.SEND_BUTTON_TAG)
                 .assertIsDisplayed()
-            onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG)
+            onNodeWithTag(BuddyFragment.COOLDOWN_SENDING_TAG)
+                .assertIsDisplayed()
+            onNodeWithTag(BuddyFragment.COOLDOWN_RECEIVING_TAG)
                 .assertIsDisplayed()
         }
     }
@@ -122,9 +124,12 @@ class BuddyFragmentTest {
             navigateTo(TestNavigation.BuddyDetail(user, buddy = buddy))
             waitForIdle()
 
-            onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG).assertTextEquals(oldCooldown)
+            onNodeWithTag(BuddyFragment.COOLDOWN_RECEIVING_TAG)
+                .assertTextEquals(activity.getString(R.string.cooldown_receiving, oldCooldown))
+            onNodeWithTag(BuddyFragment.COOLDOWN_SENDING_TAG)
+                .assertTextEquals(activity.getString(R.string.cooldown_sending_always))
             onNodeWithTag(TimePickerTags.TIME_PICKER_DIALOG).assertDoesNotExist()
-            onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG).performClick()
+            onNodeWithTag(BuddyFragment.COOLDOWN_RECEIVING_TAG).performClick()
             waitForIdle()
             onNodeWithTag(TimePickerTags.TIME_PICKER_DIALOG).assertIsDisplayed()
             onNodeWithTag(TimePickerTags.TIME_PICKER_CANCEL).assertIsDisplayed()
@@ -145,7 +150,10 @@ class BuddyFragmentTest {
 
             onNodeWithTag(TimePickerTags.TIME_PICKER_OK).performClick()
 
-            onNodeWithTag(BuddyFragment.COOLDOWN_BUTTON_TAG).assertTextEquals(oldCooldown)
+            onNodeWithTag(BuddyFragment.COOLDOWN_SENDING_TAG)
+                .assertTextEquals(activity.getString(R.string.cooldown_sending_always))
+            onNodeWithTag(BuddyFragment.COOLDOWN_RECEIVING_TAG)
+                .assertTextEquals(activity.getString(R.string.cooldown_receiving, formatDuration(newCooldown)))
 
             coVerify { remoteService.updateCooldown(any(), any(), newCooldown) }
         }

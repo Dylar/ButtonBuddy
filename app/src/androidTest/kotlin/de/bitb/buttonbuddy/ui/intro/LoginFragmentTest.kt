@@ -87,14 +87,14 @@ class LoginFragmentTest {
             waitForIdle()
             onNodeWithTag(LoginFragment.ERROR_TAG)
                 .onChildren()
-                .assertAny(hasText(LoginResponse.EmailEmpty().asString()))
+                .assertAny(hasText(LoginResponse.EmailError.EmailEmpty.asString()))
 
             onNodeWithTag(LoginFragment.EMAIL_TAG).performTextInput("email@gmx.de")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()
             waitForIdle()
             onNodeWithTag(LoginFragment.ERROR_TAG)
                 .onChildren()
-                .assertAny(hasText(LoginResponse.PwEmpty().asString()))
+                .assertAny(hasText(LoginResponse.PwEmpty.asString()))
 
             onNodeWithTag(LoginFragment.PW_TAG).performTextInput("password")
             onNodeWithTag(LoginFragment.LOGIN_BUTTON_TAG).performClick()

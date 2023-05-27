@@ -111,24 +111,19 @@ class RegisterUC(
         if (pw1 != pw2) {
             return RegisterResponse.PWError.PWNotSame
         }
-
         if (pw1.length < 8) {
             return RegisterResponse.PWError.PWLengthTooShort
         }
-
         if (!pw1.contains(Regex("[A-Z]"))) {
             return RegisterResponse.PWError.PWMissingUppercase
         }
-
         if (!pw1.contains(Regex("[a-z]"))) {
             return RegisterResponse.PWError.PWMissingLowercase
         }
-
         if (!pw1.contains(Regex("[0-9]"))) {
             return RegisterResponse.PWError.PWMissingDigit
         }
-
-        if (!pw1.contains(Regex("[!@#\$%^&*()]"))) {
+        if (!Regex("[^a-zA-Z0-9 ]").containsMatchIn(pw1)) {
             return RegisterResponse.PWError.PWMissingSpecialCharacter
         }
         return null

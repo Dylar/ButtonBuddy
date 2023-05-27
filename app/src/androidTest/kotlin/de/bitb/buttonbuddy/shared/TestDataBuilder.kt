@@ -14,7 +14,7 @@ fun buildUser(buddies: MutableList<String> = mutableListOf()): User =
         token = "token1",
         firstName = "firstName1",
         lastName = "lastName1",
-        email = "email1",
+        email = "email1@gmx.de",
         buddies = buddies,
     )
 

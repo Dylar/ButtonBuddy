@@ -38,9 +38,9 @@ class LoginUC(
         email: String,
         pw: String
     ): Resource<LoginResponse> {
-        val response = isValid(email, pw)
-        if (response != null) {
-            return response.asError
+        val isValid = isValid(email, pw)
+        if (isValid != null) {
+            return isValid.asError
         }
 
         val loginUserResp = userRepo.loginUser(email, pw)
@@ -74,10 +74,15 @@ class LoginUC(
     }
 
     private fun isValid(email: String, pw: String): LoginResponse? {
+        val emailValid =  validateEmail(email)
+        if (emailValid != null){
+            return emailValid
+        }
+
         if (pw.isBlank()) {
             return LoginResponse.PwEmpty
         }
-        return validateEmail(email)
+        return null
     }
 
     private fun validateEmail(email: String): LoginResponse? {

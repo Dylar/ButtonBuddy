@@ -58,13 +58,31 @@ class BuddiesFragmentTest {
                 .assertIsDisplayed()
                 .onChildren()
                 .assertAny(hasText(getString(R.string.buddies_title)))
-            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
-                .assertIsDisplayed()
-            onNodeWithTag(BuddiesFragment.INFO_BUTTON_TAG)
+            onNodeWithTag(BuddiesFragment.MENU_BUTTON_TAG)
                 .assertIsDisplayed()
             onNodeWithText(getString(R.string.no_buddies))
                 .assertIsDisplayed()
             onNodeWithTag(BuddiesFragment.SCAN_BUTTON_TAG)
+                .assertIsDisplayed()
+
+            onNodeWithTag(BuddiesFragment.DRAWER_PROFILE_BUTTON_TAG)
+                .assertIsNotDisplayed()
+            onNodeWithTag(BuddiesFragment.DRAWER_INFO_BUTTON_TAG)
+                .assertIsNotDisplayed()
+            onNodeWithTag(BuddiesFragment.DRAWER_LOGOUT_BUTTON_TAG)
+                .assertIsNotDisplayed()
+            onNodeWithTag(BuddiesFragment.DRAWER_SETTINGS_BUTTON_TAG)
+                .assertIsNotDisplayed()
+
+            onNodeWithTag(BuddiesFragment.MENU_BUTTON_TAG).performClick()
+
+            onNodeWithTag(BuddiesFragment.DRAWER_PROFILE_BUTTON_TAG)
+                .assertIsDisplayed()
+            onNodeWithTag(BuddiesFragment.DRAWER_INFO_BUTTON_TAG)
+                .assertIsDisplayed()
+            onNodeWithTag(BuddiesFragment.DRAWER_LOGOUT_BUTTON_TAG)
+                .assertIsDisplayed()
+            onNodeWithTag(BuddiesFragment.DRAWER_SETTINGS_BUTTON_TAG)
                 .assertIsDisplayed()
         }
     }
@@ -181,7 +199,7 @@ class BuddiesFragmentTest {
             navigateTo(TestNavigation.Buddies(user))
             waitForIdle()
 
-            onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG)
+            onNodeWithTag(BuddiesFragment.DRAWER_PROFILE_BUTTON_TAG)
                 .assertExists()
                 .performClick()
             waitForIdle()

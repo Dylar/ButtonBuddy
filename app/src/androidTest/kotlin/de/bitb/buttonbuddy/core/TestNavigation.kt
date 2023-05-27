@@ -33,7 +33,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.nav
     naviTo: TestNavigation,
 ) {
     when (naviTo) {
-        TestNavigation.Splash -> TODO()
+        TestNavigation.Splash -> throw NotImplementedError()
         TestNavigation.Register -> tapRegister()
         TestNavigation.Login -> doNothing()
         is TestNavigation.Buddies -> doLogin(naviTo.user, naviTo.pw)
@@ -49,7 +49,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.nav
             doLogin(naviTo.user, naviTo.pw)
             tapScan()
         }
-        TestNavigation.Settings -> TODO()
+        TestNavigation.Settings -> throw NotImplementedError()
     }
     waitForIdle()
 }
@@ -81,7 +81,7 @@ fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tap
 }
 
 fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.tapProfile() {
-    onNodeWithTag(BuddiesFragment.PROFILE_BUTTON_TAG).performClick()
+    onNodeWithTag(BuddiesFragment.DRAWER_PROFILE_BUTTON_TAG).performClick()
     waitForIdle()
 }
 

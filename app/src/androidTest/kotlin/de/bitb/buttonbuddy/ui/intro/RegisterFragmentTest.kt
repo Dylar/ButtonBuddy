@@ -73,6 +73,21 @@ class RegisterFragmentTest {
     @Test
     fun test_register_errors() = runTest {
         composeRule.apply {
+            fun checkError(resp:RegisterResponse){
+                onNodeWithTag(RegisterFragment.ERROR_TAG)
+                    .onChildren()
+                    .assertAny(hasText(resp.asString()))
+            }
+            fun enterPassword(pw: String ){
+                onNodeWithTag(RegisterFragment.PW1_TAG).apply {
+                    performTextClearance()
+                    performTextInput(pw)
+                }
+                onNodeWithTag(RegisterFragment.PW2_TAG).apply {
+                    performTextClearance()
+                    performTextInput(pw)
+                }
+            }
             remoteService.mockWholeService(buildUser(), isLoggedIn = false)
 
             navigateTo(TestNavigation.Register)
@@ -80,49 +95,59 @@ class RegisterFragmentTest {
 
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
-            onNodeWithTag(RegisterFragment.ERROR_TAG)
-                .onChildren()
-                .assertAny(hasText(RegisterResponse.FirstNameEmpty().asString()))
+            checkError(RegisterResponse.FirstNameEmpty)
 
             onNodeWithTag(RegisterFragment.FIRST_NAME_TAG).performTextInput("FirstName")
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
-            onNodeWithTag(RegisterFragment.ERROR_TAG)
-                .onChildren()
-                .assertAny(hasText(RegisterResponse.LastNameEmpty().asString()))
+            checkError(RegisterResponse.LastNameEmpty)
 
             onNodeWithTag(RegisterFragment.LAST_NAME_TAG).performTextInput("LastName")
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
-            onNodeWithTag(RegisterFragment.ERROR_TAG)
-                .onChildren()
-                .assertAny(hasText(RegisterResponse.EmailEmpty().asString()))
+            checkError(RegisterResponse.EmailError.EmailEmpty)
 
             onNodeWithTag(RegisterFragment.EMAIL_TAG).performTextInput("email@gmx.de")
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
-            onNodeWithTag(RegisterFragment.ERROR_TAG)
-                .onChildren()
-                .assertAny(hasText(RegisterResponse.PWEmpty().asString()))
+            checkError(RegisterResponse.PWError.PWEmpty)
 
             onNodeWithTag(RegisterFragment.PW1_TAG).performTextInput("PW1")
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
-            onNodeWithTag(RegisterFragment.ERROR_TAG)
-                .onChildren()
-                .assertAny(hasText(RegisterResponse.PWEmpty().asString()))
+            checkError(RegisterResponse.PWError.PWEmpty)
 
             onNodeWithTag(RegisterFragment.PW2_TAG).performTextInput("PW2")
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
-            onNodeWithTag(RegisterFragment.ERROR_TAG)
-                .onChildren()
-                .assertAny(hasText(RegisterResponse.PWNotSame().asString()))
+            checkError(RegisterResponse.PWError.PWNotSame)
 
-            onNodeWithTag(RegisterFragment.PW2_TAG).apply {
-                performTextClearance()
-                performTextInput("PW1")
-            }
+            enterPassword("abc")
+            onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
+            waitForIdle()
+            checkError(RegisterResponse.PWError.PWLengthTooShort)
+
+            enterPassword("abcabcabcabc")
+            onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
+            waitForIdle()
+            checkError(RegisterResponse.PWError.PWMissingUppercase)
+
+            enterPassword("ABCABCABCABC")
+            onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
+            waitForIdle()
+            checkError(RegisterResponse.PWError.PWMissingLowercase)
+
+            enterPassword("ABCABCABCabc")
+            onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
+            waitForIdle()
+            checkError(RegisterResponse.PWError.PWMissingDigit)
+
+            enterPassword("ABCABCABCabc1")
+            onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
+            waitForIdle()
+            checkError(RegisterResponse.PWError.PWMissingSpecialCharacter)
+
+            enterPassword("ABCABCABCabc1!")
             onNodeWithTag(RegisterFragment.REGISTER_BUTTON_TAG).performClick()
             waitForIdle()
 
