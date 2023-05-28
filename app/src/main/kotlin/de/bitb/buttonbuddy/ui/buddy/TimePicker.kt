@@ -78,9 +78,16 @@ fun TimerPicker(
     val selectedTime by remember {
         derivedStateOf { if (selectedPart == TimePart.Hour) selectedHour else selectedMinute / 5 }
     }
- // TODO on select change selectedPart
-    val onTime: (Int) -> Unit = remember {
-        { if (selectedPart == TimePart.Hour) selectedHour = it else selectedMinute = it * 5 }
+    val selectTime: (Int) -> Unit = remember {
+        {
+            if (selectedPart == TimePart.Hour) {
+                selectedHour = it
+                selectedPart = TimePart.Minute
+            } else {
+                selectedMinute = it * 5
+                selectedPart = TimePart.Hour
+            }
+        }
     }
     Dialog(onDismissRequest = onCancel) {
         Box(
@@ -94,11 +101,11 @@ fun TimerPicker(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
+                    .padding(16.dp)
                     .background(
                         color = backgroundColor,
                         shape = RoundedCornerShape(16.dp)
                     )
-                    .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(stringResource(R.string.select_time))
@@ -130,7 +137,7 @@ fun TimerPicker(
                     modifier = Modifier
                         .size(190.dp)
                         .align(Alignment.CenterHorizontally)
-                ) { ClockMarks24h(selectedPart, selectedTime, onTime) }
+                ) { ClockMarks24h(selectedPart, selectedTime, selectTime) }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),

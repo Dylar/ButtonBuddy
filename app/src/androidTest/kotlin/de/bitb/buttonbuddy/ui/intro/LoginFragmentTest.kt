@@ -64,7 +64,7 @@ class LoginFragmentTest {
                 .assertIsDisplayed()
             onNodeWithTag(LoginFragment.EMAIL_TAG)
                 .assertIsDisplayed()
-//                .onChildren() TODO why not?
+//                .onChildren()// TODO why not?
 //                .assertAny(hasText(getString(R.string.email)))
             onNodeWithTag(LoginFragment.PW_TAG)
                 .assertIsDisplayed()
