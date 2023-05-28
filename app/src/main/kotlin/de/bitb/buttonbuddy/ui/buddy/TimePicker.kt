@@ -1,5 +1,8 @@
 package de.bitb.buttonbuddy.ui.buddy
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,9 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.bitb.buttonbuddy.R
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
+import de.bitb.buttonbuddy.core.misc.Logger
+import kotlin.math.*
 
 private val backgroundColor = Color(49, 52, 58)
 private val primaryColor = Color(68, 71, 70)
@@ -74,18 +76,25 @@ fun TimerPicker(
     var selectedPart by remember { mutableStateOf(TimePart.Hour) }
     var selectedHour by remember { mutableStateOf(hour) }
     var selectedMinute by remember { mutableStateOf(min) }
+    var previousSelectedHour by remember { mutableStateOf(hour) }
+    var previousSelectedMinute by remember { mutableStateOf(min) }
 
+    val previousSelectedTime by remember {
+        derivedStateOf { if (selectedPart == TimePart.Hour) previousSelectedHour else previousSelectedMinute / 5 }
+    }
     val selectedTime by remember {
         derivedStateOf { if (selectedPart == TimePart.Hour) selectedHour else selectedMinute / 5 }
     }
     val selectTime: (Int) -> Unit = remember {
         {
             if (selectedPart == TimePart.Hour) {
+                previousSelectedHour = selectedHour
                 selectedHour = it
-                selectedPart = TimePart.Minute
+//                selectedPart = TimePart.Minute
             } else {
+                previousSelectedMinute = selectedMinute
                 selectedMinute = it * 5
-                selectedPart = TimePart.Hour
+//                selectedPart = TimePart.Hour
             }
         }
     }
@@ -133,7 +142,8 @@ fun TimerPicker(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Clock(
-                    time = selectedTime,
+                    selectedTime = selectedTime,
+                    previousSelectedTime = previousSelectedTime,
                     modifier = Modifier
                         .size(190.dp)
                         .align(Alignment.CenterHorizontally)
@@ -160,15 +170,22 @@ fun TimerPicker(
 @Composable
 fun Clock(
     modifier: Modifier = Modifier,
-    time: Int,
+    selectedTime: Int,
+    previousSelectedTime: Int,
     content: @Composable () -> Unit
 ) {
     var radiusPx by remember { mutableStateOf(0) }
     var radiusInsidePx by remember { mutableStateOf(0) }
 
+    val diff = abs(selectedTime - previousSelectedTime)
+    val duration = (min(diff, 12 - diff) * 100)
+    val selectedLineAngle by animateFloatAsState(
+        targetValue = angleForIndex(selectedTime).toFloat(),
+        animationSpec = tween(durationMillis = duration, easing = LinearEasing),
+    )
+
     fun posX(index: Int) =
         ((if (index < 12) radiusPx else radiusInsidePx) * cos(angleForIndex(index))).toInt()
-
     fun posY(index: Int) =
         ((if (index < 12) radiusPx else radiusInsidePx) * sin(angleForIndex(index))).toInt()
 
@@ -183,9 +200,10 @@ fun Clock(
             modifier = Modifier
                 .padding(4.dp)
                 .drawBehind {
+                    val lineLength = (if (selectedTime < 12) radiusPx else radiusInsidePx)
                     val end = Offset(
-                        x = size.width / 2 + posX(time),
-                        y = size.height / 2 + posY(time)
+                        x = size.width / 2 + lineLength * cos(selectedLineAngle),
+                        y = size.height / 2 + lineLength * sin(selectedLineAngle)
                     )
                     drawCircle(radius = 9f, color = selectedColor)
                     drawLine(
