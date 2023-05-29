@@ -45,7 +45,7 @@ class BuddiesViewModel @Inject constructor(
         }
     }
 
-    fun logout(){
+    fun logout() {
         viewModelScope.launch {
             when (val resp = userUC.logoutUC()) {
                 is Resource.Error -> showSnackbar(resp.message!!)

@@ -73,12 +73,13 @@ class RegisterFragmentTest {
     @Test
     fun test_register_errors() = runTest {
         composeRule.apply {
-            fun checkError(resp:RegisterResponse){
+            fun checkError(resp: RegisterResponse) {
                 onNodeWithTag(RegisterFragment.ERROR_TAG)
                     .onChildren()
                     .assertAny(hasText(resp.asString()))
             }
-            fun enterPassword(pw: String ){
+
+            fun enterPassword(pw: String) {
                 onNodeWithTag(RegisterFragment.PW1_TAG).apply {
                     performTextClearance()
                     performTextInput(pw)

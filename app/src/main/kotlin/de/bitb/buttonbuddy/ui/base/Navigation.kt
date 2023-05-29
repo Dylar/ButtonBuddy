@@ -20,6 +20,7 @@ fun Activity.openAppSettings() {
 fun Fragment.naviToSettings() {
     findNavController(this).navigate(R.id.profile_to_settings)
 }
+
 fun Fragment.naviBuddysToSettings() {
     findNavController(this).navigate(R.id.buddies_to_settings)
 }

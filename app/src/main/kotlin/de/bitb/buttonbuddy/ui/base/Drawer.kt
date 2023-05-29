@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import de.bitb.buttonbuddy.R
 
 data class MenuItem(
-    val tag:String,
+    val tag: String,
     val title: String,
     val contentDescription: String,
     val icon: ImageVector,

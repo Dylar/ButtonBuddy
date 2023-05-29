@@ -74,8 +74,8 @@ class LoginUC(
     }
 
     private fun isValid(email: String, pw: String): LoginResponse? {
-        val emailValid =  validateEmail(email)
-        if (emailValid != null){
+        val emailValid = validateEmail(email)
+        if (emailValid != null) {
             return emailValid
         }
 

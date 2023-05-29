@@ -75,7 +75,8 @@ class BuddiesFragment : BaseFragment<BuddiesViewModel>() {
             drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
             drawerContent = {
                 DrawerHeader()
-                DrawerBody( // TODO back button not correct
+                DrawerBody(
+                    // TODO back button not correct
                     items = listOf(
                         MenuItem(
                             tag = DRAWER_PROFILE_BUTTON_TAG,

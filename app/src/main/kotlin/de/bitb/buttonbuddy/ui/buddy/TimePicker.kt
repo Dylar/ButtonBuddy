@@ -28,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.bitb.buttonbuddy.R
-import de.bitb.buttonbuddy.core.misc.Logger
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 private val backgroundColor = Color(49, 52, 58)
 private val primaryColor = Color(68, 71, 70)
@@ -177,15 +179,15 @@ fun Clock(
     var radiusPx by remember { mutableStateOf(0) }
     var radiusInsidePx by remember { mutableStateOf(0) }
 
-    val diff = abs(selectedTime - previousSelectedTime)
-    val duration = (min(diff, 12 - diff) * 100)
+    val distance = abs(selectedTime % 12 - previousSelectedTime % 12)
     val selectedLineAngle by animateFloatAsState(
-        targetValue = angleForIndex(selectedTime).toFloat(),
-        animationSpec = tween(durationMillis = duration, easing = LinearEasing),
+        targetValue = angleForIndex(selectedTime % 12).toFloat(),
+        animationSpec = tween(durationMillis = distance * 100, easing = LinearEasing),
     )
 
     fun posX(index: Int) =
         ((if (index < 12) radiusPx else radiusInsidePx) * cos(angleForIndex(index))).toInt()
+
     fun posY(index: Int) =
         ((if (index < 12) radiusPx else radiusInsidePx) * sin(angleForIndex(index))).toInt()
 
@@ -200,7 +202,7 @@ fun Clock(
             modifier = Modifier
                 .padding(4.dp)
                 .drawBehind {
-                    val lineLength = (if (selectedTime < 12) radiusPx else radiusInsidePx)
+                    val lineLength = if (selectedTime < 12) radiusPx else radiusInsidePx
                     val end = Offset(
                         x = size.width / 2 + lineLength * cos(selectedLineAngle),
                         y = size.height / 2 + lineLength * sin(selectedLineAngle)

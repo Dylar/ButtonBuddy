@@ -153,7 +153,12 @@ class BuddyFragmentTest {
             onNodeWithTag(BuddyFragment.COOLDOWN_SENDING_TAG)
                 .assertTextEquals(activity.getString(R.string.cooldown_sending_always))
             onNodeWithTag(BuddyFragment.COOLDOWN_RECEIVING_TAG)
-                .assertTextEquals(activity.getString(R.string.cooldown_receiving, formatDuration(newCooldown)))
+                .assertTextEquals(
+                    activity.getString(
+                        R.string.cooldown_receiving,
+                        formatDuration(newCooldown)
+                    )
+                )
 
             coVerify { remoteService.updateCooldown(any(), any(), newCooldown) }
         }

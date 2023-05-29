@@ -15,8 +15,6 @@ import de.bitb.buttonbuddy.data.source.RemoteService
 import de.bitb.buttonbuddy.shared.buildBuddy
 import de.bitb.buttonbuddy.shared.buildUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule

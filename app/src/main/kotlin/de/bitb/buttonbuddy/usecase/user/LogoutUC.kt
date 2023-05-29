@@ -6,7 +6,8 @@ import de.bitb.buttonbuddy.data.BuddyRepository
 import de.bitb.buttonbuddy.data.MessageRepository
 import de.bitb.buttonbuddy.data.UserRepository
 
-class LogoutUC( // TODO write test
+class LogoutUC(
+    // TODO write test
     private val userRepo: UserRepository,
     private val buddyRepo: BuddyRepository,
     private val msgRepo: MessageRepository,
