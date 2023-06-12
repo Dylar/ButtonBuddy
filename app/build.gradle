@@ -68,10 +68,12 @@ android {
         dev {
             dimension "env"
             versionNameSuffix "-dev"
+            applicationIdSuffix ".dev"
         }
         stage {
             dimension "env"
             versionNameSuffix "-stage"
+            applicationIdSuffix ".stage"
         }
         prod {
             dimension "env"
